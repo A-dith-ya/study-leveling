@@ -41,3 +41,10 @@ app-example
 .amplify
 amplify_outputs*
 amplifyconfiguration*
+
+# ios
+ios/
+
+# android
+android/
+
