@@ -1,24 +1,20 @@
 import { useEffect } from "react";
 import { View, ActivityIndicator } from "react-native";
-import SignOutButton from "./components/auth/SignOutButton";
+import { useQuery } from "@tanstack/react-query";
 
+import SignOutButton from "./components/auth/SignOutButton";
 import DashboardHeader from "./components/dashboard/DashboardHeader";
 import DeckCard from "./components/dashboard/DeckCard";
-import { generateClient } from "aws-amplify/data";
-import type { Schema } from "../amplify/data/resource";
-import { getCurrentUser } from "aws-amplify/auth";
-import { useQuery } from "@tanstack/react-query";
 import { getUserById } from "./services/userService";
 import useUserStore from "./stores/userStore";
-
-const client = generateClient<Schema>();
+import { calculateXPToNextLevel } from "./utils/xpUtils";
 
 export default function Index() {
   const { user, fetchUser } = useUserStore();
 
   useEffect(() => {
     if (!user) fetchUser();
-  }, [fetchUser]);
+  }, []);
 
   const {
     data: userData,
@@ -38,7 +34,7 @@ export default function Index() {
       <DashboardHeader
         level={userData?.data?.level || 1}
         currentXP={userData?.data?.xp || 0}
-        requiredXP={100}
+        requiredXP={calculateXPToNextLevel(userData?.data?.level || 1)}
         streakCount={userData?.data?.streak || 0}
       />
       <DeckCard
