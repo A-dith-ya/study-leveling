@@ -1,4 +1,5 @@
-import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
+import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
+import { postConfirmation } from "../auth/post-confirmation/resource";
 
 /*== STEP 1 ===============================================================
 The section below creates a Todo database table with a "content" field. Try
@@ -6,20 +7,56 @@ adding a new "isDone" field as a boolean. The authorization rule below
 specifies that any unauthenticated user can "create", "read", "update", 
 and "delete" any "Todo" records.
 =========================================================================*/
-const schema = a.schema({
-  Todo: a
-    .model({
-      content: a.string(),
-    })
-    .authorization((allow) => [allow.guest()]),
-});
+const schema = a
+  .schema({
+    // createdAt, updatedAt automatically included by a.model()
+    User: a
+      .model({
+        userId: a.id().required(),
+        email: a.string().required(),
+        xp: a.integer().default(0),
+        level: a.integer().default(1),
+        streak: a.integer().default(0),
+        avatar: a.string(),
+        ownedCosmetics: a.string().array(), // Array of cosmetic IDs
+        unlockedAchievements: a.string().array(),
+        levelRewards: a.string().array(),
+        decks: a.hasMany("Deck", "userId"), // One-to-many relationship: one user can have many decks
+      })
+      .identifier(["userId"])
+      .authorization((allow) => [allow.owner()]), // Only the owner can access the User model
+
+    Deck: a
+      .model({
+        deckId: a.id().required(),
+        title: a.string().required(),
+        decorations: a.json(), // Storing decorations as JSON: { stickerId: { x, y, scale } }[]
+        userId: a.id().required(),
+        user: a.belongsTo("User", "userId"), // Many-to-one relationship: many decks can belong to one user
+        flashcards: a.hasMany("Flashcard", "deckId"), // One-to-many relationship: one deck can have many flashcards
+      })
+      .identifier(["deckId"])
+      .authorization((allow) => [allow.owner()]),
+
+    Flashcard: a
+      .model({
+        flashcardId: a.id().required(),
+        front: a.string().required(),
+        back: a.string().required(),
+        deckId: a.id().required(),
+        deck: a.belongsTo("Deck", "deckId"), // Many-to-one relationship: many flashcards can belong to one deck
+      })
+      .identifier(["flashcardId"])
+      .authorization((allow) => [allow.owner()]),
+  })
+  .authorization((allow) => [allow.resource(postConfirmation)]);
 
 export type Schema = ClientSchema<typeof schema>;
 
 export const data = defineData({
   schema,
   authorizationModes: {
-    defaultAuthorizationMode: 'identityPool',
+    defaultAuthorizationMode: "identityPool",
   },
 });
 
