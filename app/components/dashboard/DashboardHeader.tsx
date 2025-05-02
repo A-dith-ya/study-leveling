@@ -29,11 +29,10 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       </View>
 
       <View style={styles.progressBackground}>
-        <View style={[styles.progressFill, { width: `${progress}%` }]}>
-          <Text style={styles.xpText}>
-            {currentXP} / {requiredXP} XP
-          </Text>
-        </View>
+        <View style={[styles.progressFill, { width: `${progress}%` }]} />
+        <Text style={styles.xpText}>
+          {currentXP} / {requiredXP} XP
+        </Text>
       </View>
     </View>
   );
@@ -78,13 +77,17 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: COLORS.success,
     borderRadius: 16,
-    justifyContent: "center",
   },
   xpText: {
     color: COLORS.white,
     fontSize: 16,
     fontWeight: "600",
     textAlign: "center",
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 5,
+    textAlignVertical: "center",
   },
   streakContainer: {
     flexDirection: "row",

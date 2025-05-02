@@ -24,7 +24,7 @@ const schema = a
         decks: a.hasMany("Deck", "userId"), // One-to-many relationship: one user can have many decks
       })
       .identifier(["userId"])
-      .authorization((allow) => [allow.owner()]), // Only the owner can access the User model
+      .authorization((allow) => [allow.owner(), allow.authenticated()]), // Only the owner can access the User model
 
     Deck: a
       .model({
@@ -56,7 +56,7 @@ export type Schema = ClientSchema<typeof schema>;
 export const data = defineData({
   schema,
   authorizationModes: {
-    defaultAuthorizationMode: "identityPool",
+    defaultAuthorizationMode: "userPool",
   },
 });
 
