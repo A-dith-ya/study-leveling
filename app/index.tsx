@@ -12,6 +12,8 @@ import SignUpHeader from "./components/auth/SignUpHeader";
 import SignUpFooter from "./components/auth/SignUpFooter";
 import SignOutButton from "./components/auth/SignOutButton";
 
+import DashboardHeader from "./components/dashboard/DashboardHeader";
+
 Amplify.configure(outputs);
 
 const theme = {
@@ -82,6 +84,12 @@ export default function Index() {
           }}
         >
           <SignOutButton />
+          <DashboardHeader
+            level={1}
+            currentXP={83}
+            requiredXP={100}
+            streakCount={0}
+          />
         </Authenticator>
       </Authenticator.Provider>
     </ThemeProvider>
