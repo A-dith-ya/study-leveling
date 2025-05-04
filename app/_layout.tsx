@@ -84,7 +84,9 @@ export default function RootLayout() {
               ),
             }}
           >
-            <Stack />
+            <Stack>
+              <Stack.Screen name="(main)" />
+            </Stack>
           </Authenticator>
         </Authenticator.Provider>
       </ThemeProvider>

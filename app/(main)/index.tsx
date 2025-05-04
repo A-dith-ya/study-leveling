@@ -2,14 +2,14 @@ import { useEffect } from "react";
 import { View, Button, ActivityIndicator, Text } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 
-import SignOutButton from "./components/auth/SignOutButton";
-import DashboardHeader from "./components/dashboard/DashboardHeader";
-import DeckCard from "./components/dashboard/DeckCard";
-import { getUserById } from "./services/userService";
-import { getDecksByUserId } from "./services/deckService";
-import useUserStore from "./stores/userStore";
-import { calculateXPToNextLevel } from "./utils/xpUtils";
-import COLORS from "./constants/colors";
+import SignOutButton from "../components/auth/SignOutButton";
+import DashboardHeader from "../components/dashboard/DashboardHeader";
+import DeckCard from "../components/dashboard/DeckCard";
+import { getUserById } from "../services/userService";
+import { getDecksByUserId } from "../services/deckService";
+import useUserStore from "../stores/userStore";
+import { calculateXPToNextLevel } from "../utils/xpUtils";
+import COLORS from "../constants/colors";
 
 export default function Index() {
   const { user, fetchUser } = useUserStore();
