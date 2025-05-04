@@ -86,6 +86,7 @@ export default function RootLayout() {
           >
             <Stack>
               <Stack.Screen name="(main)" />
+              <Stack.Screen name="(flashcard)" />
             </Stack>
           </Authenticator>
         </Authenticator.Provider>

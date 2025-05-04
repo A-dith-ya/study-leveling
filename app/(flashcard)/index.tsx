@@ -1,0 +1,208 @@
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { FlashList } from "@shopify/flash-list";
+import { useRouter } from "expo-router";
+
+import FlashcardItem from "../components/flashcard/FlashcardItem";
+import COLORS from "../constants/colors";
+
+interface Flashcard {
+  id: string;
+  front: string;
+  back: string;
+  order: number;
+}
+
+export default function CreateFlashcard() {
+  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+  const router = useRouter();
+
+  const addFlashcard = () => {
+    const newFlashcard: Flashcard = {
+      id: Date.now().toString(),
+      front: "",
+      back: "",
+      order: flashcards.length, // New cards are added at the end
+    };
+    setFlashcards([...flashcards, newFlashcard]);
+  };
+
+  const updateFlashcard = (
+    id: string,
+    field: "front" | "back",
+    value: string
+  ) => {
+    setFlashcards(
+      flashcards.map((card) =>
+        card.id === id ? { ...card, [field]: value } : card
+      )
+    );
+  };
+
+  const deleteFlashcard = (id: string) => {
+    const deletedCardIndex = flashcards.findIndex((card) => card.id === id);
+    const updatedFlashcards = flashcards
+      .filter((card) => card.id !== id)
+      .map((card, index) => ({
+        ...card,
+        order: card.order > deletedCardIndex ? card.order - 1 : card.order,
+      }));
+    setFlashcards(updatedFlashcards);
+  };
+
+  const moveFlashcard = (index: number, direction: "up" | "down") => {
+    const newIndex = direction === "up" ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= flashcards.length) return;
+
+    const newFlashcards = [...flashcards];
+    const movedCard = newFlashcards[index];
+    const replacedCard = newFlashcards[newIndex];
+
+    // Swap orders
+    const tempOrder = movedCard.order;
+    movedCard.order = replacedCard.order;
+    replacedCard.order = tempOrder;
+
+    // Swap positions in array
+    newFlashcards[index] = replacedCard;
+    newFlashcards[newIndex] = movedCard;
+
+    // Sort array by order to maintain consistency
+    newFlashcards.sort((a, b) => a.order - b.order);
+
+    setFlashcards(newFlashcards);
+  };
+
+  const renderItem = ({ item, index }: { item: Flashcard; index: number }) => (
+    <FlashcardItem
+      key={item.id}
+      front={item.front}
+      back={item.back}
+      onChangeFront={(text) => updateFlashcard(item.id, "front", text)}
+      onChangeBack={(text) => updateFlashcard(item.id, "back", text)}
+      onMoveUp={() => moveFlashcard(index, "up")}
+      onMoveDown={() => moveFlashcard(index, "down")}
+      onDelete={() => deleteFlashcard(item.id)}
+      isFirst={index === 0}
+      isLast={index === flashcards.length - 1}
+    />
+  );
+
+  const ListEmptyComponent = () => (
+    <View style={styles.emptyState}>
+      <Text style={styles.emptyStateText}>
+        Tap the "Add Card" button to create your first flashcard
+      </Text>
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <Pressable style={styles.backButton} onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
+          </Pressable>
+          <Text style={styles.title}>Create Flashcards</Text>
+        </View>
+        <Pressable onPress={addFlashcard} style={styles.addButton}>
+          <Ionicons name="add-circle" size={24} color={COLORS.primary} />
+          <Text style={styles.addButtonText}>Add Card</Text>
+        </Pressable>
+      </View>
+
+      <View style={styles.content}>
+        <FlashList
+          data={flashcards}
+          renderItem={renderItem}
+          estimatedItemSize={150}
+          ListEmptyComponent={ListEmptyComponent}
+          contentContainerStyle={styles.listContentContainer}
+        />
+      </View>
+
+      <Pressable style={styles.saveAllButton} onPress={() => {}}>
+        <Ionicons name="save-outline" size={24} color={COLORS.white} />
+        <Text style={styles.saveAllButtonText}>Save All</Text>
+      </Pressable>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 8,
+    backgroundColor: COLORS.white,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.lightGray,
+  },
+  headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  backButton: {
+    marginRight: 12,
+    padding: 4,
+  },
+  content: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: COLORS.text,
+  },
+  addButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 8,
+  },
+  addButtonText: {
+    marginLeft: 4,
+    color: COLORS.primary,
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  listContentContainer: {
+    paddingVertical: 8,
+    paddingBottom: 16,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 32,
+    marginTop: 100,
+  },
+  emptyStateText: {
+    textAlign: "center",
+    color: COLORS.darkGray,
+    fontSize: 16,
+  },
+  saveAllButton: {
+    width: "30%",
+    alignSelf: "center",
+    backgroundColor: COLORS.primary,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  saveAllButtonText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: "600",
+    marginLeft: 8,
+  },
+});

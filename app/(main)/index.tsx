@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { View, Button, ActivityIndicator, Text } from "react-native";
 import { useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
 
 import SignOutButton from "../components/auth/SignOutButton";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
@@ -60,7 +61,11 @@ export default function Index() {
           onPractice={() => {}}
         />
       ))}
-      <Button title="Create Deck" color={COLORS.secondary} />
+      <Button
+        title="Create Deck"
+        color={COLORS.secondary}
+        onPress={() => router.push("/(flashcard)")}
+      />
     </View>
   );
 }
