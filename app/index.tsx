@@ -1,13 +1,15 @@
 import { useEffect } from "react";
-import { View, ActivityIndicator } from "react-native";
+import { View, Button, ActivityIndicator, Text } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 
 import SignOutButton from "./components/auth/SignOutButton";
 import DashboardHeader from "./components/dashboard/DashboardHeader";
 import DeckCard from "./components/dashboard/DeckCard";
 import { getUserById } from "./services/userService";
+import { getDecksByUserId } from "./services/deckService";
 import useUserStore from "./stores/userStore";
 import { calculateXPToNextLevel } from "./utils/xpUtils";
+import COLORS from "./constants/colors";
 
 export default function Index() {
   const { user, fetchUser } = useUserStore();
@@ -26,7 +28,19 @@ export default function Index() {
     enabled: !!user?.id,
   });
 
-  if (isLoading) return <ActivityIndicator />;
+  const {
+    data: decks,
+    isLoading: decksLoading,
+    error: decksError,
+  } = useQuery({
+    queryKey: ["decks", user?.id],
+    queryFn: () => getDecksByUserId(user?.id || ""),
+    enabled: !!user?.id,
+  });
+
+  if (isLoading || decksLoading) return <ActivityIndicator />;
+
+  if (error || decksError) return <Text>Error {error?.message} </Text>;
 
   return (
     <View>
@@ -37,12 +51,16 @@ export default function Index() {
         requiredXP={calculateXPToNextLevel(userData?.data?.level || 1)}
         streakCount={userData?.data?.streak || 0}
       />
-      <DeckCard
-        title="Deck 1"
-        cardCount={10}
-        onEdit={() => {}}
-        onPractice={() => {}}
-      />
+      {decks?.data?.map((deck) => (
+        <DeckCard
+          key={deck.deckId}
+          title={deck.title}
+          cardCount={0}
+          onEdit={() => {}}
+          onPractice={() => {}}
+        />
+      ))}
+      <Button title="Create Deck" color={COLORS.secondary} />
     </View>
   );
 }
