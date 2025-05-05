@@ -30,7 +30,7 @@ const schema = a
       .model({
         deckId: a.id().required(),
         title: a.string().required(),
-        flashcardCount: a.integer().default(0),
+        flashcardCount: a.integer().required(),
         decorations: a.json(), // Storing decorations as JSON: { stickerId: { x, y, scale } }[]
         userId: a.id().required(),
         user: a.belongsTo("User", "userId"), // Many-to-one relationship: many decks can belong to one user

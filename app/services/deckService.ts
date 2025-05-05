@@ -8,7 +8,7 @@ export async function getDecksByUserId(userId: string) {
   try {
     const decks = await client.models.Deck.list({
       filter: { userId: { eq: userId } },
-      selectionSet: ["deckId", "title", "createdAt"],
+      selectionSet: ["deckId", "title", "flashcardCount", "createdAt"],
     });
     console.log("decks", decks);
 

@@ -56,7 +56,7 @@ export default function Index() {
         <DeckCard
           key={deck.deckId}
           title={deck.title}
-          cardCount={0}
+          cardCount={deck.flashcardCount}
           onEdit={() => {}}
           onPractice={() => {}}
         />
