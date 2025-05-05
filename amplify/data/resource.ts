@@ -30,6 +30,7 @@ const schema = a
       .model({
         deckId: a.id().required(),
         title: a.string().required(),
+        flashcardCount: a.integer().default(0),
         decorations: a.json(), // Storing decorations as JSON: { stickerId: { x, y, scale } }[]
         userId: a.id().required(),
         user: a.belongsTo("User", "userId"), // Many-to-one relationship: many decks can belong to one user
@@ -43,11 +44,36 @@ const schema = a
         flashcardId: a.id().required(),
         front: a.string().required(),
         back: a.string().required(),
+        order: a.integer().default(0),
         deckId: a.id().required(),
         deck: a.belongsTo("Deck", "deckId"), // Many-to-one relationship: many flashcards can belong to one deck
       })
       .identifier(["flashcardId"])
       .authorization((allow) => [allow.owner()]),
+
+    FlashcardInput: a.customType({
+      flashcardId: a.string().required(),
+      front: a.string().required(),
+      back: a.string().required(),
+      order: a.integer(),
+    }),
+
+    BatchCreateFlashcard: a
+      .mutation()
+      .arguments({
+        deckId: a.string().required(),
+        // title: a.string().required(),
+        // userId: a.string().required(),
+        flashcards: a.ref("FlashcardInput").array().required(),
+      })
+      .returns(a.ref("Flashcard"))
+      .authorization((allow) => [allow.authenticated()])
+      .handler(
+        a.handler.custom({
+          dataSource: a.ref("Flashcard"),
+          entry: "./batchCreateFlashcards.js",
+        })
+      ),
   })
   .authorization((allow) => [allow.resource(postConfirmation)]);
 
