@@ -1,13 +1,26 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  TextInput,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { useRouter } from "expo-router";
+import { v4 as uuidv4 } from "uuid";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import FlashcardItem from "../components/flashcard/FlashcardItem";
+import { createDeck } from "../services/deckService";
+import useUserStore from "../stores/userStore";
 import COLORS from "../constants/colors";
 
-interface Flashcard {
+export interface Flashcard {
   id: string;
   front: string;
   back: string;
@@ -16,11 +29,39 @@ interface Flashcard {
 
 export default function CreateFlashcard() {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+  const [deckTitle, setDeckTitle] = useState("");
   const router = useRouter();
+  const { user } = useUserStore();
+  const queryClient = useQueryClient();
+
+  const createDeckMutation = useMutation({
+    mutationFn: ({
+      userId,
+      deckId,
+      title,
+      cards,
+    }: {
+      userId: string;
+      deckId: string;
+      title: string;
+      cards: Flashcard[];
+    }) => createDeck(userId, deckId, title, cards),
+    onSuccess: () => {
+      // Invalidate and refetch decks query
+      queryClient.invalidateQueries({ queryKey: ["decks", user?.id] });
+      Alert.alert("Success", "Deck created successfully", [
+        { text: "OK", onPress: () => router.back() },
+      ]);
+    },
+    onError: (error) => {
+      console.error("Error saving deck:", error);
+      Alert.alert("Error", "Failed to create deck. Please try again.");
+    },
+  });
 
   const addFlashcard = () => {
     const newFlashcard: Flashcard = {
-      id: Date.now().toString(),
+      id: uuidv4(),
       front: "",
       back: "",
       order: flashcards.length, // New cards are added at the end
@@ -97,6 +138,40 @@ export default function CreateFlashcard() {
     </View>
   );
 
+  const handleSave = async () => {
+    if (!user?.id) {
+      Alert.alert("Error", "You must be logged in to create a deck");
+      return;
+    }
+
+    if (!deckTitle.trim()) {
+      Alert.alert("Error", "Please enter a deck title");
+      return;
+    }
+
+    if (flashcards.length < 3) {
+      Alert.alert("Error", "Please add at least 3 flashcards");
+      return;
+    }
+
+    // Validate all flashcards have content
+    const emptyCards = flashcards.filter(
+      (card) => !card.front.trim() || !card.back.trim()
+    );
+    if (emptyCards.length > 0) {
+      Alert.alert("Error", "Please fill in all flashcard content");
+      return;
+    }
+
+    const deckId = uuidv4();
+    createDeckMutation.mutate({
+      userId: user.id,
+      deckId,
+      title: deckTitle,
+      cards: flashcards,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -113,6 +188,13 @@ export default function CreateFlashcard() {
       </View>
 
       <View style={styles.content}>
+        <TextInput
+          style={styles.titleInput}
+          placeholder="Enter deck title"
+          value={deckTitle}
+          onChangeText={setDeckTitle}
+          placeholderTextColor={COLORS.darkGray}
+        />
         <FlashList
           data={flashcards}
           renderItem={renderItem}
@@ -122,9 +204,22 @@ export default function CreateFlashcard() {
         />
       </View>
 
-      <Pressable style={styles.saveAllButton} onPress={() => {}}>
-        <Ionicons name="save-outline" size={24} color={COLORS.white} />
-        <Text style={styles.saveAllButtonText}>Save All</Text>
+      <Pressable
+        style={[
+          styles.saveAllButton,
+          createDeckMutation.isPending && styles.saveButtonDisabled,
+        ]}
+        onPress={handleSave}
+        disabled={createDeckMutation.isPending}
+      >
+        {createDeckMutation.isPending ? (
+          <ActivityIndicator color={COLORS.white} />
+        ) : (
+          <>
+            <Ionicons name="save-outline" size={24} color={COLORS.white} />
+            <Text style={styles.saveAllButtonText}>Save All</Text>
+          </>
+        )}
       </Pressable>
     </View>
   );
@@ -204,5 +299,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     marginLeft: 8,
+  },
+  titleInput: {
+    backgroundColor: COLORS.white,
+    padding: 16,
+    fontSize: 18,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.lightGray,
+    color: COLORS.text,
+    textAlign: "center",
+  },
+  saveButtonDisabled: {
+    opacity: 0.7,
   },
 });
