@@ -20,6 +20,15 @@ export default function FlashcardLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="EditFlashcard"
+        options={{
+          tabBarStyle: {
+            display: "none",
+          },
+          href: null, // Hide from tab bar
+        }}
+      />
     </Tabs>
   );
 }

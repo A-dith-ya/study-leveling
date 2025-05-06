@@ -8,64 +8,67 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import FlashcardItem from "../components/flashcard/FlashcardItem";
-import { createDeck } from "../services/deckService";
+import { getDeckById, updateDeck } from "../services/deckService";
 import useUserStore from "../stores/userStore";
 import COLORS from "../constants/colors";
+import { Flashcard } from "./index";
 
-export interface Flashcard {
-  id: string;
-  front: string;
-  back: string;
-  order: number;
-}
-
-export default function CreateFlashcard() {
+export default function EditFlashcard() {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
   const [deckTitle, setDeckTitle] = useState("");
   const router = useRouter();
   const { user } = useUserStore();
   const queryClient = useQueryClient();
+  const { deckId } = useLocalSearchParams();
+  const [deletedFlashcardIds, setDeletedFlashcardIds] = useState<string[]>([]);
 
-  const createDeckMutation = useMutation({
+  // Fetch existing deck data
+  const { data: deckData, isLoading } = useQuery({
+    queryKey: ["deck", deckId],
+    queryFn: () => getDeckById(deckId as string),
+    enabled: !!deckId,
+  });
+
+  useEffect(() => {
+    if (deckData?.data) {
+      setDeckTitle(deckData.data.title || "");
+      setFlashcards(deckData.data.cards || []);
+    }
+  }, [deckData]);
+
+  const updateDeckMutation = useMutation({
     mutationFn: ({
       userId,
       deckId,
       title,
       cards,
+      deletedFlashcardIds,
     }: {
       userId: string;
       deckId: string;
       title: string;
       cards: Flashcard[];
-    }) => createDeck(userId, deckId, title, cards),
+      deletedFlashcardIds: string[];
+    }) => updateDeck(userId, deckId, title, cards, deletedFlashcardIds),
     onSuccess: () => {
       // Invalidate and refetch decks query
       queryClient.invalidateQueries({ queryKey: ["decks", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["deck", deckId] });
       router.dismissTo("/(amain)");
     },
     onError: (error) => {
-      console.error("Error saving deck:", error);
-      Alert.alert("Error", "Failed to create deck. Please try again.");
+      console.error("Error updating deck:", error);
+      Alert.alert("Error", "Failed to update deck. Please try again.");
     },
   });
-
-  const addFlashcard = () => {
-    const newFlashcard: Flashcard = {
-      id: uuidv4(),
-      front: "",
-      back: "",
-      order: flashcards.length, // New cards are added at the end
-    };
-    setFlashcards([...flashcards, newFlashcard]);
-  };
 
   const updateFlashcard = (
     id: string,
@@ -88,6 +91,7 @@ export default function CreateFlashcard() {
         order: card.order > deletedCardIndex ? card.order - 1 : card.order,
       }));
     setFlashcards(updatedFlashcards);
+    setDeletedFlashcardIds([...deletedFlashcardIds, id]);
   };
 
   const moveFlashcard = (index: number, direction: "up" | "down") => {
@@ -113,6 +117,16 @@ export default function CreateFlashcard() {
     setFlashcards(newFlashcards);
   };
 
+  const addFlashcard = () => {
+    const newFlashcard: Flashcard = {
+      id: uuidv4(),
+      front: "",
+      back: "",
+      order: flashcards.length, // New cards are added at the end
+    };
+    setFlashcards([...flashcards, newFlashcard]);
+  };
+
   const renderItem = ({ item, index }: { item: Flashcard; index: number }) => (
     <FlashcardItem
       key={item.id}
@@ -128,17 +142,9 @@ export default function CreateFlashcard() {
     />
   );
 
-  const ListEmptyComponent = () => (
-    <View style={styles.emptyState}>
-      <Text style={styles.emptyStateText}>
-        Tap the "Add Card" button to create your first flashcard
-      </Text>
-    </View>
-  );
-
   const handleSave = async () => {
     if (!user?.id) {
-      Alert.alert("Error", "You must be logged in to create a deck");
+      Alert.alert("Error", "You must be logged in to update the deck");
       return;
     }
 
@@ -148,7 +154,7 @@ export default function CreateFlashcard() {
     }
 
     if (flashcards.length < 3) {
-      Alert.alert("Error", "Please add at least 3 flashcards");
+      Alert.alert("Error", "Please have at least 3 flashcards");
       return;
     }
 
@@ -161,14 +167,22 @@ export default function CreateFlashcard() {
       return;
     }
 
-    const deckId = uuidv4();
-    createDeckMutation.mutate({
+    updateDeckMutation.mutate({
       userId: user.id,
-      deckId,
+      deckId: deckId as string,
       title: deckTitle,
       cards: flashcards,
+      deletedFlashcardIds,
     });
   };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -180,7 +194,7 @@ export default function CreateFlashcard() {
           >
             <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
           </Pressable>
-          <Text style={styles.title}>Create Flashcards</Text>
+          <Text style={styles.title}>Edit Flashcards</Text>
         </View>
         <Pressable onPress={addFlashcard} style={styles.addButton}>
           <Ionicons name="add-circle" size={24} color={COLORS.primary} />
@@ -200,7 +214,6 @@ export default function CreateFlashcard() {
           data={flashcards}
           renderItem={renderItem}
           estimatedItemSize={150}
-          ListEmptyComponent={ListEmptyComponent}
           contentContainerStyle={styles.listContentContainer}
         />
       </View>
@@ -208,17 +221,17 @@ export default function CreateFlashcard() {
       <Pressable
         style={[
           styles.saveAllButton,
-          createDeckMutation.isPending && styles.saveButtonDisabled,
+          updateDeckMutation.isPending && styles.saveButtonDisabled,
         ]}
         onPress={handleSave}
-        disabled={createDeckMutation.isPending}
+        disabled={updateDeckMutation.isPending}
       >
-        {createDeckMutation.isPending ? (
+        {updateDeckMutation.isPending ? (
           <ActivityIndicator color={COLORS.white} />
         ) : (
           <>
             <Ionicons name="save-outline" size={24} color={COLORS.white} />
-            <Text style={styles.saveAllButtonText}>Save All</Text>
+            <Text style={styles.saveAllButtonText}>Save Changes</Text>
           </>
         )}
       </Pressable>
@@ -229,6 +242,12 @@ export default function CreateFlashcard() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: COLORS.background,
   },
   header: {
@@ -256,32 +275,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: COLORS.text,
   },
-  addButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 8,
-  },
-  addButtonText: {
-    marginLeft: 4,
-    color: COLORS.primary,
-    fontSize: 16,
-    fontWeight: "500",
-  },
   listContentContainer: {
     paddingVertical: 8,
     paddingBottom: 16,
-  },
-  emptyState: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 32,
-    marginTop: 100,
-  },
-  emptyStateText: {
-    textAlign: "center",
-    color: COLORS.darkGray,
-    fontSize: 16,
   },
   saveAllButton: {
     width: "50%",
@@ -312,5 +308,16 @@ const styles = StyleSheet.create({
   },
   saveButtonDisabled: {
     opacity: 0.7,
+  },
+  addButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 8,
+  },
+  addButtonText: {
+    marginLeft: 4,
+    color: COLORS.primary,
+    fontSize: 16,
+    fontWeight: "500",
   },
 });
