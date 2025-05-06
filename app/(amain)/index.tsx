@@ -1,7 +1,15 @@
 import { useEffect } from "react";
-import { View, Button, ActivityIndicator, Text } from "react-native";
+import {
+  View,
+  Pressable,
+  ActivityIndicator,
+  Text,
+  StyleSheet,
+} from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
+import { FlashList } from "@shopify/flash-list";
+import { Ionicons } from "@expo/vector-icons";
 
 import SignOutButton from "../components/auth/SignOutButton";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
@@ -43,8 +51,27 @@ export default function Index() {
 
   if (error || decksError) return <Text>Error {error?.message} </Text>;
 
+  const renderDeckItem = ({ item }: { item: any }) => (
+    <DeckCard
+      title={item.title}
+      cardCount={item.flashcardCount}
+      onEdit={() =>
+        router.push(`/(flashcard)/EditFlashcard?deckId=${item.deckId}`)
+      }
+      onPractice={() => {}}
+    />
+  );
+
+  const ListEmptyComponent = () => (
+    <View style={styles.emptyState}>
+      <Text style={styles.emptyStateText}>
+        No decks yet. Create your first deck to get started!
+      </Text>
+    </View>
+  );
+
   return (
-    <View>
+    <View style={styles.container}>
       <SignOutButton />
       <DashboardHeader
         level={userData?.data?.level || 1}
@@ -52,20 +79,66 @@ export default function Index() {
         requiredXP={calculateXPToNextLevel(userData?.data?.level || 1)}
         streakCount={userData?.data?.streak || 0}
       />
-      {decks?.data?.map((deck) => (
-        <DeckCard
-          key={deck.deckId}
-          title={deck.title}
-          cardCount={deck.flashcardCount}
-          onEdit={() => {}}
-          onPractice={() => {}}
+      <View style={styles.listContainer}>
+        <FlashList
+          data={decks}
+          renderItem={renderDeckItem}
+          estimatedItemSize={100}
+          ListEmptyComponent={ListEmptyComponent}
+          contentContainerStyle={styles.listContentContainer}
         />
-      ))}
-      <Button
-        title="Create Deck"
-        color={COLORS.secondary}
+      </View>
+
+      <Pressable
+        style={styles.createDeckButton}
         onPress={() => router.push("/(flashcard)")}
-      />
+      >
+        <Ionicons name="add-circle-outline" size={24} color={COLORS.white} />
+        <Text style={styles.createDeckButtonText}>Create Deck</Text>
+      </Pressable>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  listContainer: {
+    flex: 1,
+  },
+  listContentContainer: {
+    paddingVertical: 8,
+    paddingBottom: 16,
+  },
+  createDeckButton: {
+    width: "50%",
+    alignSelf: "center",
+    backgroundColor: COLORS.primary,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  createDeckButtonText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: "600",
+    marginLeft: 8,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 32,
+  },
+  emptyStateText: {
+    textAlign: "center",
+    color: COLORS.darkGray,
+    fontSize: 16,
+  },
+});
