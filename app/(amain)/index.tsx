@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import SignOutButton from "../components/auth/SignOutButton";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
 import DeckCard from "../components/dashboard/DeckCard";
+import LoadingScreen from "../components/common/LoadingScreen";
 import { getUserById } from "../services/userService";
 import { getDecksByUserId } from "../services/deckService";
 import useUserStore from "../stores/userStore";
@@ -47,7 +48,8 @@ export default function Index() {
     enabled: !!user?.id,
   });
 
-  if (isLoading || decksLoading) return <ActivityIndicator />;
+  if (isLoading) return <LoadingScreen />;
+  if (decksLoading) return <LoadingScreen message="Loading your decks..." />;
 
   if (error || decksError) return <Text>Error {error?.message} </Text>;
 
@@ -58,7 +60,9 @@ export default function Index() {
       onEdit={() =>
         router.push(`/(flashcard)/EditFlashcard?deckId=${item.deckId}`)
       }
-      onPractice={() => {}}
+      onPractice={() => {
+        router.push(`/(flashcard)/FlashcardReview?deckId=${item.deckId}`);
+      }}
     />
   );
 
