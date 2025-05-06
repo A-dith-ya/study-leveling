@@ -66,12 +66,26 @@ const schema = a
         // userId: a.string().required(),
         flashcards: a.ref("FlashcardInput").array().required(),
       })
-      .returns(a.ref("Flashcard"))
+      .returns(a.boolean())
       .authorization((allow) => [allow.authenticated()])
       .handler(
         a.handler.custom({
           dataSource: a.ref("Flashcard"),
           entry: "./batchCreateFlashcards.js",
+        })
+      ),
+
+    BatchDeleteFlashcard: a
+      .mutation()
+      .arguments({
+        flashcardIds: a.string().array().required(),
+      })
+      .returns(a.boolean())
+      .authorization((allow) => [allow.authenticated()])
+      .handler(
+        a.handler.custom({
+          dataSource: a.ref("Flashcard"),
+          entry: "./batchDeleteFlashcards.js",
         })
       ),
   })

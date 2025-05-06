@@ -29,8 +29,8 @@ export function request(ctx) {
             deckId,
             createdAt: now,
             updatedAt: now,
-            // owner: ctx.identity.username,
-            // __typename: "Flashcard",
+            owner: ctx.identity.username,
+            __typename: "Flashcard",
           })
         ),
     },
