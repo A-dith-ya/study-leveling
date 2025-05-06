@@ -44,7 +44,7 @@ const schema = a
         flashcardId: a.id().required(),
         front: a.string().required(),
         back: a.string().required(),
-        order: a.integer().default(0),
+        order: a.integer().required(),
         deckId: a.id().required(),
         deck: a.belongsTo("Deck", "deckId"), // Many-to-one relationship: many flashcards can belong to one deck
       })

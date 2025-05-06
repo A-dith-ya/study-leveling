@@ -46,7 +46,7 @@ export default function FlashcardReview() {
 
   useEffect(() => {
     if (deckData) {
-      setRemainingCards([...Array(deckData.data.flashcards?.length).keys()]);
+      setRemainingCards([...Array(deckData.flashcards?.length).keys()]);
     }
   }, [deckData]);
 
@@ -129,14 +129,14 @@ export default function FlashcardReview() {
         return shuffled;
       } else {
         // When turning shuffle off, restore original order
-        return [...Array(deckData?.data.flashcards?.length).keys()];
+        return [...Array(deckData?.flashcards?.length).keys()];
       }
     });
     setShuffleMode(!shuffleMode);
   };
 
   // Get current card data and determine if we're on the last card
-  const currentCard = deckData?.data.flashcards?.[remainingCards[currentIndex]];
+  const currentCard = deckData?.flashcards?.[remainingCards[currentIndex]];
   const isLastCard =
     currentIndex === remainingCards.length - 1 && markedCards.size === 0;
 

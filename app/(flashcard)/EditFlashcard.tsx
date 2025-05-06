@@ -38,9 +38,16 @@ export default function EditFlashcard() {
   });
 
   useEffect(() => {
-    if (deckData?.data) {
-      setDeckTitle(deckData.data.title || "");
-      setFlashcards(deckData.data.cards || []);
+    if (deckData) {
+      setDeckTitle(deckData?.title || "");
+      setFlashcards(
+        deckData?.flashcards?.map((card) => ({
+          id: card.flashcardId,
+          front: card.front,
+          back: card.back,
+          order: card.order,
+        })) || []
+      );
     }
   }, [deckData]);
 

@@ -51,22 +51,9 @@ export async function getDeckById(deckId: string) {
     }
     logger.debug("Edit deck", deck);
 
-    const transformedCards = deck?.flashcards.map((card: any) => ({
-      id: card.flashcardId,
-      front: card.front,
-      back: card.back,
-      order: card.order,
-    }));
+    deck?.flashcards.sort((a: any, b: any) => a.order - b.order);
 
-    // Reorder flashcards by order property ascending
-    transformedCards?.sort((a: any, b: any) => a.order - b.order);
-
-    return {
-      data: {
-        ...deck,
-        cards: transformedCards,
-      },
-    };
+    return deck;
   } catch (error) {
     logger.error("Fetching deck:", error);
     throw error;
