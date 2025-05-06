@@ -38,6 +38,15 @@ export default function FlashcardLayout() {
           href: null, // Hide from tab bar
         }}
       />
+      <Tabs.Screen
+        name="FlashcardReward"
+        options={{
+          tabBarStyle: {
+            display: "none",
+          },
+          href: null, // Hide from tab bar
+        }}
+      />
     </Tabs>
   );
 }
