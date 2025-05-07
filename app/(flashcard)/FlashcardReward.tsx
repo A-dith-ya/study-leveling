@@ -21,6 +21,7 @@ import { CommonActions } from "@react-navigation/native";
 import COLORS from "@/app/constants/colors";
 import { useUserData, useUpdateUserSessionStats } from "../hooks/useUser";
 import { getLevelFromXP } from "../utils/xpUtils";
+import { updateStreak } from "../utils/dayUtils";
 
 const { width } = Dimensions.get("window");
 
@@ -72,6 +73,10 @@ export default function FlashcardReward() {
       updateStats.mutate({
         xp,
         level,
+        streak: updateStreak(
+          new Date(userData.data.updatedAt),
+          userData.data.streak ?? 0
+        ),
         timeSpent: (userData.data.timeSpent ?? 0) + Number(duration),
         totalCardsReviewed:
           (userData.data.totalCardsReviewed ?? 0) + Number(totalCards),

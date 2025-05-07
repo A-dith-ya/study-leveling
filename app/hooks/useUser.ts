@@ -22,12 +22,14 @@ export function useUpdateUserSessionStats() {
     mutationFn: ({
       xp,
       level,
+      streak,
       timeSpent,
       totalCardsReviewed,
       totalSessionsCompleted,
     }: {
       xp: number;
       level: number;
+      streak: number;
       timeSpent: number;
       totalCardsReviewed: number;
       totalSessionsCompleted: number;
@@ -36,6 +38,7 @@ export function useUpdateUserSessionStats() {
         user?.id || "",
         xp,
         level,
+        streak,
         timeSpent,
         totalCardsReviewed,
         totalSessionsCompleted

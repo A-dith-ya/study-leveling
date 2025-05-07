@@ -16,7 +16,7 @@ const schema = a
         email: a.string().required(),
         xp: a.integer().default(0),
         level: a.integer().default(1),
-        streak: a.integer().default(0),
+        streak: a.integer().default(1),
         timeSpent: a.integer().default(0),
         totalCardsReviewed: a.integer().default(0),
         totalSessionsCompleted: a.integer().default(0),

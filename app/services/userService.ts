@@ -17,6 +17,7 @@ export async function getUserById(userId: string) {
         "timeSpent",
         "totalCardsReviewed",
         "totalSessionsCompleted",
+        "updatedAt",
       ],
     }
   );
@@ -29,6 +30,7 @@ export async function updateUserSessionStats(
   userId: string,
   xp: number,
   level: number,
+  streak: number,
   timeSpent: number,
   totalCardsReviewed: number,
   totalSessionsCompleted: number
@@ -38,6 +40,7 @@ export async function updateUserSessionStats(
       userId: userId,
       xp: xp,
       level: level,
+      streak: streak,
       timeSpent: timeSpent,
       totalCardsReviewed: totalCardsReviewed,
       totalSessionsCompleted: totalSessionsCompleted,
