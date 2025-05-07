@@ -69,7 +69,9 @@ export default function FlashcardReward() {
         <Animated.View style={[styles.statsContainer, statsStyle]}>
           <View style={styles.statItem}>
             <Text style={styles.statLabel}>Time Spent</Text>
-            <Text style={styles.statValue}>{formatDuration(duration)}</Text>
+            <Text style={styles.statValue}>
+              {formatDuration(Number(duration))}
+            </Text>
           </View>
 
           <View style={styles.statItem}>

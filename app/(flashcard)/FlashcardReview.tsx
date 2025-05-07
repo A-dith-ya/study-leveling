@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { SafeAreaView, StyleSheet, Pressable, Text } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { SafeAreaView, StyleSheet, Pressable, Text, View } from "react-native";
 import {
   useSharedValue,
   withTiming,
@@ -7,10 +7,11 @@ import {
   Easing,
 } from "react-native-reanimated";
 import { useQuery } from "@tanstack/react-query";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, router } from "expo-router";
 
 import { getDeckById } from "../services/deckService";
 import { fisherYatesShuffle } from "../utils/flashcardUtils";
+import { calculateXPForSession } from "../utils/xpUtils";
 import ReviewHeader from "../components/flashcard/ReviewHeader";
 import FlashcardDisplay from "../components/flashcard/FlashcardDisplay";
 import ReviewControls from "../components/flashcard/ReviewControls";
@@ -29,6 +30,7 @@ export default function FlashcardReview() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [shuffleMode, setShuffleMode] = useState(false);
+  const startTimeRef = useRef(Date.now());
 
   // Marked cards tracking
   const [markedCards, setMarkedCards] = useState<Set<number>>(new Set());
@@ -140,6 +142,9 @@ export default function FlashcardReview() {
   const isLastCard =
     currentIndex === remainingCards.length - 1 && markedCards.size === 0;
 
+  // When navigating away, you can calculate total time with:
+  // const totalTimeInSeconds = Math.floor((Date.now() - startTimeRef.current) / 1000);
+
   if (isLoading) return <LoadingScreen message="Loading your flashcards..." />;
 
   return (
@@ -169,7 +174,17 @@ export default function FlashcardReview() {
       />
 
       {isLastCard && (
-        <Pressable style={styles.submitButton}>
+        <Pressable
+          style={styles.submitButton}
+          onPress={() => {
+            router.push(
+              `/(flashcard)/FlashcardReward?totalCards=${deckData?.flashcards?.length}&duration=${Math.floor((Date.now() - startTimeRef.current) / 1000)}&xpEarned=${calculateXPForSession(
+                deckData?.flashcards?.length ?? 0,
+                Math.floor((Date.now() - startTimeRef.current) / 1000)
+              )}`
+            );
+          }}
+        >
           <Text style={styles.submitButtonText}>Complete Review</Text>
         </Pressable>
       )}
