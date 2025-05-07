@@ -26,6 +26,30 @@ export async function getUserById(userId: string) {
   return user;
 }
 
+export async function getAchievementsByUserId(userId: string) {
+  try {
+    const { data: achievements, errors } = await client.models.User.get(
+      {
+        userId: userId,
+      },
+      {
+        selectionSet: ["unlockedAchievements"],
+      }
+    );
+
+    if (errors) {
+      logger.error("getAchievementsByUserId", errors);
+      throw new Error("Error fetching achievements");
+    }
+
+    logger.debug("getAchievementsByUserId", achievements);
+    return achievements;
+  } catch (error) {
+    logger.error("getAchievementsByUserId", error);
+    throw error;
+  }
+}
+
 export async function updateUserSessionStats(
   userId: string,
   xp: number,

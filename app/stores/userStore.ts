@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { zustandStorage } from "./mmkv";
 import { getCurrentUser } from "aws-amplify/auth";
-
+import { logger } from "../utils/logger";
 interface User {
   id: string;
   email: string;
@@ -21,6 +21,7 @@ const useUserStore = create<UserStore>()(
       user: null,
       setUser: (user: User) => set({ user }),
       fetchUser: async () => {
+        logger.debug("Initializing user");
         const { userId, signInDetails } = await getCurrentUser();
         set({ user: { id: userId, email: signInDetails?.loginId || "" } });
       },

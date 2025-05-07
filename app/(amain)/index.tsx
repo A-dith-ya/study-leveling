@@ -1,11 +1,4 @@
-import { useEffect } from "react";
-import {
-  View,
-  Pressable,
-  ActivityIndicator,
-  Text,
-  StyleSheet,
-} from "react-native";
+import { View, Pressable, Text, StyleSheet } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
@@ -23,11 +16,7 @@ import COLORS from "../constants/colors";
 import { useUserData } from "../hooks/useUser";
 
 export default function Index() {
-  const { user, fetchUser } = useUserStore();
-
-  useEffect(() => {
-    if (!user) fetchUser();
-  }, []);
+  const { user } = useUserStore();
 
   const { data: userData, isLoading, error } = useUserData();
 

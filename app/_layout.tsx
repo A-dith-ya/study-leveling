@@ -11,6 +11,7 @@ import SignInHeader from "./components/auth/SignInHeader";
 import SignInFooter from "./components/auth/SignInFooter";
 import SignUpHeader from "./components/auth/SignUpHeader";
 import SignUpFooter from "./components/auth/SignUpFooter";
+import AppInitializer from "./components/auth/AppInitializer";
 
 Amplify.configure(outputs);
 
@@ -40,13 +41,26 @@ I18n.putVocabularies({
   },
 });
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+      gcTime: Infinity,
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+    mutations: {
+      retry: false,
+    },
+  },
+});
 
 export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
         <Authenticator.Provider>
+          <AppInitializer />
           <Authenticator
             components={{
               SignIn: (props) => (
@@ -89,6 +103,7 @@ export default function RootLayout() {
               <Stack.Screen name="(flashcard)" />
             </Stack>
           </Authenticator>
+          <AppInitializer />
         </Authenticator.Provider>
       </ThemeProvider>
     </QueryClientProvider>
