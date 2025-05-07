@@ -33,5 +33,12 @@ export const formatDuration = (seconds: number) => {
   return `${minutes} min ${remainingSeconds} sec`;
 };
 
+// Format duration into hours and minutes
+export const formatDurationToHoursAndMinutes = (seconds: number) => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  return `${hours}h ${minutes}m`;
+};
+
 export const getElapsedSeconds = (start: number): number =>
   Math.floor((Date.now() - start) / 1000);

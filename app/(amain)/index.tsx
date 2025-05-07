@@ -60,10 +60,10 @@ export default function Index() {
     <SafeAreaView style={styles.container} edges={["top"]}>
       <SignOutButton />
       <DashboardHeader
-        level={userData?.data?.level || 1}
-        currentXP={userData?.data?.xp || 0}
-        requiredXP={calculateXPToNextLevel(userData?.data?.level || 1)}
-        streakCount={userData?.data?.streak || 0}
+        level={userData?.level || 1}
+        currentXP={userData?.xp || 0}
+        requiredXP={calculateXPToNextLevel(userData?.level || 1)}
+        streakCount={userData?.streak || 0}
       />
       <View style={styles.listContainer}>
         <FlashList

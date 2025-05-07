@@ -5,25 +5,35 @@ import { logger } from "../utils/logger";
 const client = generateClient<Schema>();
 
 export async function getUserById(userId: string) {
-  const user = await client.models.User.get(
-    {
-      userId: userId,
-    },
-    {
-      selectionSet: [
-        "xp",
-        "level",
-        "streak",
-        "timeSpent",
-        "totalCardsReviewed",
-        "totalSessionsCompleted",
-        "updatedAt",
-      ],
-    }
-  );
+  try {
+    const { data: user, errors } = await client.models.User.get(
+      {
+        userId: userId,
+      },
+      {
+        selectionSet: [
+          "xp",
+          "level",
+          "streak",
+          "timeSpent",
+          "totalCardsReviewed",
+          "totalSessionsCompleted",
+          "updatedAt",
+        ],
+      }
+    );
 
-  logger.debug("getUserById", user);
-  return user;
+    if (errors) {
+      logger.error("getUserById", errors);
+      throw new Error("Error fetching user");
+    }
+
+    logger.debug("getUserById", user);
+    return user;
+  } catch (error) {
+    logger.error("getUserById", error);
+    throw error;
+  }
 }
 
 export async function getAchievementsByUserId(userId: string) {
@@ -59,26 +69,36 @@ export async function updateUserSessionStats(
   totalCardsReviewed: number,
   totalSessionsCompleted: number
 ) {
-  const user = await client.models.User.update(
-    {
-      userId: userId,
-      xp: xp,
-      level: level,
-      streak: streak,
-      timeSpent: timeSpent,
-      totalCardsReviewed: totalCardsReviewed,
-      totalSessionsCompleted: totalSessionsCompleted,
-    },
-    {
-      selectionSet: [
-        "xp",
-        "timeSpent",
-        "totalCardsReviewed",
-        "totalSessionsCompleted",
-      ],
-    }
-  );
+  try {
+    const { data: user, errors } = await client.models.User.update(
+      {
+        userId: userId,
+        xp: xp,
+        level: level,
+        streak: streak,
+        timeSpent: timeSpent,
+        totalCardsReviewed: totalCardsReviewed,
+        totalSessionsCompleted: totalSessionsCompleted,
+      },
+      {
+        selectionSet: [
+          "xp",
+          "timeSpent",
+          "totalCardsReviewed",
+          "totalSessionsCompleted",
+        ],
+      }
+    );
 
-  logger.debug("updateUserSessionStats", user);
-  return user;
+    if (errors) {
+      logger.error("updateUserSessionStats", errors);
+      throw new Error("Error updating user session stats");
+    }
+
+    logger.debug("updateUserSessionStats", user);
+    return user;
+  } catch (error) {
+    logger.error("updateUserSessionStats", error);
+    throw error;
+  }
 }

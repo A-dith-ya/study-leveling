@@ -21,13 +21,19 @@ import Animated, {
 import LevelDisplay from "../components/gamification/LevelDisplay";
 import StatCard from "../components/gamification/StatCard";
 import AchievementModal from "../components/gamification/AchievementModal";
-import { ACHIEVEMENTS, Achievement } from "../constants/achievements";
+import LoadingScreen from "../components/common/LoadingScreen";
 import useAchievementStore from "../stores/achievementStore";
+import { useUserData } from "../hooks/useUser";
+import { calculateXPToNextLevel } from "../utils/xpUtils";
+import { formatDurationToHoursAndMinutes } from "../utils/dayUtils";
+import { ACHIEVEMENTS, Achievement } from "../constants/achievements";
 import COLORS from "../constants/colors";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function UserStats() {
+  const { data: userData, isLoading } = useUserData();
+
   // Animation values
   const statsScale = useSharedValue(0.8);
   const achievementsOpacity = useSharedValue(0);
@@ -79,6 +85,8 @@ export default function UserStats() {
     });
   }, []);
 
+  if (isLoading) return <LoadingScreen message="Loading stats..." />;
+
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <ScrollView
@@ -88,25 +96,33 @@ export default function UserStats() {
       >
         {/* Level and XP Progress */}
         <LevelDisplay
-          level={5}
-          nextLevel={6}
-          currentXP={4000}
-          targetXP={5050}
+          level={userData?.level || 1}
+          nextLevel={(userData?.level || 1) + 1}
+          currentXP={userData?.xp || 0}
+          targetXP={calculateXPToNextLevel(userData?.level || 1)}
         />
 
         {/* Stats Grid */}
         <Animated.View style={[styles.statsGrid, statsStyle]}>
           <StatCard
             icon="fire"
-            value="8"
+            value={(userData?.streak || 0).toString()}
             label="Day Streak"
             color={COLORS.secondary}
           />
-          <StatCard icon="layer-group" value="540" label="Cards Reviewed" />
-          <StatCard icon="clock" value="4h 30m" label="Study Time" />
+          <StatCard
+            icon="layer-group"
+            value={(userData?.totalCardsReviewed || 0).toString()}
+            label="Cards Reviewed"
+          />
+          <StatCard
+            icon="clock"
+            value={formatDurationToHoursAndMinutes(userData?.timeSpent || 0)}
+            label="Study Time"
+          />
           <StatCard
             icon="check-circle"
-            value="75"
+            value={(userData?.totalSessionsCompleted || 0).toString()}
             label="Sessions"
             color={COLORS.secondary}
           />
@@ -114,7 +130,7 @@ export default function UserStats() {
 
         {/* Achievements */}
         <Animated.View style={[styles.achievementsSection, achievementsStyle]}>
-          <Text style={styles.sectionTitle}>Achievements</Text>
+          <Text style={styles.sectionTitle}>Unlocked Badges</Text>
           <View style={styles.achievementsGrid}>
             {sortedAchievements.map((badge) => {
               const scale = useSharedValue(1);

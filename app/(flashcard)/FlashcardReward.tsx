@@ -57,23 +57,23 @@ export default function FlashcardReward() {
     opacity.value = withTiming(1, { duration: 600 });
     translateY.value = withSequence(withTiming(0, { duration: 800 }));
 
-    if (userData?.data) {
+    if (userData) {
       const { level, xp } = getLevelFromXP(
-        (userData.data.xp ?? 0) + Number(xpEarned),
-        userData.data.level ?? 1
+        (userData.xp || 0) + Number(xpEarned),
+        userData.level || 1
       );
 
       updateStats.mutate({
         xp,
         level,
         streak: updateStreak(
-          new Date(userData.data.updatedAt),
-          userData.data.streak ?? 0
+          new Date(userData.updatedAt),
+          userData.streak || 0
         ),
-        timeSpent: (userData.data.timeSpent ?? 0) + Number(duration),
+        timeSpent: (userData.timeSpent || 0) + Number(duration),
         totalCardsReviewed:
-          (userData.data.totalCardsReviewed ?? 0) + Number(totalCards),
-        totalSessionsCompleted: (userData.data.totalSessionsCompleted ?? 0) + 1,
+          (userData.totalCardsReviewed || 0) + Number(totalCards),
+        totalSessionsCompleted: (userData.totalSessionsCompleted || 0) + 1,
       });
     }
   }, []);

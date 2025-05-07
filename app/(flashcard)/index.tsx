@@ -111,7 +111,7 @@ export default function CreateFlashcard() {
 
     const deckId = uuidv4();
     createDeckMutation.mutate({
-      userId: user?.id ?? "",
+      userId: user?.id || "",
       deckId,
       title: deckTitle,
       cards: flashcards,
