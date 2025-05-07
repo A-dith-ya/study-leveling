@@ -12,21 +12,22 @@ import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { useRouter } from "expo-router";
-import { v4 as uuidv4 } from "uuid";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { v4 as uuidv4 } from "uuid";
 
 import FlashcardItem from "../components/flashcard/FlashcardItem";
 import { createDeck } from "../services/deckService";
 import useUserStore from "../stores/userStore";
 import COLORS from "../constants/colors";
-
-export interface Flashcard {
-  id: string;
-  front: string;
-  back: string;
-  order: number;
-}
+import {
+  Flashcard,
+  createNewFlashcard,
+  updateFlashcardField,
+  deleteFlashcardAndReorder,
+  moveFlashcard,
+  validateFlashcards,
+} from "../utils/flashcardUtils";
 
 export default function CreateFlashcard() {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
@@ -48,7 +49,6 @@ export default function CreateFlashcard() {
       cards: Flashcard[];
     }) => createDeck(userId, deckId, title, cards),
     onSuccess: () => {
-      // Invalidate and refetch decks query
       queryClient.invalidateQueries({ queryKey: ["decks", user?.id] });
       router.dismissTo("/(amain)");
     },
@@ -59,13 +59,7 @@ export default function CreateFlashcard() {
   });
 
   const addFlashcard = () => {
-    const newFlashcard: Flashcard = {
-      id: uuidv4(),
-      front: "",
-      back: "",
-      order: flashcards.length, // New cards are added at the end
-    };
-    setFlashcards([...flashcards, newFlashcard]);
+    setFlashcards([...flashcards, createNewFlashcard(flashcards.length)]);
   };
 
   const updateFlashcard = (
@@ -73,45 +67,16 @@ export default function CreateFlashcard() {
     field: "front" | "back",
     value: string
   ) => {
-    setFlashcards(
-      flashcards.map((card) =>
-        card.id === id ? { ...card, [field]: value } : card
-      )
-    );
+    setFlashcards(updateFlashcardField(flashcards, id, field, value));
   };
 
   const deleteFlashcard = (id: string) => {
-    const deletedCardIndex = flashcards.findIndex((card) => card.id === id);
-    const updatedFlashcards = flashcards
-      .filter((card) => card.id !== id)
-      .map((card, index) => ({
-        ...card,
-        order: card.order > deletedCardIndex ? card.order - 1 : card.order,
-      }));
+    const { updatedFlashcards } = deleteFlashcardAndReorder(flashcards, id);
     setFlashcards(updatedFlashcards);
   };
 
-  const moveFlashcard = (index: number, direction: "up" | "down") => {
-    const newIndex = direction === "up" ? index - 1 : index + 1;
-    if (newIndex < 0 || newIndex >= flashcards.length) return;
-
-    const newFlashcards = [...flashcards];
-    const movedCard = newFlashcards[index];
-    const replacedCard = newFlashcards[newIndex];
-
-    // Swap orders
-    const tempOrder = movedCard.order;
-    movedCard.order = replacedCard.order;
-    replacedCard.order = tempOrder;
-
-    // Swap positions in array
-    newFlashcards[index] = replacedCard;
-    newFlashcards[newIndex] = movedCard;
-
-    // Sort array by order to maintain consistency
-    newFlashcards.sort((a, b) => a.order - b.order);
-
-    setFlashcards(newFlashcards);
+  const handleMoveFlashcard = (index: number, direction: "up" | "down") => {
+    setFlashcards(moveFlashcard(flashcards, index, direction));
   };
 
   const renderItem = ({ item, index }: { item: Flashcard; index: number }) => (
@@ -121,8 +86,8 @@ export default function CreateFlashcard() {
       back={item.back}
       onChangeFront={(text) => updateFlashcard(item.id, "front", text)}
       onChangeBack={(text) => updateFlashcard(item.id, "back", text)}
-      onMoveUp={() => moveFlashcard(index, "up")}
-      onMoveDown={() => moveFlashcard(index, "down")}
+      onMoveUp={() => handleMoveFlashcard(index, "up")}
+      onMoveDown={() => handleMoveFlashcard(index, "down")}
       onDelete={() => deleteFlashcard(item.id)}
       isFirst={index === 0}
       isLast={index === flashcards.length - 1}
@@ -138,33 +103,15 @@ export default function CreateFlashcard() {
   );
 
   const handleSave = async () => {
-    if (!user?.id) {
-      Alert.alert("Error", "You must be logged in to create a deck");
-      return;
-    }
-
-    if (!deckTitle.trim()) {
-      Alert.alert("Error", "Please enter a deck title");
-      return;
-    }
-
-    if (flashcards.length < 3) {
-      Alert.alert("Error", "Please add at least 3 flashcards");
-      return;
-    }
-
-    // Validate all flashcards have content
-    const emptyCards = flashcards.filter(
-      (card) => !card.front.trim() || !card.back.trim()
-    );
-    if (emptyCards.length > 0) {
-      Alert.alert("Error", "Please fill in all flashcard content");
+    const validation = validateFlashcards(deckTitle, flashcards);
+    if (!validation.isValid) {
+      Alert.alert("Error", validation.errorMessage);
       return;
     }
 
     const deckId = uuidv4();
     createDeckMutation.mutate({
-      userId: user.id,
+      userId: user?.id ?? "",
       deckId,
       title: deckTitle,
       cards: flashcards,
