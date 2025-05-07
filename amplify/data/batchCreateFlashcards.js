@@ -44,5 +44,6 @@ export function response(ctx) {
     util.error(ctx.error.message, ctx.error.type);
   }
 
-  return ctx.result.data[flashcardTable];
+  // return ctx.result.data[flashcardTable];
+  return true;
 }
