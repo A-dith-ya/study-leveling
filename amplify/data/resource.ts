@@ -17,6 +17,9 @@ const schema = a
         xp: a.integer().default(0),
         level: a.integer().default(1),
         streak: a.integer().default(0),
+        timeSpent: a.integer().default(0),
+        totalCardsReviewed: a.integer().default(0),
+        totalSessionsCompleted: a.integer().default(0),
         avatar: a.string(),
         ownedCosmetics: a.string().array(), // Array of cosmetic IDs
         unlockedAchievements: a.string().array(),

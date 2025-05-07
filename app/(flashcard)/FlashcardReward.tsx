@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -18,11 +18,15 @@ import Animated, {
 import { useLocalSearchParams } from "expo-router";
 
 import COLORS from "@/app/constants/colors";
+import { useUserData, useUpdateUserSessionStats } from "../hooks/useUser";
 
 const { width } = Dimensions.get("window");
 
 export default function FlashcardReward() {
   const { totalCards, duration, xpEarned } = useLocalSearchParams();
+  const { data: userData } = useUserData();
+  const updateStats = useUpdateUserSessionStats();
+
   // Animation values
   const scale = useSharedValue(0.3);
   const opacity = useSharedValue(0);
@@ -56,6 +60,18 @@ export default function FlashcardReward() {
     opacity.value = withTiming(1, { duration: 600 });
     translateY.value = withSequence(withTiming(0, { duration: 800 }));
   }, []);
+
+  useEffect(() => {
+    if (userData?.data) {
+      updateStats.mutate({
+        xpEarned: (userData.data.xp ?? 0) + Number(xpEarned),
+        timeSpent: (userData.data.timeSpent ?? 0) + Number(duration),
+        totalCardsReviewed:
+          (userData.data.totalCardsReviewed ?? 0) + Number(totalCards),
+        totalSessionsCompleted: (userData.data.totalSessionsCompleted ?? 0) + 1,
+      });
+    }
+  }, [userData]);
 
   return (
     <SafeAreaView style={styles.container}>
