@@ -25,3 +25,13 @@ export const updateStreak = (updatedAt: Date, currentStreak: number) => {
     return 1;
   }
 };
+
+// Format duration into minutes and seconds
+export const formatDuration = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes} min ${remainingSeconds} sec`;
+};
+
+export const getElapsedSeconds = (start: number): number =>
+  Math.floor((Date.now() - start) / 1000);

@@ -12,6 +12,7 @@ import { useLocalSearchParams, router } from "expo-router";
 import { getDeckById } from "../services/deckService";
 import { fisherYatesShuffle } from "../utils/flashcardUtils";
 import { calculateXPForSession } from "../utils/xpUtils";
+import { getElapsedSeconds } from "../utils/dayUtils";
 import ReviewHeader from "../components/flashcard/ReviewHeader";
 import FlashcardDisplay from "../components/flashcard/FlashcardDisplay";
 import ReviewControls from "../components/flashcard/ReviewControls";
@@ -178,9 +179,11 @@ export default function FlashcardReview() {
           style={styles.submitButton}
           onPress={() => {
             router.push(
-              `/(flashcard)/FlashcardReward?totalCards=${deckData?.flashcards?.length}&duration=${Math.floor((Date.now() - startTimeRef.current) / 1000)}&xpEarned=${calculateXPForSession(
+              `/(flashcard)/FlashcardReward?deckId=${deckId}&totalCards=${deckData?.flashcards?.length}&duration=${getElapsedSeconds(
+                startTimeRef.current
+              )}&xpEarned=${calculateXPForSession(
                 deckData?.flashcards?.length ?? 0,
-                Math.floor((Date.now() - startTimeRef.current) / 1000)
+                getElapsedSeconds(startTimeRef.current)
               )}`
             );
           }}

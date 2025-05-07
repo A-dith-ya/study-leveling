@@ -21,7 +21,7 @@ import { CommonActions } from "@react-navigation/native";
 import COLORS from "@/app/constants/colors";
 import { useUserData, useUpdateUserSessionStats } from "../hooks/useUser";
 import { getLevelFromXP } from "../utils/xpUtils";
-import { updateStreak } from "../utils/dayUtils";
+import { updateStreak, formatDuration } from "../utils/dayUtils";
 
 const { width } = Dimensions.get("window");
 
@@ -35,13 +35,6 @@ export default function FlashcardReward() {
   const scale = useSharedValue(0.3);
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(50);
-
-  // Format duration into minutes and seconds
-  const formatDuration = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes} min ${remainingSeconds} sec`;
-  };
 
   // Animated styles
   const containerStyle = useAnimatedStyle(() => {
