@@ -145,7 +145,7 @@ export default function FlashcardReview() {
   // When navigating away, you can calculate total time with:
   // const totalTimeInSeconds = Math.floor((Date.now() - startTimeRef.current) / 1000);
 
-  if (isLoading) return <LoadingScreen message="Loading your flashcards..." />;
+  if (isLoading) return <LoadingScreen message="Loading flashcards..." />;
 
   return (
     <SafeAreaView style={styles.container}>

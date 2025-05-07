@@ -14,6 +14,7 @@ import { FlashList } from "@shopify/flash-list";
 import { useRouter } from "expo-router";
 import { v4 as uuidv4 } from "uuid";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import FlashcardItem from "../components/flashcard/FlashcardItem";
 import { createDeck } from "../services/deckService";
@@ -171,7 +172,7 @@ export default function CreateFlashcard() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <Pressable
@@ -222,7 +223,7 @@ export default function CreateFlashcard() {
           </>
         )}
       </Pressable>
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -14,8 +14,10 @@ import { FlashList } from "@shopify/flash-list";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import FlashcardItem from "../components/flashcard/FlashcardItem";
+import LoadingScreen from "../components/common/LoadingScreen";
 import { getDeckById, updateDeck } from "../services/deckService";
 import useUserStore from "../stores/userStore";
 import COLORS from "../constants/colors";
@@ -183,16 +185,10 @@ export default function EditFlashcard() {
     });
   };
 
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
-      </View>
-    );
-  }
+  if (isLoading) return <LoadingScreen message="Loading flashcards..." />;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <Pressable
@@ -242,7 +238,7 @@ export default function EditFlashcard() {
           </>
         )}
       </Pressable>
-    </View>
+    </SafeAreaView>
   );
 }
 

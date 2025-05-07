@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
 import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import SignOutButton from "../components/auth/SignOutButton";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
@@ -41,7 +42,7 @@ export default function Index() {
   });
 
   if (isLoading) return <LoadingScreen />;
-  if (decksLoading) return <LoadingScreen message="Loading your decks..." />;
+  if (decksLoading) return <LoadingScreen message="Loading decks..." />;
 
   if (error || decksError) return <Text>Error {error?.message} </Text>;
 
@@ -67,7 +68,7 @@ export default function Index() {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <SignOutButton />
       <DashboardHeader
         level={userData?.data?.level || 1}
@@ -92,7 +93,7 @@ export default function Index() {
         <Ionicons name="add-circle-outline" size={24} color={COLORS.white} />
         <Text style={styles.createDeckButtonText}>Create Deck</Text>
       </Pressable>
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -84,8 +84,8 @@ export default function RootLayout() {
               ),
             }}
           >
-            <Stack>
-              <Stack.Screen name="(main)" />
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(amain)" />
               <Stack.Screen name="(flashcard)" />
             </Stack>
           </Authenticator>
