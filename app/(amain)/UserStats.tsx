@@ -71,6 +71,14 @@ export default function UserStats() {
     setModalVisible(true);
   };
 
+  const sortedAchievements = React.useMemo(() => {
+    return [...ACHIEVEMENTS].sort((a, b) => {
+      const aUnlocked = useAchievementStore.getState().isUnlocked(a.id);
+      const bUnlocked = useAchievementStore.getState().isUnlocked(b.id);
+      return bUnlocked === aUnlocked ? 0 : bUnlocked ? 1 : -1;
+    });
+  }, []);
+
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <ScrollView
@@ -108,7 +116,7 @@ export default function UserStats() {
         <Animated.View style={[styles.achievementsSection, achievementsStyle]}>
           <Text style={styles.sectionTitle}>Achievements</Text>
           <View style={styles.achievementsGrid}>
-            {ACHIEVEMENTS.map((badge) => {
+            {sortedAchievements.map((badge) => {
               const scale = useSharedValue(1);
               const isUnlocked = useAchievementStore((state) =>
                 state.isUnlocked(badge.id)
