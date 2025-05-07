@@ -20,19 +20,22 @@ export function useUpdateUserSessionStats() {
 
   return useMutation({
     mutationFn: ({
-      xpEarned,
+      xp,
+      level,
       timeSpent,
       totalCardsReviewed,
       totalSessionsCompleted,
     }: {
-      xpEarned: number;
+      xp: number;
+      level: number;
       timeSpent: number;
       totalCardsReviewed: number;
       totalSessionsCompleted: number;
     }) =>
       updateUserSessionStats(
         user?.id || "",
-        xpEarned,
+        xp,
+        level,
         timeSpent,
         totalCardsReviewed,
         totalSessionsCompleted

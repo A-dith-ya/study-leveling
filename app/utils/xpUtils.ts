@@ -16,3 +16,22 @@ export const calculateXPForSession = (
 
   return Math.min(Math.round(cardXP + timeXP), 100);
 };
+
+export const getLevelFromXP = (
+  accumulatedXP: number,
+  currentLevel: number
+): { level: number; xp: number } => {
+  const xpToNext = calculateXPToNextLevel(currentLevel);
+
+  if (accumulatedXP >= xpToNext) {
+    return {
+      level: currentLevel + 1,
+      xp: accumulatedXP - xpToNext,
+    };
+  }
+
+  return {
+    level: currentLevel,
+    xp: accumulatedXP,
+  };
+};

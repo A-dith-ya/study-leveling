@@ -27,7 +27,8 @@ export async function getUserById(userId: string) {
 
 export async function updateUserSessionStats(
   userId: string,
-  xpEarned: number,
+  xp: number,
+  level: number,
   timeSpent: number,
   totalCardsReviewed: number,
   totalSessionsCompleted: number
@@ -35,7 +36,8 @@ export async function updateUserSessionStats(
   const user = await client.models.User.update(
     {
       userId: userId,
-      xp: xpEarned,
+      xp: xp,
+      level: level,
       timeSpent: timeSpent,
       totalCardsReviewed: totalCardsReviewed,
       totalSessionsCompleted: totalSessionsCompleted,

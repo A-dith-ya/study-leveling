@@ -19,6 +19,7 @@ import { useLocalSearchParams } from "expo-router";
 
 import COLORS from "@/app/constants/colors";
 import { useUserData, useUpdateUserSessionStats } from "../hooks/useUser";
+import { getLevelFromXP } from "../utils/xpUtils";
 
 const { width } = Dimensions.get("window");
 
@@ -59,19 +60,23 @@ export default function FlashcardReward() {
     scale.value = withSpring(1, { damping: 12 });
     opacity.value = withTiming(1, { duration: 600 });
     translateY.value = withSequence(withTiming(0, { duration: 800 }));
-  }, []);
 
-  useEffect(() => {
     if (userData?.data) {
+      const { level, xp } = getLevelFromXP(
+        (userData.data.xp ?? 0) + Number(xpEarned),
+        userData.data.level ?? 1
+      );
+
       updateStats.mutate({
-        xpEarned: (userData.data.xp ?? 0) + Number(xpEarned),
+        xp,
+        level,
         timeSpent: (userData.data.timeSpent ?? 0) + Number(duration),
         totalCardsReviewed:
           (userData.data.totalCardsReviewed ?? 0) + Number(totalCards),
         totalSessionsCompleted: (userData.data.totalSessionsCompleted ?? 0) + 1,
       });
     }
-  }, [userData]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
