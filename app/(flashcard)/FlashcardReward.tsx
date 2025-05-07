@@ -15,7 +15,8 @@ import Animated, {
   useSharedValue,
   interpolate,
 } from "react-native-reanimated";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, router, useNavigation } from "expo-router";
+import { CommonActions } from "@react-navigation/native";
 
 import COLORS from "@/app/constants/colors";
 import { useUserData, useUpdateUserSessionStats } from "../hooks/useUser";
@@ -24,9 +25,10 @@ import { getLevelFromXP } from "../utils/xpUtils";
 const { width } = Dimensions.get("window");
 
 export default function FlashcardReward() {
-  const { totalCards, duration, xpEarned } = useLocalSearchParams();
+  const { totalCards, duration, xpEarned, deckId } = useLocalSearchParams();
   const { data: userData } = useUserData();
   const updateStats = useUpdateUserSessionStats();
+  const navigation = useNavigation();
 
   // Animation values
   const scale = useSharedValue(0.3);
@@ -102,11 +104,28 @@ export default function FlashcardReward() {
         </Animated.View>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={[styles.button, styles.primaryButton]}>
+          <TouchableOpacity
+            style={[styles.button, styles.primaryButton]}
+            onPress={() => {
+              router.replace("/(amain)");
+            }}
+          >
             <Text style={styles.buttonText}>Back to Dashboard</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.button, styles.secondaryButton]}>
+          <TouchableOpacity
+            style={[styles.button, styles.secondaryButton]}
+            onPress={() => {
+              // router.replace and useEffect don't fully reset the screen state
+              // Use navigation to force unmount and fresh mount of the previous screen
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [{ name: "FlashcardReview", params: { deckId } }],
+                })
+              );
+            }}
+          >
             <Text style={[styles.buttonText, styles.secondaryButtonText]}>
               Retry Deck
             </Text>
