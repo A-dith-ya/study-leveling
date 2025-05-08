@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -23,16 +23,20 @@ import StatCard from "../components/gamification/StatCard";
 import AchievementModal from "../components/gamification/AchievementModal";
 import LoadingScreen from "../components/common/LoadingScreen";
 import useAchievementStore from "../stores/achievementStore";
+import useUserStore from "../stores/userStore";
 import { useUserData } from "../hooks/useUser";
 import { calculateXPToNextLevel } from "../utils/xpUtils";
 import { formatDurationToHoursAndMinutes } from "../utils/dayUtils";
 import { ACHIEVEMENTS, Achievement } from "../constants/achievements";
+import { evaluateAchievements } from "../utils/achievementUtils";
+import { logger } from "../utils/logger";
 import COLORS from "../constants/colors";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function UserStats() {
   const { data: userData, isLoading } = useUserData();
+  const user = useUserStore((state) => state.user);
 
   // Animation values
   const statsScale = useSharedValue(0.8);
@@ -41,12 +45,19 @@ export default function UserStats() {
     useState<Achievement | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Animate stats cards
     statsScale.value = withSpring(1, { damping: 12 });
     // Animate achievements
     achievementsOpacity.value = withTiming(1, { duration: 800 });
-  }, []);
+
+    // Check for achievements when screen loads
+    if (userData && user?.id) {
+      evaluateAchievements(user.id, userData.totalCardsReviewed || 0).catch(
+        (error: Error) => logger.error("Failed to evaluate achievements", error)
+      );
+    }
+  }, [userData, user?.id]);
 
   const statsStyle = useAnimatedStyle(() => ({
     transform: [{ scale: statsScale.value }],

@@ -102,3 +102,28 @@ export async function updateUserSessionStats(
     throw error;
   }
 }
+
+/**
+ * Updates user's unlocked achievements in the database
+ */
+export async function updateUserAchievements(
+  userId: string,
+  achievements: string[]
+) {
+  try {
+    const { errors } = await client.models.User.update({
+      userId,
+      unlockedAchievements: achievements,
+    });
+
+    if (errors) {
+      logger.error("updateUserAchievements", errors);
+      throw new Error("Error updating achievements");
+    }
+
+    logger.debug("updateUserAchievements", { userId, achievements });
+  } catch (error) {
+    logger.error("updateUserAchievements", error);
+    throw error;
+  }
+}
