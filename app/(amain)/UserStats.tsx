@@ -53,8 +53,12 @@ export default function UserStats() {
 
     // Check for achievements when screen loads
     if (userData && user?.id) {
-      evaluateAchievements(user.id, userData.totalCardsReviewed || 0).catch(
-        (error: Error) => logger.error("Failed to evaluate achievements", error)
+      evaluateAchievements(
+        user.id,
+        userData.totalCardsReviewed || 0,
+        userData.streak || 0
+      ).catch((error: Error) =>
+        logger.error("Failed to evaluate achievements", error)
       );
     }
   }, [userData, user?.id]);
