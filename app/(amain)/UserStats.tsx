@@ -56,7 +56,8 @@ export default function UserStats() {
       evaluateAchievements(
         user.id,
         userData.totalCardsReviewed || 0,
-        userData.streak || 0
+        userData.streak || 0,
+        userData.totalSessionsCompleted || 0
       ).catch((error: Error) =>
         logger.error("Failed to evaluate achievements", error)
       );
