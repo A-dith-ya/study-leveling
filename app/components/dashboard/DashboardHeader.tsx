@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { FontAwesome6 } from "@expo/vector-icons";
 import COLORS from "../../constants/colors";
 
@@ -8,6 +8,7 @@ interface DashboardHeaderProps {
   currentXP: number;
   requiredXP: number;
   streakCount: number;
+  coins: number;
 }
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -15,6 +16,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   currentXP,
   requiredXP,
   streakCount,
+  coins,
 }) => {
   const progress = (currentXP / requiredXP) * 100;
 
@@ -22,9 +24,18 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     <View style={styles.container}>
       <View style={styles.levelContainer}>
         <Text style={styles.levelText}>Level {level}</Text>
-        <View style={styles.streakContainer}>
-          <FontAwesome6 name="fire" size={40} color={COLORS.secondaryLight} />
-          <Text style={styles.streakCountText}>{streakCount}</Text>
+        <View style={styles.statsContainer}>
+          <View style={styles.statItem}>
+            <FontAwesome6 name="fire" size={40} color={COLORS.secondaryLight} />
+            <Text style={styles.statText}>{streakCount}</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Image
+              source={require("../../../assets/images/coin.webp")}
+              style={styles.coinImage}
+            />
+            <Text style={styles.statText}>{coins}</Text>
+          </View>
         </View>
       </View>
 
@@ -52,6 +63,7 @@ const styles = StyleSheet.create({
   },
   levelContainer: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 12,
   },
@@ -89,15 +101,25 @@ const styles = StyleSheet.create({
     top: 5,
     textAlignVertical: "center",
   },
-  streakContainer: {
+  statsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  statItem: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
   },
-  streakCountText: {
+  statText: {
     color: COLORS.white,
     fontSize: 32,
     fontWeight: "bold",
+  },
+  coinImage: {
+    width: 60,
+    height: 60,
+    resizeMode: "contain",
+    marginRight: -8,
   },
 });
 

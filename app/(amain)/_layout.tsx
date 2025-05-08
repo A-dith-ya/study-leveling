@@ -14,6 +14,7 @@ export default function MainLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          title: "Home",
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "home" : "home-outline"}
@@ -26,6 +27,7 @@ export default function MainLayout() {
       <Tabs.Screen
         name="UserStats"
         options={{
+          title: "Stats",
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "person" : "person-outline"}
