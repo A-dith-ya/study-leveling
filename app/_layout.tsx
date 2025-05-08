@@ -3,7 +3,8 @@ import { Amplify } from "aws-amplify";
 import { Authenticator, ThemeProvider } from "@aws-amplify/ui-react-native";
 import { I18n } from "aws-amplify/utils";
 import { translations } from "@aws-amplify/ui";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 
 import outputs from "../amplify_outputs.json";
 import COLORS from "./constants/colors";
@@ -12,6 +13,7 @@ import SignInFooter from "./components/auth/SignInFooter";
 import SignUpHeader from "./components/auth/SignUpHeader";
 import SignUpFooter from "./components/auth/SignUpFooter";
 import AppInitializer from "./components/auth/AppInitializer";
+import { clientPersister } from "./services/mmkv";
 
 Amplify.configure(outputs);
 
@@ -57,7 +59,10 @@ const queryClient = new QueryClient({
 
 export default function RootLayout() {
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister: clientPersister }}
+    >
       <ThemeProvider theme={theme}>
         <Authenticator.Provider>
           <AppInitializer />
@@ -106,6 +111,6 @@ export default function RootLayout() {
           <AppInitializer />
         </Authenticator.Provider>
       </ThemeProvider>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }
