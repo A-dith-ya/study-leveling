@@ -64,6 +64,7 @@ export default function Index() {
         currentXP={userData?.xp || 0}
         requiredXP={calculateXPToNextLevel(userData?.level || 1)}
         streakCount={userData?.streak || 0}
+        coins={userData?.coins || 0}
       />
       <View style={styles.listContainer}>
         <FlashList

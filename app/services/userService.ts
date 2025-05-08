@@ -19,6 +19,7 @@ export async function getUserById(userId: string) {
           "totalCardsReviewed",
           "totalSessionsCompleted",
           "updatedAt",
+          "coins",
         ],
       }
     );

@@ -15,6 +15,7 @@ const schema = a
         userId: a.id().required(),
         email: a.string().required(),
         xp: a.integer().default(0),
+        coins: a.integer().default(0),
         level: a.integer().default(1),
         streak: a.integer().default(1),
         timeSpent: a.integer().default(0),
