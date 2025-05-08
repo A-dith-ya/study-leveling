@@ -13,10 +13,22 @@ export const ACHIEVEMENTS: Achievement[] = [
     image: require("../../assets/images/achievements/deck-builder.webp"),
   },
   {
+    id: "streak-king-3",
+    title: "Streak King 3",
+    description: "Maintain a streak for 3 consecutive days",
+    image: require("../../assets/images/achievements/streak-king-10.webp"),
+  },
+  {
     id: "flashcard-master-10",
     title: "Flashcard Master 10",
     description: "Master 10 flashcards",
     image: require("../../assets/images/achievements/flashcard-master-10.webp"),
+  },
+  {
+    id: "study-time-1",
+    title: "One Hour Club",
+    description: "Study for a total of 1 hour",
+    image: require("../../assets/images/achievements/study-time-1.webp"),
   },
   {
     id: "streak-king-10",
@@ -31,16 +43,22 @@ export const ACHIEVEMENTS: Achievement[] = [
     image: require("../../assets/images/achievements/session-surfer-10.webp"),
   },
   {
-    id: "knowledge-seeker",
+    id: "study-time-5",
     title: "Knowledge Seeker",
     description: "Study for a total of 5 hours",
-    image: require("../../assets/images/achievements/knowledge-seeker.webp"),
+    image: require("../../assets/images/achievements/study-time-5.webp"),
   },
   {
     id: "customizer",
     title: "Customizer",
     description: "Apply decorations to your flashcards",
     image: require("../../assets/images/achievements/customizer.webp"),
+  },
+  {
+    id: "night-owl",
+    title: "Night Owl",
+    description: "Study at night",
+    image: require("../../assets/images/achievements/night-owl.webp"),
   },
   {
     id: "challenge-champ",
@@ -71,6 +89,12 @@ export const ACHIEVEMENTS: Achievement[] = [
     title: "Session Surfer 100",
     description: "Complete 100 study sessions",
     image: require("../../assets/images/achievements/session-surfer-100.webp"),
+  },
+  {
+    id: "study-time-10",
+    title: "Study Time 10",
+    description: "Study for a total of 10 hours",
+    image: require("../../assets/images/achievements/study-time-10.webp"),
   },
   {
     id: "flashcard-master-1000",
