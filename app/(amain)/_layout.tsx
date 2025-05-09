@@ -37,6 +37,19 @@ export default function MainLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="DailyChallenges"
+        options={{
+          title: "Challenges",
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? "trophy" : "trophy-outline"}
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

@@ -10,10 +10,10 @@ import { Ionicons } from "@expo/vector-icons";
 
 import COLORS from "../../constants/colors";
 import { getChestImage, getChestStyle } from "../../utils/challengeUtils";
-import { Challenge } from "../../constants/challenges";
+import type { DailyChallenge } from "../../stores/challengeStore";
 
 interface ChallengeCardProps {
-  challenge: Challenge;
+  challenge: DailyChallenge;
   onClaim: () => void;
 }
 
@@ -57,7 +57,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
               />
               <Text style={styles.rewardText}>+{challenge.coinReward}</Text>
             </View>
-            <Text style={styles.rewardText}>+{challenge.xpReward} XP</Text>
+            <Text style={styles.rewardText}>XP +{challenge.xpReward} </Text>
           </View>
           <View style={styles.progressContainer}>
             <View style={styles.progressBar}>

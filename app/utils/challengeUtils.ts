@@ -1,4 +1,5 @@
 import { ChestType } from "../constants/challenges";
+import dayjs from "dayjs";
 
 export const getChestImage = (type: ChestType) => {
   switch (type) {
@@ -19,5 +20,34 @@ export const getChestStyle = (type: ChestType) => {
       return { backgroundColor: "#E0E8F0" };
     case "gold":
       return { backgroundColor: "#FEF2D8", transform: [{ scaleX: -1 }] };
+    default:
+      return {};
   }
+};
+
+/**
+ * Gets the time remaining until the next challenge reset in hours and minutes
+ */
+export const getTimeUntilReset = (): { hours: number; minutes: number } => {
+  const now = dayjs();
+  const tomorrow = now.add(1, "day").startOf("day");
+  const diff = tomorrow.diff(now, "minute");
+
+  return {
+    hours: Math.floor(diff / 60),
+    minutes: diff % 60,
+  };
+};
+
+/**
+ * Formats the reset time into a readable string
+ */
+export const formatResetTime = (hours: number, minutes: number): string => {
+  if (hours === 0) {
+    return `${minutes}m`;
+  }
+  if (minutes === 0) {
+    return `${hours}h`;
+  }
+  return `${hours}h ${minutes}m`;
 };

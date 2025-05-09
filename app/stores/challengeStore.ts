@@ -5,14 +5,14 @@ import { Challenge, CHALLENGES } from "../constants/challenges";
 import { logger } from "../utils/logger";
 import dayjs from "dayjs";
 
-interface DynamicChallengeData {
+export interface DynamicChallengeData {
   progress: number;
   isCompleted: boolean;
   isClaimed: boolean;
   lastUpdated: string;
 }
 
-interface DailyChallenge extends Challenge, DynamicChallengeData {}
+export interface DailyChallenge extends Challenge, DynamicChallengeData {}
 
 interface ChallengeStore {
   dailyChallenges: DailyChallenge[];
