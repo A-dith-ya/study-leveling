@@ -128,3 +128,36 @@ export async function updateUserAchievements(
     throw error;
   }
 }
+
+/**
+ * Updates user's coins and XP in the database
+ */
+export async function updateUserRewards(
+  userId: string,
+  coins: number,
+  xp: number
+) {
+  try {
+    const { data: user, errors } = await client.models.User.update(
+      {
+        userId,
+        coins,
+        xp,
+      },
+      {
+        selectionSet: ["coins", "xp"],
+      }
+    );
+
+    if (errors) {
+      logger.error("updateUserRewards", errors);
+      throw new Error("Error updating user rewards");
+    }
+
+    logger.debug("updateUserRewards", user);
+    return user;
+  } catch (error) {
+    logger.error("updateUserRewards", error);
+    throw error;
+  }
+}

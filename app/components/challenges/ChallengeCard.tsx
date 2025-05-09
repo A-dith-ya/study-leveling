@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -11,6 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../../constants/colors";
 import { getChestImage, getChestStyle } from "../../utils/challengeUtils";
 import type { DailyChallenge } from "../../stores/challengeStore";
+import { useUserData, useUpdateUserRewards } from "../../hooks/useUser";
 
 interface ChallengeCardProps {
   challenge: DailyChallenge;
@@ -23,6 +31,8 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
 }) => {
   const buttonScale = useSharedValue(1);
   const cardScale = useSharedValue(1);
+  const { data: userData } = useUserData();
+  const updateRewards = useUpdateUserRewards();
 
   const cardStyle = useAnimatedStyle(() => ({
     transform: [{ scale: cardScale.value }],
@@ -32,9 +42,17 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
     transform: [{ scale: buttonScale.value }],
   }));
 
-  const handleClaim = () => {
+  const handleClaim = async () => {
     buttonScale.value = withSequence(withSpring(1.1), withSpring(1));
     cardScale.value = withSequence(withSpring(1.02), withSpring(1));
+
+    // Update user's coins and XP
+    await updateRewards.mutateAsync({
+      coins: (userData?.coins || 0) + challenge.coinReward,
+      xp: (userData?.xp || 0) + challenge.xpReward,
+    });
+
+    // Mark challenge as claimed in store
     onClaim();
   };
 
@@ -71,8 +89,19 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
           </View>
           {challenge.isCompleted && !challenge.isClaimed && (
             <Animated.View style={buttonStyle}>
-              <Pressable style={styles.claimButton} onPress={handleClaim}>
-                <Text style={styles.claimButtonText}>Claim</Text>
+              <Pressable
+                style={[
+                  styles.claimButton,
+                  updateRewards.isPending && styles.claimButtonDisabled,
+                ]}
+                onPress={handleClaim}
+                disabled={updateRewards.isPending}
+              >
+                {updateRewards.isPending ? (
+                  <ActivityIndicator color={COLORS.white} size="small" />
+                ) : (
+                  <Text style={styles.claimButtonText}>Claim</Text>
+                )}
               </Pressable>
             </Animated.View>
           )}
@@ -176,6 +205,9 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: 14,
     fontWeight: "600",
+  },
+  claimButtonDisabled: {
+    opacity: 0.7,
   },
 });
 
