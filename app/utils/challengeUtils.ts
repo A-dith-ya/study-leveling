@@ -1,6 +1,6 @@
 import { ChestType } from "../constants/challenges";
 import dayjs from "dayjs";
-
+import useChallengeStore from "../stores/challengeStore";
 export const getChestImage = (type: ChestType) => {
   switch (type) {
     case "gold":
@@ -50,4 +50,34 @@ export const formatResetTime = (hours: number, minutes: number): string => {
     return `${hours}h`;
   }
   return `${hours}h ${minutes}m`;
+};
+
+/**
+ * Updates progress for flashcard-related challenges
+ * @param cardsStudied Number of flashcards studied in this session
+ */
+export const updateFlashcardChallenges = (cardsStudied: number) => {
+  const { dailyChallenges, updateProgress } = useChallengeStore.getState();
+
+  dailyChallenges.forEach((challenge) => {
+    if (challenge.id.startsWith("reward-")) {
+      const currentProgress = challenge.progress;
+      updateProgress(challenge.id, currentProgress + cardsStudied);
+    }
+  });
+};
+
+/**
+ * Updates progress for study session challenges
+ * @param sessionsCompleted Number of sessions completed (typically 1)
+ */
+export const updateSessionChallenges = (sessionsCompleted: number = 1) => {
+  const { dailyChallenges, updateProgress } = useChallengeStore.getState();
+
+  dailyChallenges.forEach((challenge) => {
+    if (challenge.id.startsWith("session-")) {
+      const currentProgress = challenge.progress;
+      updateProgress(challenge.id, currentProgress + sessionsCompleted);
+    }
+  });
 };

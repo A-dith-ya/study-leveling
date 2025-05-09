@@ -22,6 +22,10 @@ import COLORS from "@/app/constants/colors";
 import { useUserData, useUpdateUserSessionStats } from "../hooks/useUser";
 import { getLevelFromXP } from "../utils/xpUtils";
 import { updateStreak, formatDuration } from "../utils/dayUtils";
+import {
+  updateFlashcardChallenges,
+  updateSessionChallenges,
+} from "../utils/challengeUtils";
 
 const { width } = Dimensions.get("window");
 
@@ -63,6 +67,7 @@ export default function FlashcardReward() {
         userData.level || 1
       );
 
+      // Update user stats
       updateStats.mutate({
         xp,
         level,
@@ -75,8 +80,12 @@ export default function FlashcardReward() {
           (userData.totalCardsReviewed || 0) + Number(totalCards),
         totalSessionsCompleted: (userData.totalSessionsCompleted || 0) + 1,
       });
+
+      // Update challenge progress
+      updateFlashcardChallenges(Number(totalCards));
+      updateSessionChallenges(1);
     }
-  }, []);
+  }, [userData, totalCards, duration, xpEarned]);
 
   return (
     <SafeAreaView style={styles.container}>
