@@ -17,6 +17,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import FlashcardItem from "../components/flashcard/FlashcardItem";
 import LoadingScreen from "../components/common/LoadingScreen";
+import EditHeader from "../components/common/EditHeader";
 import { getDeckById, updateDeck } from "../services/deckService";
 import useUserStore from "../stores/userStore";
 import COLORS from "../constants/colors";
@@ -140,21 +141,12 @@ export default function EditFlashcard() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Pressable
-            style={styles.backButton}
-            onPress={() => router.dismissTo("/(amain)")}
-          >
-            <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
-          </Pressable>
-          <Text style={styles.title}>Edit Flashcards</Text>
-        </View>
-        <Pressable onPress={addFlashcard} style={styles.addButton}>
-          <Ionicons name="add-circle" size={24} color={COLORS.primary} />
-          <Text style={styles.addButtonText}>Add Card</Text>
-        </Pressable>
-      </View>
+      <EditHeader
+        title="Edit Flashcards"
+        rightButtonText="Add Card"
+        rightButtonIcon="add-circle"
+        onRightButtonPress={addFlashcard}
+      />
 
       <View style={styles.content}>
         <TextInput
@@ -198,36 +190,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: COLORS.background,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 8,
-    backgroundColor: COLORS.white,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.lightGray,
-  },
-  headerLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  backButton: {
-    marginRight: 12,
-    padding: 4,
-  },
   content: {
     flex: 1,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: COLORS.text,
   },
   listContentContainer: {
     paddingVertical: 8,
@@ -262,16 +226,5 @@ const styles = StyleSheet.create({
   },
   saveButtonDisabled: {
     opacity: 0.7,
-  },
-  addButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 8,
-  },
-  addButtonText: {
-    marginLeft: 4,
-    color: COLORS.primary,
-    fontSize: 16,
-    fontWeight: "500",
   },
 });
