@@ -1,11 +1,11 @@
 export interface Sticker {
-  id: string;
-  name: string;
-  category: string;
+  cosmeticId: string;
+  category: "STICKER";
   count: number;
 }
 
-export interface PlacedSticker extends Sticker {
+export interface PlacedSticker {
+  id: string; // This will be cosmeticId#count format
   x: number;
   y: number;
   scale: number;

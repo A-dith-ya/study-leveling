@@ -10,16 +10,23 @@ import BottomSheet, {
 
 import EditHeader from "../components/common/EditHeader";
 import { DraggableSticker } from "../components/DraggableSticker";
+import LoadingScreen from "../components/common/LoadingScreen";
+import { Sticker, PlacedSticker } from "../types/stickerTypes";
+import { useUserData, useUpdateUserDecorations } from "../hooks/useUser";
 import {
   CARD_WIDTH,
   CARD_HEIGHT,
   STICKER_SIZE,
   getImageFromId,
+  formatTitle,
 } from "../utils/stickerUtils";
-import { Sticker, PlacedSticker } from "../types/stickerTypes";
+import { logger } from "../utils/logger";
 import COLORS from "../constants/colors";
 
 export default function FlashcardDecoration() {
+  const { data: userData, isLoading } = useUserData();
+  const updateUserDecorations = useUpdateUserDecorations();
+
   const [selectedStickerId, setSelectedStickerId] = useState<string | null>(
     null
   );
@@ -30,28 +37,23 @@ export default function FlashcardDecoration() {
   const snapPoints = ["37%", "60%", "80%"]; // Single, comfortable height for viewing stickers
 
   // Callbacks
-  const handleSheetChanges = useCallback((index: number) => {}, []);
+  const handleSheetChanges = useCallback((index: number) => {
+    // if (index === -1) {
+    //   setSelectedStickerId(null);
+    // }
+  }, []);
 
   const showStickerPalette = useCallback(() => {
     bottomSheetRef.current?.snapToIndex(1);
   }, []);
 
-  // Example sticker collection
-  const availableStickers: Sticker[] = [
-    {
-      id: "session-surfer-100",
-      name: "Star",
-      category: "Sticker",
-      count: 3,
-    },
-    {
-      id: "streak-king-10",
-      name: "Sparkle",
-      category: "Sticker",
-      count: 5,
-    },
-    // Add more stickers
-  ];
+  // Get available stickers from user's owned cosmetics
+  const availableStickers = (userData?.ownedCosmetics?.filter(
+    (cosmetic) =>
+      cosmetic?.category === "STICKER" &&
+      cosmetic?.cosmeticId &&
+      cosmetic?.count
+  ) || []) as Sticker[];
 
   const getUsedStickerCount = (stickerId: string) => {
     return placedStickers.filter((s) => s.id.startsWith(`${stickerId}#`))
@@ -59,12 +61,11 @@ export default function FlashcardDecoration() {
   };
 
   const handleAddSticker = (sticker: Sticker) => {
-    const usedCount = getUsedStickerCount(sticker.id);
+    const usedCount = getUsedStickerCount(sticker.cosmeticId);
     if (usedCount >= sticker.count) return; // Don't add if all stickers are used
 
-    const uniqueId = `${sticker.id}#${usedCount + 1}`; // Using # as separator
+    const uniqueId = `${sticker.cosmeticId}#${usedCount + 1}`; // Using # as separator
     const newSticker: PlacedSticker = {
-      ...sticker,
       id: uniqueId,
       x: (CARD_WIDTH - STICKER_SIZE) / 2,
       y: (CARD_HEIGHT - STICKER_SIZE) / 2,
@@ -89,7 +90,23 @@ export default function FlashcardDecoration() {
     setSelectedStickerId(null);
   };
 
-  const handleSave = () => {};
+  const handleSave = () => {
+    if (placedStickers.length > 0) {
+      updateUserDecorations.mutate({
+        decorations: placedStickers.map((sticker) => ({
+          decorationId: sticker.id,
+          x: sticker.x,
+          y: sticker.y,
+          scale: sticker.scale,
+          rotation: sticker.rotation,
+          flipX: sticker.flipX,
+          flipY: sticker.flipY,
+        })),
+      });
+    }
+  };
+
+  if (isLoading) return <LoadingScreen />;
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -141,25 +158,29 @@ export default function FlashcardDecoration() {
           <BottomSheetView style={styles.paletteHeader}>
             <Text style={styles.paletteTitle}>Choose a Sticker</Text>
           </BottomSheetView>
-          <BottomSheetScrollView>
+          <BottomSheetScrollView contentContainerStyle={styles.stickerGrid}>
             {availableStickers.map((sticker) => (
               <Pressable
-                key={sticker.id}
+                key={sticker.cosmeticId}
                 style={[
                   styles.stickerItem,
-                  getUsedStickerCount(sticker.id) >= sticker.count &&
+                  getUsedStickerCount(sticker.cosmeticId) >= sticker.count &&
                     styles.disabledStickerItem,
                 ]}
                 onPress={() => handleAddSticker(sticker)}
-                disabled={getUsedStickerCount(sticker.id) >= sticker.count}
+                disabled={
+                  getUsedStickerCount(sticker.cosmeticId) >= sticker.count
+                }
               >
                 <Image
-                  source={getImageFromId(sticker.id)}
+                  source={getImageFromId(sticker.cosmeticId)}
                   style={styles.stickerPreview}
                 />
-                <Text style={styles.stickerName}>{sticker.name}</Text>
+                <Text style={styles.stickerName}>
+                  {formatTitle(sticker.cosmeticId)}
+                </Text>
                 <Text style={styles.stickerCount}>
-                  {getUsedStickerCount(sticker.id)}/{sticker.count}
+                  {getUsedStickerCount(sticker.cosmeticId)}/{sticker.count}
                 </Text>
               </Pressable>
             ))}
@@ -243,6 +264,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     color: COLORS.text,
+  },
+  stickerGrid: {
+    // padding: 16,
   },
   stickerItem: {
     flexDirection: "row",

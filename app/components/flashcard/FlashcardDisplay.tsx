@@ -4,6 +4,7 @@ import Animated, {
   useAnimatedStyle,
   interpolate,
 } from "react-native-reanimated";
+import { CARD_WIDTH, CARD_HEIGHT } from "../../utils/stickerUtils";
 import COLORS from "../../constants/colors";
 
 interface FlashcardDisplayProps {
@@ -61,20 +62,16 @@ export default function FlashcardDisplay({
   );
 }
 
-const { width } = Dimensions.get("window");
-const CARD_PADDING = 24;
-const CARD_WIDTH = width - CARD_PADDING * 2;
-
 const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    padding: CARD_PADDING,
+    padding: 16,
   },
   cardWrapper: {
     width: CARD_WIDTH,
-    height: CARD_WIDTH * 0.7,
+    height: CARD_HEIGHT,
   },
   card: {
     ...StyleSheet.absoluteFillObject,
