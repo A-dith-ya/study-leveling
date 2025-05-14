@@ -1,52 +1,16 @@
-import { Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import COLORS from "../constants/colors";
+import { Stack } from "expo-router";
 
 export default function FlashcardLayout() {
   return (
-    <Tabs
+    <Stack
       screenOptions={{
-        tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: COLORS.darkGray,
         headerShown: false,
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Create Flashcard",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="add-circle-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="EditFlashcard"
-        options={{
-          tabBarStyle: {
-            display: "none",
-          },
-          href: null, // Hide from tab bar
-        }}
-      />
-      <Tabs.Screen
-        name="FlashcardReview"
-        options={{
-          tabBarStyle: {
-            display: "none",
-          },
-          href: null, // Hide from tab bar
-        }}
-      />
-      <Tabs.Screen
-        name="FlashcardReward"
-        options={{
-          tabBarStyle: {
-            display: "none",
-          },
-          href: null, // Hide from tab bar
-        }}
-      />
-    </Tabs>
+      <Stack.Screen name="index" />
+      <Stack.Screen name="EditFlashcard" />
+      <Stack.Screen name="FlashcardReview" />
+      <Stack.Screen name="FlashcardReward" />
+    </Stack>
   );
 }
