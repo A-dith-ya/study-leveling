@@ -76,13 +76,21 @@ export default function Index() {
         />
       </View>
 
-      <Pressable
-        style={styles.createDeckButton}
-        onPress={() => router.push("/(flashcard)")}
-      >
-        <Ionicons name="add-circle-outline" size={24} color={COLORS.white} />
-        <Text style={styles.createDeckButtonText}>Create Deck</Text>
-      </Pressable>
+      <View style={styles.buttonContainer}>
+        <Pressable
+          style={styles.decorateButton}
+          onPress={() => router.push("/(flashcard)/FlashcardDecoration")}
+        >
+          <Ionicons name="brush-outline" size={24} color={COLORS.white} />
+        </Pressable>
+        <Pressable
+          style={styles.createDeckButton}
+          onPress={() => router.push("/(flashcard)")}
+        >
+          <Ionicons name="add-circle-outline" size={24} color={COLORS.white} />
+          <Text style={styles.createDeckButtonText}>Create Deck</Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 }
@@ -99,6 +107,21 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingBottom: 16,
   },
+  buttonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingHorizontal: 16,
+    marginBottom: 8,
+    gap: 50,
+  },
+  decorateButton: {
+    backgroundColor: COLORS.secondary,
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   createDeckButton: {
     width: "50%",
     alignSelf: "center",
@@ -109,7 +132,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
-    marginBottom: 8,
   },
   createDeckButtonText: {
     color: COLORS.white,

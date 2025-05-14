@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { View, Text, StyleSheet, Pressable, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -20,7 +20,6 @@ import {
   getImageFromId,
   formatTitle,
 } from "../utils/stickerUtils";
-import { logger } from "../utils/logger";
 import COLORS from "../constants/colors";
 
 export default function FlashcardDecoration() {
@@ -105,6 +104,28 @@ export default function FlashcardDecoration() {
       });
     }
   };
+
+  // Initialize placed stickers from user's decorations
+  useEffect(() => {
+    if (userData?.decorations) {
+      const existingStickers = userData.decorations
+        .filter(
+          (decoration): decoration is NonNullable<typeof decoration> =>
+            decoration !== null
+        )
+        .map((decoration) => ({
+          id: decoration.decorationId,
+          x: decoration.x,
+          y: decoration.y,
+          scale: decoration.scale,
+          rotation: decoration.rotation,
+          flipX: decoration.flipX,
+          flipY: decoration.flipY,
+        }));
+
+      setPlacedStickers(existingStickers);
+    }
+  }, [userData?.decorations]);
 
   if (isLoading) return <LoadingScreen />;
 
