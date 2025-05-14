@@ -20,6 +20,8 @@ export async function getUserById(userId: string) {
           "totalSessionsCompleted",
           "updatedAt",
           "coins",
+          "ownedCosmetics.*",
+          "decorations.*",
         ],
       }
     );
@@ -158,6 +160,62 @@ export async function updateUserRewards(
     return user;
   } catch (error) {
     logger.error("updateUserRewards", error);
+    throw error;
+  }
+}
+
+export async function updateUserOwnedCosmetics(
+  userId: string,
+  ownedCosmetics: Schema["User"]["type"]["ownedCosmetics"]
+) {
+  try {
+    const { data: user, errors } = await client.models.User.update(
+      {
+        userId,
+        ownedCosmetics,
+      },
+      {
+        selectionSet: ["ownedCosmetics.*"],
+      }
+    );
+
+    if (errors) {
+      logger.error("updateUserOwnedCosmetics", errors);
+      throw new Error("Error updating owned cosmetics");
+    }
+
+    logger.debug("updateUserOwnedCosmetics", user);
+    return user;
+  } catch (error) {
+    logger.error("updateUserOwnedCosmetics", error);
+    throw error;
+  }
+}
+
+export async function updateUserDecorations(
+  userId: string,
+  decorations: Schema["User"]["type"]["decorations"]
+) {
+  try {
+    const { data: user, errors } = await client.models.User.update(
+      {
+        userId,
+        decorations,
+      },
+      {
+        selectionSet: ["decorations.*"],
+      }
+    );
+
+    if (errors) {
+      logger.error("updateUserDecorations", errors);
+      throw new Error("Error updating decorations");
+    }
+
+    logger.debug("updateUserDecorations", user);
+    return user;
+  } catch (error) {
+    logger.error("updateUserDecorations", error);
     throw error;
   }
 }
