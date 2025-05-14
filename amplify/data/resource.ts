@@ -10,6 +10,22 @@ and "delete" any "Todo" records.
 const schema = a
   .schema({
     // createdAt, updatedAt automatically included by a.model()
+    OwnedCosmetic: a.customType({
+      cosmeticId: a.string().required(),
+      category: a.enum(["STICKER"]),
+      count: a.integer(),
+    }),
+
+    Decoration: a.customType({
+      decorationId: a.string().required(),
+      x: a.float().required(),
+      y: a.float().required(),
+      scale: a.float().required(),
+      rotation: a.float().required(),
+      flipX: a.boolean().required(),
+      flipY: a.boolean().required(),
+    }),
+
     User: a
       .model({
         userId: a.id().required(),
@@ -22,7 +38,8 @@ const schema = a
         totalCardsReviewed: a.integer().default(0),
         totalSessionsCompleted: a.integer().default(0),
         avatar: a.string(),
-        ownedCosmetics: a.string().array(), // Array of cosmetic IDs
+        ownedCosmetics: a.ref("OwnedCosmetic").array(),
+        decorations: a.ref("Decoration").array(),
         unlockedAchievements: a.string().array(),
         levelRewards: a.string().array(),
         decks: a.hasMany("Deck", "userId"), // One-to-many relationship: one user can have many decks
@@ -35,7 +52,6 @@ const schema = a
         deckId: a.id().required(),
         title: a.string().required(),
         flashcardCount: a.integer().required(),
-        decorations: a.json(), // Storing decorations as JSON: { stickerId: { x, y, scale } }[]
         userId: a.id().required(),
         user: a.belongsTo("User", "userId"), // Many-to-one relationship: many decks can belong to one user
         flashcards: a.hasMany("Flashcard", "deckId"), // One-to-many relationship: one deck can have many flashcards
