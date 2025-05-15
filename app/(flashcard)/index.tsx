@@ -12,13 +12,11 @@ import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { useRouter } from "expo-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { v4 as uuidv4 } from "uuid";
 
 import FlashcardItem from "../components/flashcard/FlashcardItem";
-import { createDeck } from "../services/deckService";
-import useUserStore from "../stores/userStore";
+import { useCreateDeck } from "../hooks/useDeck";
 import COLORS from "../constants/colors";
 import {
   Flashcard,
@@ -33,30 +31,7 @@ export default function CreateFlashcard() {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
   const [deckTitle, setDeckTitle] = useState("");
   const router = useRouter();
-  const { user } = useUserStore();
-  const queryClient = useQueryClient();
-
-  const createDeckMutation = useMutation({
-    mutationFn: ({
-      userId,
-      deckId,
-      title,
-      cards,
-    }: {
-      userId: string;
-      deckId: string;
-      title: string;
-      cards: Flashcard[];
-    }) => createDeck(userId, deckId, title, cards),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["decks", user?.id] });
-      router.dismissTo("/(amain)");
-    },
-    onError: (error) => {
-      console.error("Error saving deck:", error);
-      Alert.alert("Error", "Failed to create deck. Please try again.");
-    },
-  });
+  const createDeckMutation = useCreateDeck();
 
   const addFlashcard = () => {
     setFlashcards([...flashcards, createNewFlashcard(flashcards.length)]);
@@ -110,12 +85,22 @@ export default function CreateFlashcard() {
     }
 
     const deckId = uuidv4();
-    createDeckMutation.mutate({
-      userId: user?.id || "",
-      deckId,
-      title: deckTitle,
-      cards: flashcards,
-    });
+    createDeckMutation.mutate(
+      {
+        deckId,
+        title: deckTitle,
+        flashcards,
+      },
+      {
+        onSuccess: () => {
+          router.dismissTo("/(amain)");
+        },
+        onError: (error) => {
+          console.error("Error saving deck:", error);
+          Alert.alert("Error", "Failed to create deck. Please try again.");
+        },
+      }
+    );
   };
 
   return (

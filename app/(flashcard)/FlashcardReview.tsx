@@ -6,10 +6,9 @@ import {
   withSequence,
   Easing,
 } from "react-native-reanimated";
-import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams, router } from "expo-router";
 
-import { getDeckById } from "../services/deckService";
+import { useDeck } from "../hooks/useDeck";
 import { fisherYatesShuffle } from "../utils/flashcardUtils";
 import { calculateXPForSession } from "../utils/xpUtils";
 import { getElapsedSeconds } from "../utils/dayUtils";
@@ -41,11 +40,7 @@ export default function FlashcardReview() {
   const [remainingCards, setRemainingCards] = useState<number[]>([]);
   const { deckId } = useLocalSearchParams();
 
-  const { data: deckData, isLoading } = useQuery({
-    queryKey: ["deck", deckId],
-    queryFn: () => getDeckById(deckId as string),
-    enabled: !!deckId,
-  });
+  const { data: deckData, isLoading } = useDeck(deckId as string);
 
   useEffect(() => {
     if (deckData) {

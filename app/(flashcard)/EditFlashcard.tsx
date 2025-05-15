@@ -12,14 +12,12 @@ import { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import FlashcardItem from "../components/flashcard/FlashcardItem";
 import LoadingScreen from "../components/common/LoadingScreen";
 import EditHeader from "../components/common/EditHeader";
-import { getDeckById, updateDeck } from "../services/deckService";
-import useUserStore from "../stores/userStore";
+import { useDeck, useUpdateDeck } from "../hooks/useDeck";
 import COLORS from "../constants/colors";
 import {
   Flashcard,
@@ -34,16 +32,11 @@ export default function EditFlashcard() {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
   const [deckTitle, setDeckTitle] = useState("");
   const router = useRouter();
-  const { user } = useUserStore();
-  const queryClient = useQueryClient();
   const { deckId } = useLocalSearchParams();
   const [deletedFlashcardIds, setDeletedFlashcardIds] = useState<string[]>([]);
 
-  const { data: deckData, isLoading } = useQuery({
-    queryKey: ["deck", deckId],
-    queryFn: () => getDeckById(deckId as string),
-    enabled: !!deckId,
-  });
+  const { data: deckData, isLoading } = useDeck(deckId as string);
+  const updateDeckMutation = useUpdateDeck();
 
   useEffect(() => {
     if (deckData) {
@@ -58,31 +51,6 @@ export default function EditFlashcard() {
       );
     }
   }, [deckData]);
-
-  const updateDeckMutation = useMutation({
-    mutationFn: ({
-      userId,
-      deckId,
-      title,
-      cards,
-      deletedFlashcardIds,
-    }: {
-      userId: string;
-      deckId: string;
-      title: string;
-      cards: Flashcard[];
-      deletedFlashcardIds: string[];
-    }) => updateDeck(userId, deckId, title, cards, deletedFlashcardIds),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["decks", user?.id] });
-      queryClient.invalidateQueries({ queryKey: ["deck", deckId] });
-      router.dismissTo("/(amain)");
-    },
-    onError: (error) => {
-      console.error("Error updating deck:", error);
-      Alert.alert("Error", "Failed to update deck. Please try again.");
-    },
-  });
 
   const updateFlashcard = (
     id: string,
@@ -128,13 +96,23 @@ export default function EditFlashcard() {
       return;
     }
 
-    updateDeckMutation.mutate({
-      userId: user?.id ?? "",
-      deckId: deckId as string,
-      title: deckTitle,
-      cards: flashcards,
-      deletedFlashcardIds,
-    });
+    updateDeckMutation.mutate(
+      {
+        deckId: deckId as string,
+        title: deckTitle,
+        flashcards,
+        deletedFlashcardIds,
+      },
+      {
+        onSuccess: () => {
+          router.dismissTo("/(amain)");
+        },
+        onError: (error) => {
+          console.error("Error updating deck:", error);
+          Alert.alert("Error", "Failed to update deck. Please try again.");
+        },
+      }
+    );
   };
 
   if (isLoading) return <LoadingScreen message="Loading flashcards..." />;

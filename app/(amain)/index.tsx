@@ -9,11 +9,10 @@ import SignOutButton from "../components/auth/SignOutButton";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
 import DeckCard from "../components/dashboard/DeckCard";
 import LoadingScreen from "../components/common/LoadingScreen";
-import { getDecksByUserId } from "../services/deckService";
-import useUserStore from "../stores/userStore";
+import { useUserData } from "../hooks/useUser";
+import { useDecks } from "../hooks/useDeck";
 import { calculateXPToNextLevel } from "../utils/xpUtils";
 import COLORS from "../constants/colors";
-import { useUserData } from "../hooks/useUser";
 
 interface DeckItem {
   title: string;
@@ -22,19 +21,13 @@ interface DeckItem {
 }
 
 export default function Index() {
-  const { user } = useUserStore();
-
   const { data: userData, isLoading, error } = useUserData();
 
   const {
     data: decks,
     isLoading: decksLoading,
     error: decksError,
-  } = useQuery({
-    queryKey: ["decks", user?.id],
-    queryFn: () => getDecksByUserId(user?.id || ""),
-    enabled: !!user?.id,
-  });
+  } = useDecks();
 
   if (isLoading) return <LoadingScreen />;
   if (decksLoading) return <LoadingScreen message="Loading decks..." />;
