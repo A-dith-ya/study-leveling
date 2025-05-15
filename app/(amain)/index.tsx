@@ -15,6 +15,12 @@ import { calculateXPToNextLevel } from "../utils/xpUtils";
 import COLORS from "../constants/colors";
 import { useUserData } from "../hooks/useUser";
 
+interface DeckItem {
+  title: string;
+  flashcardCount: number;
+  deckId: string;
+}
+
 export default function Index() {
   const { user } = useUserStore();
 
@@ -35,7 +41,7 @@ export default function Index() {
 
   if (error || decksError) return <Text>Error {error?.message} </Text>;
 
-  const renderDeckItem = ({ item }: { item: any }) => (
+  const renderDeckItem = ({ item }: { item: DeckItem }) => (
     <DeckCard
       title={item.title}
       cardCount={item.flashcardCount}
@@ -60,11 +66,11 @@ export default function Index() {
     <SafeAreaView style={styles.container} edges={["top"]}>
       <SignOutButton />
       <DashboardHeader
-        level={userData?.level || 1}
-        currentXP={userData?.xp || 0}
-        requiredXP={calculateXPToNextLevel(userData?.level || 1)}
-        streakCount={userData?.streak || 0}
-        coins={userData?.coins || 0}
+        level={userData?.level ?? 1}
+        currentXP={userData?.xp ?? 0}
+        requiredXP={calculateXPToNextLevel(userData?.level ?? 1)}
+        streakCount={userData?.streak ?? 0}
+        coins={userData?.coins ?? 0}
       />
       <View style={styles.listContainer}>
         <FlashList

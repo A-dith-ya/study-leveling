@@ -48,8 +48,8 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
 
     // Update user's coins and XP
     await updateRewards.mutateAsync({
-      coins: (userData?.coins || 0) + challenge.coinReward,
-      xp: (userData?.xp || 0) + challenge.xpReward,
+      coins: (userData?.coins ?? 0) + challenge.coinReward,
+      xp: (userData?.xp ?? 0) + challenge.xpReward,
     });
 
     // Mark challenge as claimed in store

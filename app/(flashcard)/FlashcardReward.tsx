@@ -55,7 +55,7 @@ export default function FlashcardReward() {
     };
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Entrance animations
     scale.value = withSpring(1, { damping: 12 });
     opacity.value = withTiming(1, { duration: 600 });
@@ -63,8 +63,8 @@ export default function FlashcardReward() {
 
     if (userData) {
       const { level, xp } = getLevelFromXP(
-        (userData.xp || 0) + Number(xpEarned),
-        userData.level || 1
+        (userData.xp ?? 0) + Number(xpEarned),
+        userData.level ?? 1
       );
 
       // Update user stats
@@ -73,19 +73,19 @@ export default function FlashcardReward() {
         level,
         streak: updateStreak(
           new Date(userData.updatedAt),
-          userData.streak || 0
+          userData.streak ?? 0
         ),
-        timeSpent: (userData.timeSpent || 0) + Number(duration),
+        timeSpent: (userData.timeSpent ?? 0) + Number(duration),
         totalCardsReviewed:
-          (userData.totalCardsReviewed || 0) + Number(totalCards),
-        totalSessionsCompleted: (userData.totalSessionsCompleted || 0) + 1,
+          (userData.totalCardsReviewed ?? 0) + Number(totalCards),
+        totalSessionsCompleted: (userData.totalSessionsCompleted ?? 0) + 1,
       });
 
       // Update challenge progress
       updateFlashcardChallenges(Number(totalCards));
       updateSessionChallenges(1);
     }
-  }, [userData, totalCards, duration, xpEarned]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

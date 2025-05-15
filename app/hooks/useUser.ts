@@ -11,6 +11,17 @@ import {
 } from "@/app/services/userService";
 import { Schema } from "@/amplify/data/resource";
 
+const updateUserCache = (
+  queryClient: ReturnType<typeof useQueryClient>,
+  userId: string | undefined,
+  updatedUser: Partial<Schema["User"]["type"]>
+) => {
+  queryClient.setQueryData(["user", userId], (oldUser: any) => ({
+    ...oldUser,
+    ...updatedUser,
+  }));
+};
+
 export function useUserData() {
   const user = useUserStore((state) => state.user);
 
@@ -50,11 +61,12 @@ export function useUpdateUserSessionStats() {
         totalCardsReviewed,
         totalSessionsCompleted
       ),
-    onSuccess: () => {
-      // Invalidate and refetch user data
-      queryClient.invalidateQueries({
-        queryKey: ["user", user?.id],
-      });
+    onSuccess: (updatedUser) => {
+      updateUserCache(
+        queryClient,
+        user?.id,
+        updatedUser as Partial<Schema["User"]["type"]>
+      );
     },
   });
 }
@@ -66,10 +78,12 @@ export function useUpdateUserRewards() {
   return useMutation({
     mutationFn: async ({ coins, xp }: { coins: number; xp: number }) =>
       updateUserRewards(user?.id || "", coins, xp),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["user", user?.id],
-      });
+    onSuccess: (updatedUser) => {
+      updateUserCache(
+        queryClient,
+        user?.id,
+        updatedUser as Partial<Schema["User"]["type"]>
+      );
     },
   });
 }
@@ -84,10 +98,12 @@ export function useUpdateUserCosmetics() {
     }: {
       ownedCosmetics: Schema["User"]["type"]["ownedCosmetics"];
     }) => updateUserOwnedCosmetics(user?.id || "", ownedCosmetics),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["user", user?.id],
-      });
+    onSuccess: (updatedUser) => {
+      updateUserCache(
+        queryClient,
+        user?.id,
+        updatedUser as Partial<Schema["User"]["type"]>
+      );
     },
   });
 }
@@ -102,10 +118,12 @@ export function useUpdateUserDecorations() {
     }: {
       decorations: Schema["User"]["type"]["decorations"];
     }) => updateUserDecorations(user?.id || "", decorations),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["user", user?.id],
-      });
+    onSuccess: (updatedUser) => {
+      updateUserCache(
+        queryClient,
+        user?.id,
+        updatedUser as Partial<Schema["User"]["type"]>
+      );
     },
   });
 }
