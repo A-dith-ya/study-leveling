@@ -1,6 +1,7 @@
 import { defineBackend } from "@aws-amplify/backend";
 import { auth } from "./auth/resource";
 import { data } from "./data/resource";
+import { feedback } from "./functions/feedback/resource";
 
 /**
  * @see https://docs.amplify.aws/react/build-a-backend/ to add storage, functions, and more
@@ -8,6 +9,7 @@ import { data } from "./data/resource";
 const backend = defineBackend({
   auth,
   data,
+  feedback,
 });
 
 const { cfnUserPool } = backend.auth.resources.cfnResources;

@@ -1,5 +1,6 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 import { postConfirmation } from "../auth/post-confirmation/resource";
+import { feedback } from "../functions/feedback/resource";
 
 /*== STEP 1 ===============================================================
 The section below creates a Todo database table with a "content" field. Try
@@ -108,6 +109,24 @@ const schema = a
           entry: "./batchDeleteFlashcards.js",
         })
       ),
+
+    FeedbackResponse: a.customType({
+      correctParts: a.string().array().required(),
+      incorrectParts: a.string().array().required(),
+      missingPoints: a.string().array().required(),
+      aiExplanation: a.string().required(),
+    }),
+
+    feedback: a
+      .query()
+      .arguments({
+        question: a.string().required(),
+        correctAnswer: a.string().required(),
+        userAnswer: a.string().required(),
+      })
+      .returns(a.ref("FeedbackResponse"))
+      .authorization((allow) => [allow.authenticated()])
+      .handler(a.handler.function(feedback)),
   })
   .authorization((allow) => [allow.resource(postConfirmation)]);
 
