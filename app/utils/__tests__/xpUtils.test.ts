@@ -2,7 +2,7 @@ import {
   calculateXPToNextLevel,
   calculateXPForSession,
   getLevelFromXP,
-} from "../app/utils/xpUtils";
+} from "@/app/utils/xpUtils";
 
 describe("calculateXPForSession", () => {
   test("should cap XP at 100", () => {

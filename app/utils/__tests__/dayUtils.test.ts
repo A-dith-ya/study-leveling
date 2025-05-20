@@ -1,4 +1,4 @@
-import { updateStreak } from "../app/utils/dayUtils";
+import { updateStreak } from "@/app/utils/dayUtils";
 
 // Rule 1: If updatedAt is today
 // Rule 2: If updatedAt is yesterday
