@@ -8,6 +8,7 @@ interface DeckCardProps {
   cardCount: number;
   onEdit: () => void;
   onPractice: () => void;
+  onAIReview: () => void;
 }
 
 const DeckCard: React.FC<DeckCardProps> = ({
@@ -15,6 +16,7 @@ const DeckCard: React.FC<DeckCardProps> = ({
   cardCount,
   onEdit,
   onPractice,
+  onAIReview,
 }) => {
   return (
     <View style={styles.container}>
@@ -37,6 +39,13 @@ const DeckCard: React.FC<DeckCardProps> = ({
           >
             <FontAwesome6 name="pen" size={16} color={COLORS.white} />
             <Text style={styles.buttonText}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, styles.practiceButton]}
+            onPress={onAIReview}
+          >
+            <FontAwesome6 name="robot" size={16} color={COLORS.white} />
+            <Text style={styles.buttonText}>AI</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.button, styles.practiceButton]}
@@ -97,7 +106,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primaryLight,
   },
   practiceButton: {
-    backgroundColor: COLORS.secondary,
+    backgroundColor: COLORS.primaryDark,
   },
   buttonText: {
     color: COLORS.white,

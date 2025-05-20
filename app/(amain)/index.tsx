@@ -44,6 +44,9 @@ export default function Index() {
       onPractice={() => {
         router.push(`/(flashcard)/FlashcardReview?deckId=${item.deckId}`);
       }}
+      onAIReview={() => {
+        router.push(`/(flashcard)/AIReview?deckId=${item.deckId}`);
+      }}
     />
   );
 
