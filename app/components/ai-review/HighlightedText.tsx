@@ -5,16 +5,13 @@ import Animated, {
   withTiming,
   interpolate,
   useSharedValue,
-  Extrapolate,
+  Extrapolation,
 } from "react-native-reanimated";
+
+import { AnswerSegment } from "../../types/reviewTypes";
 import COLORS from "../../constants/colors";
 
-interface HighlightedTextProps {
-  text: string;
-  type: "correct" | "incorrect" | "missing" | "none";
-}
-
-export default function HighlightedText({ text, type }: HighlightedTextProps) {
+export default function HighlightedText({ text, type }: AnswerSegment) {
   const opacity = useSharedValue(0);
 
   React.useEffect(() => {
@@ -29,7 +26,7 @@ export default function HighlightedText({ text, type }: HighlightedTextProps) {
           opacity.value,
           [0, 1],
           [10, 0],
-          Extrapolate.CLAMP
+          Extrapolation.CLAMP
         ),
       },
     ],

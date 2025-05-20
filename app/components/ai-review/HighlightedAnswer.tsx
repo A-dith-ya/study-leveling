@@ -18,7 +18,7 @@ export default function HighlightedAnswer({
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.sectionLabel}>{label}</Text>
-      <View style={styles.answerContent}>
+      <Text>
         {segments.map((segment, index) => (
           <HighlightedText
             key={`${segment.text}-${index}`}
@@ -26,7 +26,7 @@ export default function HighlightedAnswer({
             type={segment.type}
           />
         ))}
-      </View>
+      </Text>
     </ScrollView>
   );
 }
@@ -52,9 +52,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: COLORS.text,
     marginBottom: 12,
-  },
-  answerContent: {
-    flexDirection: "row",
-    flexWrap: "wrap",
   },
 });
