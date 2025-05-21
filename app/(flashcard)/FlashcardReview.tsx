@@ -9,6 +9,7 @@ import {
 import { useLocalSearchParams, router } from "expo-router";
 
 import { useDeck } from "../hooks/useDeck";
+import { useUserData } from "../hooks/useUser";
 import { fisherYatesShuffle } from "../utils/flashcardUtils";
 import { calculateXPForSession } from "../utils/xpUtils";
 import { getElapsedSeconds } from "../utils/dayUtils";
@@ -41,6 +42,7 @@ export default function FlashcardReview() {
   const { deckId } = useLocalSearchParams();
 
   const { data: deckData, isLoading } = useDeck(deckId as string);
+  const { data: userData } = useUserData();
 
   useEffect(() => {
     if (deckData) {
@@ -159,6 +161,20 @@ export default function FlashcardReview() {
         onFlip={handleFlip}
         flipAnimation={flipAnimation}
         scaleAnimation={scaleAnimation}
+        decorations={userData?.decorations
+          ?.filter(
+            (decoration): decoration is NonNullable<typeof decoration> =>
+              decoration !== null
+          )
+          .map((decoration) => ({
+            id: decoration.decorationId,
+            x: decoration.x,
+            y: decoration.y,
+            scale: decoration.scale,
+            rotation: decoration.rotation,
+            flipX: decoration.flipX,
+            flipY: decoration.flipY,
+          }))}
       />
 
       <ReviewControls

@@ -1,11 +1,17 @@
 import React from "react";
-import { View, Text, StyleSheet, Pressable, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Pressable, Image } from "react-native";
 import Animated, {
   useAnimatedStyle,
   interpolate,
 } from "react-native-reanimated";
-import { CARD_WIDTH, CARD_HEIGHT } from "../../utils/stickerUtils";
+import {
+  CARD_WIDTH,
+  CARD_HEIGHT,
+  STICKER_SIZE,
+  getImageFromId,
+} from "../../utils/stickerUtils";
 import COLORS from "../../constants/colors";
+import { PlacedSticker } from "../../types/stickerTypes";
 
 interface FlashcardDisplayProps {
   front: string;
@@ -13,6 +19,7 @@ interface FlashcardDisplayProps {
   onFlip: () => void;
   flipAnimation: any;
   scaleAnimation: any;
+  decorations?: PlacedSticker[];
 }
 
 export default function FlashcardDisplay({
@@ -21,6 +28,7 @@ export default function FlashcardDisplay({
   onFlip,
   flipAnimation,
   scaleAnimation,
+  decorations = [],
 }: FlashcardDisplayProps) {
   const frontAnimatedStyle = useAnimatedStyle(() => {
     const rotateValue = interpolate(flipAnimation.value, [0, 1], [0, 180]);
@@ -46,16 +54,45 @@ export default function FlashcardDisplay({
     };
   });
 
+  const renderDecorations = (decorations: PlacedSticker[]) => {
+    return decorations.map((sticker) => (
+      <View
+        key={sticker.id}
+        style={[
+          styles.stickerContainer,
+          {
+            transform: [
+              { translateX: sticker.x },
+              { translateY: sticker.y },
+              { scale: sticker.scale },
+              { rotate: `${sticker.rotation}deg` },
+              { scaleX: sticker.flipX ? -1 : 1 },
+              { scaleY: sticker.flipY ? -1 : 1 },
+            ],
+          },
+        ]}
+      >
+        <Image source={getImageFromId(sticker.id)} style={styles.sticker} />
+      </View>
+    ));
+  };
+
   return (
     <View style={styles.cardContainer}>
       <Pressable onPress={onFlip} style={styles.cardWrapper}>
         <Animated.View style={[styles.card, frontAnimatedStyle]}>
           <Text style={styles.cardText}>{front}</Text>
+          <View style={styles.decorationContainer}>
+            {renderDecorations(decorations)}
+          </View>
         </Animated.View>
         <Animated.View
           style={[styles.card, styles.cardBack, backAnimatedStyle]}
         >
           <Text style={styles.cardText}>{back}</Text>
+          <View style={styles.decorationContainer}>
+            {renderDecorations(decorations)}
+          </View>
         </Animated.View>
       </Pressable>
     </View>
@@ -77,7 +114,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: COLORS.white,
     borderRadius: 16,
-    padding: 24,
+    padding: 16,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: COLORS.shadowColor,
@@ -96,5 +133,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: COLORS.text,
     textAlign: "center",
+  },
+  decorationContainer: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  stickerContainer: {
+    position: "absolute",
+    width: STICKER_SIZE,
+    height: STICKER_SIZE,
+  },
+  sticker: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
   },
 });
