@@ -11,3 +11,8 @@ export interface StickerCardProps {
   hasEnoughCoins: boolean;
   onBuy: (stickerId: string) => void;
 }
+
+export interface CoinBalanceProps {
+  coins: number;
+  prevCoins?: number;
+}
