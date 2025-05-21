@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    minHeight: 150,
+    maxHeight: 300,
   },
   sectionLabel: {
     fontSize: 16,
@@ -46,10 +46,10 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   feedbackContent: {
-    flex: 1,
+    flex: 0,
   },
   feedbackScrollView: {
-    flex: 1,
+    maxHeight: 150,
   },
   feedbackText: {
     fontSize: 14,

@@ -93,6 +93,14 @@ export default function AIReview() {
   };
 
   const handleNextQuestion = () => {
+    if (
+      deckData?.flashcards?.length &&
+      currentFlashcardIndex === deckData?.flashcards?.length - 1
+    ) {
+      router.push("/(flashcard)/AISummary");
+      return;
+    }
+
     const flashcardId =
       deckData?.flashcards?.[currentFlashcardIndex].flashcardId;
 
@@ -144,60 +152,61 @@ export default function AIReview() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Question Section */}
-      <View style={styles.questionContainer}>
-        <Text style={styles.questionLabel}>
-          Question {currentFlashcardIndex + 1}
-        </Text>
-        <Text style={styles.questionText}>{question}</Text>
-      </View>
-
-      {/* Legend Bar */}
-      <View style={styles.legendBar}>
-        <LegendItem type="correct" label="Correct" />
-        <LegendItem type="incorrect" label="Incorrect" />
-        <LegendItem type="missing" label="Missing" />
-      </View>
-
-      {/* Answer Input/Display Section */}
-      {!isEvaluated && (
-        <View style={styles.answerContainer}>
-          <Text style={styles.sectionLabel}>Your Answer</Text>
-          <TextInput
-            style={styles.answerInput}
-            value={userInput}
-            onChangeText={setUserInput}
-            multiline
-            placeholder="Type your answer here..."
-            placeholderTextColor={COLORS.darkGray}
-          />
+      <View style={styles.container}>
+        {/* Question Section */}
+        <View style={styles.questionContainer}>
+          <Text style={styles.questionLabel}>
+            Question {currentFlashcardIndex + 1}
+          </Text>
+          <Text style={styles.questionText}>{question}</Text>
         </View>
-      )}
 
-      {/* Correct Answer Section (shown after evaluation) */}
-      {isEvaluated &&
-        currentEvaluation?.userAnswerSegments &&
-        currentEvaluation?.correctAnswerSegments && (
-          <>
-            <HighlightedAnswer
-              label="Your Answer"
-              segments={currentEvaluation.userAnswerSegments}
+        {/* Legend Bar */}
+        <View style={styles.legendBar}>
+          <LegendItem type="correct" label="Correct" />
+          <LegendItem type="incorrect" label="Incorrect" />
+          <LegendItem type="missing" label="Missing" />
+        </View>
+
+        {/* Answer Input/Display Section */}
+        {!isEvaluated && (
+          <View style={styles.answerContainer}>
+            <Text style={styles.sectionLabel}>Your Answer</Text>
+            <TextInput
+              style={styles.answerInput}
+              value={userInput}
+              onChangeText={setUserInput}
+              multiline
+              placeholder="Type your answer here..."
+              placeholderTextColor={COLORS.darkGray}
             />
-            <HighlightedAnswer
-              label="Correct Answer"
-              segments={currentEvaluation.correctAnswerSegments}
-            />
-          </>
+          </View>
         )}
 
-      {/* Mic Button */}
-      {!isEvaluated && <MicButton />}
+        {/* Correct Answer Section (shown after evaluation) */}
+        {isEvaluated &&
+          currentEvaluation?.userAnswerSegments &&
+          currentEvaluation?.correctAnswerSegments && (
+            <>
+              <HighlightedAnswer
+                label="Your Answer"
+                segments={currentEvaluation.userAnswerSegments}
+              />
+              <HighlightedAnswer
+                label="Correct Answer"
+                segments={currentEvaluation.correctAnswerSegments}
+              />
+            </>
+          )}
 
-      {/* AI Feedback Section */}
-      {isEvaluated && aiExplanation && (
-        <AIFeedback explanation={aiExplanation} />
-      )}
+        {/* Mic Button */}
+        {!isEvaluated && <MicButton />}
 
+        {/* AI Feedback Section */}
+        {isEvaluated && aiExplanation && (
+          <AIFeedback explanation={aiExplanation} />
+        )}
+      </View>
       {/* Controls */}
       <View style={styles.controls}>
         <Pressable

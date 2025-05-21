@@ -27,4 +27,10 @@ export const logger = {
     if (!isDebugMode && level === "debug") return;
     console.log(`${label}:`, JSON.stringify(obj, null, 2));
   },
+
+  logDivider: () => {
+    console.log(
+      "--------------------------------------------------------------------------------------------------------------------------------"
+    );
+  },
 };
