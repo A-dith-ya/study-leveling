@@ -1,12 +1,14 @@
+import { ImageSourcePropType } from "react-native";
+
 export interface Cosmetic {
   id: string;
   category: "STICKER";
   price: number;
-  image: any;
+  image: ImageSourcePropType;
 }
 
 export interface StickerCardProps {
-  sticker: Omit<Cosmetic, "image">;
+  sticker: Cosmetic;
   isBoughtToday: boolean;
   hasEnoughCoins: boolean;
   onBuy: (stickerId: string) => void;

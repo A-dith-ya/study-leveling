@@ -4,6 +4,7 @@ import { useAuthenticator } from "@aws-amplify/ui-react-native";
 import useUserStore from "@/app/stores/userStore";
 import useAchievementStore from "@/app/stores/achievementStore";
 import useChallengeStore from "@/app/stores/challengeStore";
+import useCosmeticStore from "@/app/stores/cosmeticStore";
 
 import { logger } from "@/app/utils/logger";
 
@@ -25,11 +26,13 @@ export default function AppInitializer() {
         logger.debug("App has come to the foreground!");
         const { shouldResetChallenges, initializeDailyChallenges } =
           useChallengeStore.getState();
+        const { initializeStore } = useCosmeticStore.getState();
 
         // Check if challenges need to be reset
         if (shouldResetChallenges()) {
           logger.debug("Resetting challenges after app became active");
           initializeDailyChallenges();
+          initializeStore();
         }
       }
 
@@ -55,6 +58,7 @@ export default function AppInitializer() {
           initializeDailyChallenges,
           shouldResetChallenges,
         } = useChallengeStore.getState();
+        const { initializeStore } = useCosmeticStore.getState();
 
         if (!user) await fetchUser();
 
@@ -68,6 +72,7 @@ export default function AppInitializer() {
         if (!challengesInitialized || shouldResetChallenges()) {
           logger.debug("Initializing daily challenges");
           initializeDailyChallenges();
+          initializeStore();
         }
       }
     };
