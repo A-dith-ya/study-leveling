@@ -1,5 +1,12 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  TextInput,
+  ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, {
   useAnimatedStyle,
@@ -8,67 +15,140 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
 import HighlightedAnswer from "../components/ai-review/HighlightedAnswer";
+import { LegendItem } from "../components/ai-review/LegendItem";
 import MicButton from "../components/ai-review/MicButton";
 import AIFeedback from "../components/ai-review/AIFeedback";
+import LoadingScreen from "../components/common/LoadingScreen";
+import { useReviewStore } from "../stores/reviewStore";
+import { useAIReview } from "../utils/openai";
+import {
+  sanitizeInput,
+  createUserAnswerSegments,
+  createCorrectAnswerSegments,
+} from "../utils/reviewUtils";
+import { useDeck } from "../hooks/useDeck";
 import COLORS from "../constants/colors";
-
-type DotStyleKey = "correctDot" | "incorrectDot" | "missingDot";
-
-type AnswerSegment = {
-  text: string;
-  type: "correct" | "incorrect" | "missing" | "none";
-};
-
-const LegendItem = ({
-  type,
-  label,
-}: {
-  type: "correct" | "incorrect" | "missing";
-  label: string;
-}) => (
-  <View style={styles.legendItem}>
-    <View style={[styles.legendDot, styles[`${type}Dot` as DotStyleKey]]} />
-    <Text style={styles.legendLabel}>{label}</Text>
-  </View>
-);
+import { logger } from "../utils/logger";
 
 export default function AIReview() {
   const [userInput, setUserInput] = useState("");
   const [isEvaluated, setIsEvaluated] = useState(false);
   const submitScale = useSharedValue(1);
+  const { deckId: routeDeckId } = useLocalSearchParams();
+
+  const {
+    initReview,
+    deckId,
+    currentFlashcardIndex,
+    userAnswers,
+    evaluations,
+    setUserAnswer,
+    setEvaluation,
+    hasEvaluation,
+    goToNextCard,
+    goToPreviousCard,
+  } = useReviewStore();
+
+  const { data: deckData, isLoading } = useDeck(deckId as string);
+  const aiReview = useAIReview();
 
   const handleSubmit = async () => {
     submitScale.value = withSequence(
       withTiming(0.95, { duration: 100 }),
       withTiming(1, { duration: 100 })
     );
-    setIsEvaluated(!isEvaluated);
+
+    if (isEvaluated) {
+      setIsEvaluated(false);
+      return;
+    }
+
+    const sanitizedUserInput = sanitizeInput(userInput);
+    if (!question || !correctAnswer || !sanitizedUserInput) {
+      return;
+    }
+
+    const response = await aiReview.mutateAsync({
+      question: question,
+      correctAnswer: correctAnswer,
+      userAnswer: sanitizedUserInput,
+    });
+
+    setEvaluation(deckData?.flashcards?.[currentFlashcardIndex].flashcardId, {
+      userAnswerSegments: createUserAnswerSegments(
+        sanitizedUserInput,
+        response
+      ),
+      correctAnswerSegments: createCorrectAnswerSegments(
+        correctAnswer,
+        response
+      ),
+      aiExplanation: response.aiExplanation,
+    });
+
+    setIsEvaluated(true);
   };
 
   const handleNextQuestion = () => {
-    router.push("/(amain)/AIReview?questionId=next");
+    const flashcardId =
+      deckData?.flashcards?.[currentFlashcardIndex].flashcardId;
+
+    if (flashcardId) {
+      setUserAnswer(flashcardId, userInput);
+    }
+    goToNextCard();
+    router.push("/(flashcard)/AIReview");
+    logger.logDivider();
   };
 
   const handlePreviousQuestion = () => {
-    router.push("/(amain)/AIReview?questionId=previous");
+    const flashcardId =
+      deckData?.flashcards?.[currentFlashcardIndex].flashcardId;
+
+    if (flashcardId) {
+      setUserAnswer(flashcardId, userInput);
+    }
+    goToPreviousCard();
+    router.push("/(flashcard)/AIReview");
+    logger.logDivider();
   };
 
   const submitButtonStyle = useAnimatedStyle(() => ({
     transform: [{ scale: submitScale.value }],
   }));
 
-  // Example data
-  const question = "";
-  const aiExplanation = "";
+  const question = deckData?.flashcards?.[currentFlashcardIndex]?.front;
+  const correctAnswer = deckData?.flashcards?.[currentFlashcardIndex]?.back;
+  const flashcardId =
+    deckData?.flashcards?.[currentFlashcardIndex]?.flashcardId;
+  const currentEvaluation = flashcardId ? evaluations[flashcardId] : undefined;
+  const aiExplanation = currentEvaluation?.aiExplanation;
+
+  useEffect(() => {
+    if (!deckId && routeDeckId) {
+      initReview(routeDeckId as string);
+    }
+  }, [deckId, routeDeckId]);
+
+  useEffect(() => {
+    if (flashcardId) {
+      setIsEvaluated(hasEvaluation(flashcardId));
+      setUserInput(userAnswers[flashcardId] || "");
+    }
+  }, [deckData?.flashcards, flashcardId]);
+
+  if (isLoading) return <LoadingScreen message="Loading questions..." />;
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={styles.container}>
       {/* Question Section */}
       <View style={styles.questionContainer}>
-        <Text style={styles.questionLabel}>Question</Text>
+        <Text style={styles.questionLabel}>
+          Question {currentFlashcardIndex + 1}
+        </Text>
         <Text style={styles.questionText}>{question}</Text>
       </View>
 
@@ -95,27 +175,54 @@ export default function AIReview() {
       )}
 
       {/* Correct Answer Section (shown after evaluation) */}
-      {isEvaluated && <></>}
+      {isEvaluated &&
+        currentEvaluation?.userAnswerSegments &&
+        currentEvaluation?.correctAnswerSegments && (
+          <>
+            <HighlightedAnswer
+              label="Your Answer"
+              segments={currentEvaluation.userAnswerSegments}
+            />
+            <HighlightedAnswer
+              label="Correct Answer"
+              segments={currentEvaluation.correctAnswerSegments}
+            />
+          </>
+        )}
 
       {/* Mic Button */}
       {!isEvaluated && <MicButton />}
 
       {/* AI Feedback Section */}
-      {isEvaluated && <AIFeedback explanation={aiExplanation} />}
+      {isEvaluated && aiExplanation && (
+        <AIFeedback explanation={aiExplanation} />
+      )}
 
       {/* Controls */}
       <View style={styles.controls}>
-        <Pressable style={styles.navButton} onPress={handlePreviousQuestion}>
+        <Pressable
+          style={styles.navButton}
+          onPress={handlePreviousQuestion}
+          disabled={aiReview.isPending}
+        >
           <Ionicons name="chevron-back" size={24} color={COLORS.primary} />
         </Pressable>
         <Animated.View style={[submitButtonStyle]}>
           <Pressable style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitButtonText}>
-              {!isEvaluated ? "Submit" : "Try Again"}
-            </Text>
+            {aiReview.isPending ? (
+              <ActivityIndicator color={COLORS.white} />
+            ) : (
+              <Text style={styles.submitButtonText}>
+                {!isEvaluated ? "Submit" : "Try Again"}
+              </Text>
+            )}
           </Pressable>
         </Animated.View>
-        <Pressable style={styles.navButton} onPress={handleNextQuestion}>
+        <Pressable
+          style={styles.navButton}
+          onPress={handleNextQuestion}
+          disabled={aiReview.isPending}
+        >
           <Ionicons name="chevron-forward" size={24} color={COLORS.primary} />
         </Pressable>
       </View>
@@ -152,29 +259,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.lightGray,
-  },
-  legendItem: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  legendDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: 6,
-  },
-  correctDot: {
-    backgroundColor: "#4CAF50",
-  },
-  incorrectDot: {
-    backgroundColor: "#F44336",
-  },
-  missingDot: {
-    backgroundColor: "#FFC107",
-  },
-  legendLabel: {
-    fontSize: 12,
-    color: COLORS.darkGray,
   },
   answerContainer: {
     flex: 1,

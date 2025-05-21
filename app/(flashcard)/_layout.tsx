@@ -12,6 +12,7 @@ export default function FlashcardLayout() {
       <Stack.Screen name="FlashcardReview" />
       <Stack.Screen name="FlashcardReward" />
       <Stack.Screen name="FlashcardDecoration" />
+      <Stack.Screen name="AIReview" />
     </Stack>
   );
 }
