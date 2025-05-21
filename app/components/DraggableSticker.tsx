@@ -109,20 +109,20 @@ export const DraggableSticker: React.FC<DraggableStickerProps> = ({
   }));
 
   const handleRotate = (direction: "left" | "right") => {
-    rotation.value = withSpring(
-      rotation.value + (direction === "left" ? -90 : 90),
-      { damping: 12 }
-    );
-    onUpdate({ rotation: rotation.value });
+    const newRotation = rotation.value + (direction === "left" ? -90 : 90);
+    rotation.value = withSpring(newRotation, { damping: 12 });
+    onUpdate({ rotation: newRotation });
   };
 
   const handleFlip = (axis: "x" | "y") => {
     if (axis === "x") {
-      flipX.value = withSpring(flipX.value * -1, { damping: 12 });
-      onUpdate({ flipX: flipX.value === -1 });
+      const newFlipX = flipX.value * -1;
+      flipX.value = withSpring(newFlipX, { damping: 12 });
+      onUpdate({ flipX: newFlipX === -1 });
     } else {
-      flipY.value = withSpring(flipY.value * -1, { damping: 12 });
-      onUpdate({ flipY: flipY.value === -1 });
+      const newFlipY = flipY.value * -1;
+      flipY.value = withSpring(newFlipY, { damping: 12 });
+      onUpdate({ flipY: newFlipY === -1 });
     }
   };
 
