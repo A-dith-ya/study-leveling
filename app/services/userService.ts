@@ -166,16 +166,18 @@ export async function updateUserRewards(
 
 export async function updateUserOwnedCosmetics(
   userId: string,
+  coins: number,
   ownedCosmetics: Schema["User"]["type"]["ownedCosmetics"]
 ) {
   try {
     const { data: user, errors } = await client.models.User.update(
       {
         userId,
+        coins,
         ownedCosmetics,
       },
       {
-        selectionSet: ["ownedCosmetics.*"],
+        selectionSet: ["coins", "ownedCosmetics.*"],
       }
     );
 

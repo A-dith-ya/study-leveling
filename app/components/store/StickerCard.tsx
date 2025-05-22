@@ -16,7 +16,6 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { StickerCardProps } from "../../types/storeTypes";
-import { getCosmeticImage } from "../../utils/cosmeticUtils";
 import { formatTitle } from "@/app/utils/stickerUtils";
 import COLORS from "../../constants/colors";
 
@@ -96,7 +95,7 @@ export function StickerCard({
   return (
     <Animated.View style={[styles.container, animatedContainerStyle]}>
       <View style={styles.imageContainer}>
-        <Image source={getCosmeticImage(sticker.id)} style={styles.image} />
+        <Image source={sticker.image} style={styles.image} />
       </View>
 
       <Text style={styles.name} numberOfLines={1}>

@@ -94,10 +94,12 @@ export function useUpdateUserCosmetics() {
 
   return useMutation({
     mutationFn: async ({
+      coins,
       ownedCosmetics,
     }: {
+      coins: number;
       ownedCosmetics: Schema["User"]["type"]["ownedCosmetics"];
-    }) => updateUserOwnedCosmetics(user?.id || "", ownedCosmetics),
+    }) => updateUserOwnedCosmetics(user?.id || "", coins, ownedCosmetics),
     onSuccess: (updatedUser) => {
       updateUserCache(
         queryClient,

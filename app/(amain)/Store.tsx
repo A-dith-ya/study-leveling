@@ -5,15 +5,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import StickerCard from "../components/store/StickerCard";
 import CoinBalance from "../components/store/CoinBalance";
 import LoadingScreen from "../components/common/LoadingScreen";
-import { useUserData } from "../hooks/useUser";
+import { useUserData, useUpdateUserCosmetics } from "../hooks/useUser";
 import useCosmeticStore from "../stores/cosmeticStore";
 import { Cosmetic } from "../types/storeTypes";
 import COLORS from "../constants/colors";
 
 export default function Store() {
   const { data: userData, isLoading } = useUserData();
-  const { available, isBoughtToday, hasEnoughCoins, purchaseCosmetic } =
-    useCosmeticStore();
+  const updateUserCosmeticsMutation = useUpdateUserCosmetics();
+  const { available, isBoughtToday, markAsBoughtToday } = useCosmeticStore();
 
   const coins = userData?.coins ?? 0;
   const [prevCoins, setPrevCoins] = useState<number>(coins);
@@ -29,7 +29,47 @@ export default function Store() {
 
   // Handle purchase
   const handleBuySticker = (stickerId: string) => {
-    purchaseCosmetic(stickerId);
+    const stickerPrice = available.find((c) => c.id === stickerId)?.price;
+    if (!stickerPrice || coins < stickerPrice || isBoughtToday(stickerId))
+      return;
+
+    const ownedCosmetics = userData?.ownedCosmetics ?? [];
+    const existingCosmetic = ownedCosmetics.find(
+      (c) => c?.cosmeticId === stickerId
+    );
+
+    if (existingCosmetic) {
+      updateUserCosmeticsMutation.mutate(
+        {
+          coins: coins - stickerPrice,
+          ownedCosmetics: ownedCosmetics.map((c) =>
+            c?.cosmeticId === stickerId
+              ? { ...c, count: (c.count ?? 0) + 1 }
+              : c
+          ),
+        },
+        {
+          onSuccess: () => {
+            markAsBoughtToday(stickerId);
+          },
+        }
+      );
+    } else {
+      updateUserCosmeticsMutation.mutate(
+        {
+          coins: coins - stickerPrice,
+          ownedCosmetics: [
+            ...ownedCosmetics,
+            { cosmeticId: stickerId, count: 1, category: "STICKER" },
+          ],
+        },
+        {
+          onSuccess: () => {
+            markAsBoughtToday(stickerId);
+          },
+        }
+      );
+    }
   };
 
   // Render sticker card
@@ -37,7 +77,7 @@ export default function Store() {
     <StickerCard
       sticker={item}
       isBoughtToday={isBoughtToday(item.id)}
-      hasEnoughCoins={hasEnoughCoins(item.price)}
+      hasEnoughCoins={coins >= item.price}
       onBuy={handleBuySticker}
     />
   );

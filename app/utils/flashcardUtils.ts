@@ -1,9 +1,10 @@
-export const fisherYatesShuffle = (array: number[]) => {
-  for (let i = array.length - 1; i > 0; i--) {
+export const fisherYatesShuffle = <T>(array: T[], count?: number): T[] => {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+    [result[i], result[j]] = [result[j], result[i]];
   }
-  return array;
+  return result.slice(0, count ?? array.length);
 };
 
 import { v4 as uuidv4 } from "uuid";
