@@ -18,7 +18,7 @@ export const handler: Schema["feedback"]["functionHandler"] = async (event) => {
 
     const message = await openai.beta.threads.messages.create(thread.id, {
       role: "user",
-      content: `question: ${question} correctAnswer: ${correctAnswer} userAnswer: ${userAnswer}`,
+      content: `question: ${question}\ncorrectAnswer: ${correctAnswer}\nuserAnswer: ${userAnswer}`,
     });
 
     let run = await openai.beta.threads.runs.createAndPoll(thread.id, {

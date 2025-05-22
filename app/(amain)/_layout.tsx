@@ -50,6 +50,18 @@ export default function MainLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="Store"
+        options={{
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? "basket" : "basket-outline"}
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
