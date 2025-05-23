@@ -21,18 +21,12 @@ interface DeckItem {
 }
 
 export default function Index() {
-  const { data: userData, isLoading, error } = useUserData();
+  const { data: userData, isLoading } = useUserData();
 
-  const {
-    data: decks,
-    isLoading: decksLoading,
-    error: decksError,
-  } = useDecks();
+  const { data: decks, isLoading: decksLoading } = useDecks();
 
   if (isLoading) return <LoadingScreen />;
   if (decksLoading) return <LoadingScreen message="Loading decks..." />;
-
-  if (error || decksError) return <Text>Error {error?.message} </Text>;
 
   const renderDeckItem = ({ item }: { item: DeckItem }) => (
     <DeckCard

@@ -36,6 +36,8 @@ const DeckCard: React.FC<DeckCardProps> = ({
           <TouchableOpacity
             style={[styles.button, styles.editButton]}
             onPress={onEdit}
+            accessibilityRole="button"
+            accessibilityLabel="Edit deck"
           >
             <FontAwesome6 name="pen" size={16} color={COLORS.white} />
             <Text style={styles.buttonText}>Edit</Text>
@@ -43,6 +45,8 @@ const DeckCard: React.FC<DeckCardProps> = ({
           <TouchableOpacity
             style={[styles.button, styles.practiceButton]}
             onPress={onAIReview}
+            accessibilityRole="button"
+            accessibilityLabel="AI review"
           >
             <FontAwesome6 name="robot" size={16} color={COLORS.white} />
             <Text style={styles.buttonText}>AI</Text>
@@ -50,6 +54,8 @@ const DeckCard: React.FC<DeckCardProps> = ({
           <TouchableOpacity
             style={[styles.button, styles.practiceButton]}
             onPress={onPractice}
+            accessibilityRole="button"
+            accessibilityLabel="Practice deck"
           >
             <FontAwesome6 name="play" size={16} color={COLORS.white} />
             <Text style={styles.buttonText}>Review</Text>
