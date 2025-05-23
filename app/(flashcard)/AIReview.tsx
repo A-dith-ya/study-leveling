@@ -71,25 +71,27 @@ export default function AIReview() {
       return;
     }
 
-    const response = await aiReview.mutateAsync({
-      question: question,
-      correctAnswer: correctAnswer,
-      userAnswer: sanitizedUserInput,
-    });
+    try {
+      const response = await aiReview.mutateAsync({
+        question: question,
+        correctAnswer: correctAnswer,
+        userAnswer: sanitizedUserInput,
+      });
 
-    setEvaluation(deckData?.flashcards?.[currentFlashcardIndex].flashcardId, {
-      userAnswerSegments: createUserAnswerSegments(
-        sanitizedUserInput,
-        response
-      ),
-      correctAnswerSegments: createCorrectAnswerSegments(
-        correctAnswer,
-        response
-      ),
-      aiExplanation: response.aiExplanation,
-    });
+      setEvaluation(deckData?.flashcards?.[currentFlashcardIndex].flashcardId, {
+        userAnswerSegments: createUserAnswerSegments(
+          sanitizedUserInput,
+          response
+        ),
+        correctAnswerSegments: createCorrectAnswerSegments(
+          correctAnswer,
+          response
+        ),
+        aiExplanation: response.aiExplanation,
+      });
 
-    setIsEvaluated(true);
+      setIsEvaluated(true);
+    } catch (error) {}
   };
 
   const handleNextQuestion = () => {
@@ -217,9 +219,16 @@ export default function AIReview() {
           <Ionicons name="chevron-back" size={24} color={COLORS.primary} />
         </Pressable>
         <Animated.View style={[submitButtonStyle]}>
-          <Pressable style={styles.submitButton} onPress={handleSubmit}>
+          <Pressable
+            style={styles.submitButton}
+            onPress={handleSubmit}
+            accessibilityRole="button"
+          >
             {aiReview.isPending ? (
-              <ActivityIndicator color={COLORS.white} />
+              <ActivityIndicator
+                color={COLORS.white}
+                testID="activity-indicator"
+              />
             ) : (
               <Text style={styles.submitButtonText}>
                 {!isEvaluated ? "Submit" : "Try Again"}
