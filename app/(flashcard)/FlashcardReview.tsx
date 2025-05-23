@@ -198,6 +198,7 @@ export default function FlashcardReview() {
               )}`
             );
           }}
+          accessibilityRole="button"
         >
           <Text style={styles.submitButtonText}>Complete Review</Text>
         </Pressable>
