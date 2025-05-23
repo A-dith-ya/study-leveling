@@ -180,6 +180,7 @@ export default function UserStats() {
                       !isUnlocked && styles.lockedImage,
                     ]}
                     resizeMode="contain"
+                    accessibilityLabel="Achievement Badge"
                   />
                 </AnimatedPressable>
               );
