@@ -30,13 +30,19 @@ export default function EditHeader({
           <Pressable
             style={styles.backButton}
             onPress={() => router.dismissTo(backButtonDestination)}
+            accessibilityRole="button"
+            accessibilityLabel="Back"
           >
             <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
           </Pressable>
         )}
         <Text style={styles.title}>{title}</Text>
       </View>
-      <Pressable onPress={onRightButtonPress} style={styles.rightButton}>
+      <Pressable
+        onPress={onRightButtonPress}
+        style={styles.rightButton}
+        accessibilityRole="button"
+      >
         <Ionicons name={rightButtonIcon} size={24} color={COLORS.primary} />
         <Text style={styles.rightButtonText}>{rightButtonText}</Text>
       </Pressable>

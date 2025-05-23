@@ -160,7 +160,11 @@ export default function FlashcardDecoration() {
 
         {/* Add Sticker Button */}
         <View style={styles.addButtonContainer}>
-          <Pressable style={styles.addButton} onPress={showStickerPalette}>
+          <Pressable
+            style={styles.addButton}
+            onPress={showStickerPalette}
+            accessibilityRole="button"
+          >
             <Ionicons name="add-circle" size={24} color={COLORS.white} />
             <Text style={styles.addButtonText}>Add Sticker</Text>
           </Pressable>
