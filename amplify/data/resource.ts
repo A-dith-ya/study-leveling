@@ -1,6 +1,7 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 import { postConfirmation } from "../auth/post-confirmation/resource";
 import { feedback } from "../functions/feedback/resource";
+import { deleteUser } from "../functions/delete-user/resource";
 
 /*== STEP 1 ===============================================================
 The section below creates a Todo database table with a "content" field. Try
@@ -127,6 +128,13 @@ const schema = a
       .returns(a.ref("FeedbackResponse"))
       .authorization((allow) => [allow.authenticated()])
       .handler(a.handler.function(feedback)),
+
+    deleteUser: a
+      .query()
+      .arguments({})
+      .returns(a.boolean())
+      .authorization((allow) => [allow.authenticated()])
+      .handler(a.handler.function(deleteUser)),
   })
   .authorization((allow) => [allow.resource(postConfirmation)]);
 
