@@ -2,6 +2,7 @@ import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 import { postConfirmation } from "../auth/post-confirmation/resource";
 import { feedback } from "../functions/feedback/resource";
 import { deleteUser } from "../functions/delete-user/resource";
+import { generateFlashcards } from "../functions/generate-flashcards/resource";
 
 /*== STEP 1 ===============================================================
 The section below creates a Todo database table with a "content" field. Try
@@ -128,6 +129,20 @@ const schema = a
       .returns(a.ref("FeedbackResponse"))
       .authorization((allow) => [allow.authenticated()])
       .handler(a.handler.function(feedback)),
+
+    generateFlashcardsResponse: a.customType({
+      question: a.string().required(),
+      answer: a.string().required(),
+    }),
+
+    generateFlashcards: a
+      .query()
+      .arguments({
+        notes: a.string().required(),
+      })
+      .returns(a.ref("generateFlashcardsResponse").array())
+      .authorization((allow) => [allow.authenticated()])
+      .handler(a.handler.function(generateFlashcards)),
 
     deleteUser: a
       .query()

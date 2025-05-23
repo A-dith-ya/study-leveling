@@ -2,6 +2,7 @@ import { defineBackend } from "@aws-amplify/backend";
 import { auth } from "./auth/resource";
 import { data } from "./data/resource";
 import { feedback } from "./functions/feedback/resource";
+import { generateFlashcards } from "./functions/generate-flashcards/resource";
 import { deleteUser } from "./functions/delete-user/resource";
 import { Effect, PolicyStatement, Policy } from "aws-cdk-lib/aws-iam";
 import { Stack } from "aws-cdk-lib";
@@ -13,6 +14,7 @@ const backend = defineBackend({
   auth,
   data,
   feedback,
+  generateFlashcards,
   deleteUser,
 });
 
