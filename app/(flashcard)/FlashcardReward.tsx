@@ -116,6 +116,7 @@ export default function FlashcardReward() {
             onPress={() => {
               router.replace("/(amain)");
             }}
+            accessibilityRole="button"
           >
             <Text style={styles.buttonText}>Back to Dashboard</Text>
           </TouchableOpacity>
@@ -132,6 +133,7 @@ export default function FlashcardReward() {
                 })
               );
             }}
+            accessibilityRole="button"
           >
             <Text style={[styles.buttonText, styles.secondaryButtonText]}>
               Retry Deck
