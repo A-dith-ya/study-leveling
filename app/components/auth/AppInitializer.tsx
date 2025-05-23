@@ -1,10 +1,11 @@
 import { useEffect, useRef } from "react";
-import { AppState, AppStateStatus } from "react-native";
+import { AppState, Platform } from "react-native";
 import { useAuthenticator } from "@aws-amplify/ui-react-native";
 import useUserStore from "@/app/stores/userStore";
 import useAchievementStore from "@/app/stores/achievementStore";
 import useChallengeStore from "@/app/stores/challengeStore";
 import useCosmeticStore from "@/app/stores/cosmeticStore";
+import Purchases, { LOG_LEVEL } from "react-native-purchases";
 
 import { logger } from "@/app/utils/logger";
 
@@ -81,6 +82,20 @@ export default function AppInitializer() {
 
     initializeApp();
   }, [authStatus]);
+
+  useEffect(() => {
+    Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+
+    if (Platform.OS === "ios") {
+      Purchases.configure({
+        apiKey: process.env.EXPO_PUBLIC_REVENUECAT_API_KEY,
+      });
+    } else if (Platform.OS === "android") {
+      Purchases.configure({
+        apiKey: process.env.EXPO_PUBLIC_REVENUECAT_API_KEY,
+      });
+    }
+  }, []);
 
   return null;
 }

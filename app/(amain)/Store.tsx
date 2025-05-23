@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import StickerCard from "../components/store/StickerCard";
 import CoinBalance from "../components/store/CoinBalance";
 import LoadingScreen from "../components/common/LoadingScreen";
+import CoinPackModal from "../components/store/CoinPackModal";
 import { useUserData, useUpdateUserCosmetics } from "../hooks/useUser";
 import useCosmeticStore from "../stores/cosmeticStore";
 import { Cosmetic } from "../types/storeTypes";
@@ -17,6 +18,7 @@ export default function Store() {
 
   const coins = userData?.coins ?? 0;
   const [prevCoins, setPrevCoins] = useState<number>(coins);
+  const [coinPackModalVisible, setCoinPackModalVisible] = useState(false);
 
   // Save previous coin amount for animation
   useEffect(() => {
@@ -72,6 +74,15 @@ export default function Store() {
     }
   };
 
+  // Handle coin pack purchase success
+  const handleCoinPurchaseSuccess = (coinsEarned: number) => {
+    // Update user's coin balance
+    updateUserCosmeticsMutation.mutate({
+      coins: coins + coinsEarned,
+      ownedCosmetics: userData?.ownedCosmetics ?? [],
+    });
+  };
+
   // Render sticker card
   const renderStickerCard = ({ item }: { item: Cosmetic }) => (
     <StickerCard
@@ -88,7 +99,11 @@ export default function Store() {
     <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Sticker Store</Text>
-        <CoinBalance coins={coins} prevCoins={prevCoins} />
+        <CoinBalance
+          coins={coins}
+          prevCoins={prevCoins}
+          onPress={() => setCoinPackModalVisible(true)}
+        />
       </View>
 
       {/* Sticker Grid */}
@@ -113,6 +128,12 @@ export default function Store() {
             </Text>
           </View>
         }
+      />
+
+      <CoinPackModal
+        visible={coinPackModalVisible}
+        onClose={() => setCoinPackModalVisible(false)}
+        onPurchaseSuccess={handleCoinPurchaseSuccess}
       />
     </SafeAreaView>
   );

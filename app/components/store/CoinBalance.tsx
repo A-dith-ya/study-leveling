@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, Image, StyleSheet } from "react-native";
+import { Text, Image, StyleSheet, Pressable } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -13,7 +13,11 @@ import { animateValue } from "../../utils/cosmeticUtils";
 import { CoinBalanceProps } from "../../types/storeTypes";
 import COLORS from "../../constants/colors";
 
-export function CoinBalance({ coins, prevCoins }: CoinBalanceProps) {
+export default function CoinBalance({
+  coins,
+  prevCoins,
+  onPress,
+}: CoinBalanceProps) {
   const [displayedCoins, setDisplayedCoins] = useState(coins);
   const scale = useSharedValue(1);
   const rotateY = useSharedValue(0);
@@ -58,15 +62,17 @@ export function CoinBalance({ coins, prevCoins }: CoinBalanceProps) {
   });
 
   return (
-    <Animated.View style={[styles.container, animatedContainerStyle]}>
-      <Animated.View style={animatedCoinStyle}>
-        <Image
-          source={require("@/assets/images/coin.webp")}
-          style={styles.coinIcon}
-        />
+    <Pressable onPress={onPress}>
+      <Animated.View style={[styles.container, animatedContainerStyle]}>
+        <Animated.View style={animatedCoinStyle}>
+          <Image
+            source={require("@/assets/images/coin.webp")}
+            style={styles.coinIcon}
+          />
+        </Animated.View>
+        <Text style={styles.coinText}>{displayedCoins}</Text>
       </Animated.View>
-      <Text style={styles.coinText}>{displayedCoins}</Text>
-    </Animated.View>
+    </Pressable>
   );
 }
 
@@ -95,5 +101,3 @@ const styles = StyleSheet.create({
     color: COLORS.text,
   },
 });
-
-export default CoinBalance;
