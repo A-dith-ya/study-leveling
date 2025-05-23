@@ -48,6 +48,7 @@ export default function AchievementModal({
               !achievementUnlocked && styles.lockedImage,
             ]}
             resizeMode="contain"
+            accessibilityLabel="Achievement Badge"
           />
           <Text style={styles.modalTitle}>{achievement.title}</Text>
           <Text style={styles.modalDescription}>{achievement.description}</Text>
