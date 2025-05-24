@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { generateClient } from "aws-amplify/api";
 import type { Schema } from "../../amplify/data/resource";
 
-import { logger } from "./logger";
+import { logger } from "../utils/logger";
 
 const client = generateClient<Schema>();
 

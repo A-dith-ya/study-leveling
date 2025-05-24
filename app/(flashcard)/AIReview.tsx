@@ -23,7 +23,7 @@ import MicButton from "../components/ai-review/MicButton";
 import AIFeedback from "../components/ai-review/AIFeedback";
 import LoadingScreen from "../components/common/LoadingScreen";
 import { useReviewStore } from "../stores/reviewStore";
-import { useAIReview } from "../utils/openai";
+import { useAIReview } from "../services/reviewService";
 import {
   sanitizeInput,
   createUserAnswerSegments,

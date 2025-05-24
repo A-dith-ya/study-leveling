@@ -86,9 +86,12 @@ export async function updateUserSessionStats(
       {
         selectionSet: [
           "xp",
+          "level",
+          "streak",
           "timeSpent",
           "totalCardsReviewed",
           "totalSessionsCompleted",
+          "updatedAt",
         ],
       }
     );
@@ -114,10 +117,15 @@ export async function updateUserAchievements(
   achievements: string[]
 ) {
   try {
-    const { errors } = await client.models.User.update({
-      userId,
-      unlockedAchievements: achievements,
-    });
+    const { errors } = await client.models.User.update(
+      {
+        userId,
+        unlockedAchievements: achievements,
+      },
+      {
+        selectionSet: ["unlockedAchievements"],
+      }
+    );
 
     if (errors) {
       logger.error("updateUserAchievements", errors);
