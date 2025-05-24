@@ -4,7 +4,6 @@ import { FlashList } from "@shopify/flash-list";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import SignOutButton from "@/app/components/auth/SignOutButton";
 import DashboardHeader from "@/app/components/dashboard/DashboardHeader";
 import DeckCard from "@/app/components/dashboard/DeckCard";
 import LoadingScreen from "@/app/components/common/LoadingScreen";
@@ -48,7 +47,12 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <SignOutButton />
+      <Pressable
+        style={styles.accountButton}
+        onPress={() => router.push("/(flashcard)/Account")}
+      >
+        <Ionicons name="person" size={34} color={COLORS.primary} />
+      </Pressable>
       <DashboardHeader
         level={userData?.level ?? 1}
         currentXP={userData?.xp ?? 0}
@@ -89,6 +93,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  accountButton: {
+    alignSelf: "flex-end",
+    marginRight: 16,
   },
   listContainer: {
     flex: 1,
