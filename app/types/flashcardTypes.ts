@@ -17,3 +17,19 @@ export interface Flashcard {
   back: string;
   order: number;
 }
+
+// File Upload Modal
+export interface UploadedFile {
+  name: string;
+  uri: string;
+  size: number;
+  type: string;
+  content?: string;
+}
+
+export interface FileUploadModalProps {
+  visible: boolean;
+  onClose: () => void;
+  onGenerate: (files: UploadedFile[]) => void;
+  isGenerating?: boolean;
+}

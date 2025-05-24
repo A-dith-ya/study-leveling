@@ -1,6 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
+import * as DocumentPicker from "expo-document-picker";
+import * as FileSystem from "expo-file-system";
 
-import { Flashcard } from "../types/flashcardTypes";
+import { Flashcard, UploadedFile } from "@/app/types/flashcardTypes";
+import { logger } from "@/app/utils/logger";
 
 export const fisherYatesShuffle = <T>(array: T[], count?: number): T[] => {
   const result = [...array];
@@ -118,4 +121,60 @@ export const validateFlashcards = (
   }
 
   return { isValid: true };
+};
+
+export const MAX_TOTAL_CHARACTERS = 10000;
+const ALLOWED_TYPES = [".txt", ".md", ".csv"];
+
+export const validateFile = (
+  file: DocumentPicker.DocumentPickerAsset
+): string | null => {
+  // Check file type
+  const fileExtension = file.name
+    .toLowerCase()
+    .substring(file.name.lastIndexOf("."));
+  if (!ALLOWED_TYPES.includes(fileExtension)) {
+    return `File type ${fileExtension} is not allowed. Only .txt, .md, and .csv files are supported.`;
+  }
+
+  return null;
+};
+
+export const validateTotalLimits = (files: UploadedFile[]): string[] => {
+  const errors: string[] = [];
+
+  // Check total characters (if content is loaded)
+  const totalCharacters = files.reduce(
+    (sum, file) => sum + (file.content?.length || 0),
+    0
+  );
+  if (totalCharacters > MAX_TOTAL_CHARACTERS) {
+    errors.push(
+      `Total content exceeds ${MAX_TOTAL_CHARACTERS.toLocaleString()} characters limit. Current total: ${totalCharacters.toLocaleString()}`
+    );
+  }
+
+  return errors;
+};
+
+export const readFileContent = async (
+  file: DocumentPicker.DocumentPickerAsset
+): Promise<string> => {
+  try {
+    const content = await FileSystem.readAsStringAsync(file.uri);
+    return content;
+  } catch (error) {
+    logger.error("Error reading file content:", error);
+    throw new Error(`Failed to read content from "${file.name}"`);
+  }
+};
+
+export const formatFileSize = (bytes: number): string => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
+
+export const getTotalCharacters = (files: UploadedFile[]) => {
+  return files.reduce((sum, file) => sum + (file.content?.length || 0), 0);
 };
