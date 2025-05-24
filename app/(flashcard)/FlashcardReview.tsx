@@ -8,16 +8,16 @@ import {
 } from "react-native-reanimated";
 import { useLocalSearchParams, router } from "expo-router";
 
-import { useDeck } from "../hooks/useDeck";
-import { useUserData } from "../hooks/useUser";
-import { fisherYatesShuffle } from "../utils/flashcardUtils";
-import { calculateXPForSession } from "../utils/xpUtils";
-import { getElapsedSeconds } from "../utils/dayUtils";
-import ReviewHeader from "../components/flashcard/ReviewHeader";
-import FlashcardDisplay from "../components/flashcard/FlashcardDisplay";
-import ReviewControls from "../components/flashcard/ReviewControls";
-import LoadingScreen from "../components/common/LoadingScreen";
-import COLORS from "../constants/colors";
+import { useDeck } from "@/app/hooks/useDeck";
+import { useUserData } from "@/app/hooks/useUser";
+import { fisherYatesShuffle } from "@/app/utils/flashcardUtils";
+import { calculateXPForSession } from "@/app/utils/xpUtils";
+import { getElapsedSeconds } from "@/app/utils/dayUtils";
+import ReviewHeader from "@/app/components/flashcard/ReviewHeader";
+import FlashcardDisplay from "@/app/components/flashcard/FlashcardDisplay";
+import ReviewControls from "@/app/components/flashcard/ReviewControls";
+import LoadingScreen from "@/app/components/common/LoadingScreen";
+import COLORS from "@/app/constants/colors";
 
 /**
  * FlashcardReview Component

@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import ChallengeCard from "../components/challenges/ChallengeCard";
-import useChallengeStore from "../stores/challengeStore";
-import { getTimeUntilReset, formatResetTime } from "../utils/challengeUtils";
-import COLORS from "../constants/colors";
+import ChallengeCard from "@/app/components/challenges/ChallengeCard";
+import useChallengeStore from "@/app/stores/challengeStore";
+import { getTimeUntilReset, formatResetTime } from "@/app/utils/challengeUtils";
+import COLORS from "@/app/constants/colors";
 
 export default function DailyChallenges() {
   const { dailyChallenges, claimReward } = useChallengeStore();

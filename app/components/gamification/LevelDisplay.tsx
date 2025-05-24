@@ -6,14 +6,8 @@ import Animated, {
   withTiming,
   useSharedValue,
 } from "react-native-reanimated";
-import COLORS from "../../constants/colors";
-
-interface LevelProgressProps {
-  level: number;
-  nextLevel: number;
-  currentXP: number;
-  targetXP: number;
-}
+import COLORS from "@/app/constants/colors";
+import { LevelProgressProps } from "@/app/types/achievementTypes";
 
 export default function LevelProgress({
   level,

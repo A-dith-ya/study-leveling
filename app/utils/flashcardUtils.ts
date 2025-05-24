@@ -1,3 +1,7 @@
+import { v4 as uuidv4 } from "uuid";
+
+import { Flashcard } from "../types/flashcardTypes";
+
 export const fisherYatesShuffle = <T>(array: T[], count?: number): T[] => {
   const result = [...array];
   for (let i = result.length - 1; i > 0; i--) {
@@ -6,15 +10,6 @@ export const fisherYatesShuffle = <T>(array: T[], count?: number): T[] => {
   }
   return result.slice(0, count ?? array.length);
 };
-
-import { v4 as uuidv4 } from "uuid";
-
-export interface Flashcard {
-  id: string;
-  front: string;
-  back: string;
-  order: number;
-}
 
 export const createNewFlashcard = (currentLength: number): Flashcard => ({
   id: uuidv4(),
@@ -81,6 +76,20 @@ export const validateFlashcards = (
     return { isValid: false, errorMessage: "Please enter a deck title" };
   }
 
+  if (deckTitle.length < 3) {
+    return {
+      isValid: false,
+      errorMessage: "Deck title must be at least 3 characters long",
+    };
+  }
+
+  if (deckTitle.length > 100) {
+    return {
+      isValid: false,
+      errorMessage: "Deck title must be less than 100 characters",
+    };
+  }
+
   if (flashcards.length < 3) {
     return {
       isValid: false,
@@ -95,6 +104,16 @@ export const validateFlashcards = (
     return {
       isValid: false,
       errorMessage: "Please fill in all flashcard content",
+    };
+  }
+
+  const tooLongCards = flashcards.filter(
+    (card) => card.front.length > 500 || card.back.length > 500
+  );
+  if (tooLongCards.length > 0) {
+    return {
+      isValid: false,
+      errorMessage: "Flashcard content must be less than 500 characters",
     };
   }
 

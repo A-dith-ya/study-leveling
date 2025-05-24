@@ -1,6 +1,6 @@
 import { generateClient } from "aws-amplify/data";
-import type { Schema } from "../../amplify/data/resource";
-import { logger } from "../utils/logger";
+import type { Schema } from "@/amplify/data/resource";
+import { logger } from "@/app/utils/logger";
 
 const client = generateClient<Schema>();
 

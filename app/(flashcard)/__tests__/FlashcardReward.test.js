@@ -3,11 +3,11 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react-nativ
 import { useLocalSearchParams, router, useNavigation } from "expo-router";
 import { CommonActions } from "@react-navigation/native";
 
-import FlashcardReward from "../FlashcardReward";
-import { useUserData, useUpdateUserSessionStats } from "../../hooks/useUser";
-import * as xpUtils from "../../utils/xpUtils";
-import * as dayUtils from "../../utils/dayUtils";
-import * as challengeUtils from "../../utils/challengeUtils";
+import FlashcardReward from "@/app/(flashcard)/FlashcardReward";
+import { useUserData, useUpdateUserSessionStats } from "@/app/hooks/useUser";
+import * as xpUtils from "@/app/utils/xpUtils";
+import * as dayUtils from "@/app/utils/dayUtils";
+import * as challengeUtils from "@/app/utils/challengeUtils";
 
 // Mock dependencies
 jest.mock("expo-router", () => ({
@@ -18,21 +18,21 @@ jest.mock("expo-router", () => ({
   useNavigation: jest.fn(),
 }));
 
-jest.mock("../../hooks/useUser", () => ({
+jest.mock("@/app/hooks/useUser", () => ({
   useUserData: jest.fn(),
   useUpdateUserSessionStats: jest.fn(),
 }));
 
-jest.mock("../../utils/xpUtils", () => ({
+jest.mock("@/app/utils/xpUtils", () => ({
   getLevelFromXP: jest.fn(),
 }));
 
-jest.mock("../../utils/dayUtils", () => ({
+jest.mock("@/app/utils/dayUtils", () => ({
   updateStreak: jest.fn(),
   formatDuration: jest.fn(),
 }));
 
-jest.mock("../../utils/challengeUtils", () => ({
+jest.mock("@/app/utils/challengeUtils", () => ({
   updateFlashcardChallenges: jest.fn(),
   updateSessionChallenges: jest.fn(),
 }));

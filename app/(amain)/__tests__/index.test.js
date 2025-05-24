@@ -8,10 +8,10 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { router } from "expo-router";
 
-import Index from "../index";
-import { useUserData } from "../../hooks/useUser";
-import { useDecks } from "../../hooks/useDeck";
-import { calculateXPToNextLevel } from "../../utils/xpUtils";
+import Index from "@/app/(amain)/index";
+import { useUserData } from "@/app/hooks/useUser";
+import { useDecks } from "@/app/hooks/useDeck";
+import { calculateXPToNextLevel } from "@/app/utils/xpUtils";
 
 // Mock dependencies
 jest.mock("expo-router", () => ({
@@ -20,15 +20,15 @@ jest.mock("expo-router", () => ({
   },
 }));
 
-jest.mock("../../hooks/useUser", () => ({
+jest.mock("@/app/hooks/useUser", () => ({
   useUserData: jest.fn(),
 }));
 
-jest.mock("../../hooks/useDeck", () => ({
+jest.mock("@/app/hooks/useDeck", () => ({
   useDecks: jest.fn(),
 }));
 
-jest.mock("../../utils/xpUtils", () => ({
+jest.mock("@/app/utils/xpUtils", () => ({
   calculateXPToNextLevel: jest.fn(),
 }));
 
@@ -55,14 +55,14 @@ jest.mock("react-native-safe-area-context", () => {
 });
 
 // Mock components that are complex and not the focus of this test
-jest.mock("../../components/auth/SignOutButton", () => {
+jest.mock("@/app/components/auth/SignOutButton", () => {
   const { Text } = require("react-native");
   return function MockSignOutButton() {
     return <Text>Sign Out</Text>;
   };
 });
 
-jest.mock("../../components/dashboard/DashboardHeader", () => {
+jest.mock("@/app/components/dashboard/DashboardHeader", () => {
   const { View, Text } = require("react-native");
   return function MockDashboardHeader({
     level,
@@ -84,7 +84,7 @@ jest.mock("../../components/dashboard/DashboardHeader", () => {
   };
 });
 
-jest.mock("../../components/dashboard/DeckCard", () => {
+jest.mock("@/app/components/dashboard/DeckCard", () => {
   const { View, Text, Pressable } = require("react-native");
   return function MockDeckCard({
     title,
@@ -111,7 +111,7 @@ jest.mock("../../components/dashboard/DeckCard", () => {
   };
 });
 
-jest.mock("../../components/common/LoadingScreen", () => {
+jest.mock("@/app/components/common/LoadingScreen", () => {
   const { Text } = require("react-native");
   return function MockLoadingScreen({ message }) {
     return <Text>{message || "Loading..."}</Text>;

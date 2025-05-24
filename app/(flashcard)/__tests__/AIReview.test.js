@@ -7,11 +7,11 @@ import {
 } from "@testing-library/react-native";
 import { router, useLocalSearchParams } from "expo-router";
 
-import AIReview from "../AIReview";
-import { useReviewStore } from "../../stores/reviewStore";
-import { useDeck } from "../../hooks/useDeck";
-import { useAIReview } from "../../utils/openai";
-import * as reviewUtils from "../../utils/reviewUtils";
+import AIReview from "@/app/(flashcard)/AIReview";
+import { useReviewStore } from "@/app/stores/reviewStore";
+import { useDeck } from "@/app/hooks/useDeck";
+import { useAIReview } from "@/app/services/reviewService";
+import * as reviewUtils from "@/app/utils/reviewUtils";
 
 // Mock dependencies
 jest.mock("expo-router", () => ({
@@ -21,19 +21,20 @@ jest.mock("expo-router", () => ({
   useLocalSearchParams: jest.fn(),
 }));
 
-jest.mock("../../stores/reviewStore", () => ({
-  useReviewStore: jest.fn(),
-}));
-
-jest.mock("../../hooks/useDeck", () => ({
+// Mock hooks
+jest.mock("@/app/hooks/useDeck", () => ({
   useDeck: jest.fn(),
 }));
 
-jest.mock("../../utils/openai", () => ({
+jest.mock("@/app/stores/reviewStore", () => ({
+  useReviewStore: jest.fn(),
+}));
+
+jest.mock("@/app/services/reviewService", () => ({
   useAIReview: jest.fn(),
 }));
 
-jest.mock("../../utils/reviewUtils", () => ({
+jest.mock("@/app/utils/reviewUtils", () => ({
   sanitizeInput: jest.fn(),
   createUserAnswerSegments: jest.fn(),
   createCorrectAnswerSegments: jest.fn(),
@@ -52,7 +53,7 @@ jest.mock("@expo/vector-icons", () => ({
 }));
 
 // Mock other components
-jest.mock("../../components/ai-review/HighlightedAnswer", () => {
+jest.mock("@/app/components/ai-review/HighlightedAnswer", () => {
   return function MockHighlightedAnswer({ label, segments }) {
     const React = require("react");
     return React.createElement("View", {
@@ -69,7 +70,7 @@ jest.mock("../../components/ai-review/HighlightedAnswer", () => {
   };
 });
 
-jest.mock("../../components/ai-review/LegendItem", () => ({
+jest.mock("@/app/components/ai-review/LegendItem", () => ({
   LegendItem: ({ type, label }) => {
     const React = require("react");
     return React.createElement("View", {
@@ -79,7 +80,7 @@ jest.mock("../../components/ai-review/LegendItem", () => ({
   },
 }));
 
-jest.mock("../../components/ai-review/MicButton", () => {
+jest.mock("@/app/components/ai-review/MicButton", () => {
   return function MockMicButton() {
     const React = require("react");
     return React.createElement("View", {
@@ -89,7 +90,7 @@ jest.mock("../../components/ai-review/MicButton", () => {
   };
 });
 
-jest.mock("../../components/ai-review/AIFeedback", () => {
+jest.mock("@/app/components/ai-review/AIFeedback", () => {
   return function MockAIFeedback({ explanation }) {
     const React = require("react");
     return React.createElement("View", {
@@ -99,7 +100,7 @@ jest.mock("../../components/ai-review/AIFeedback", () => {
   };
 });
 
-jest.mock("../../components/common/LoadingScreen", () => {
+jest.mock("@/app/components/common/LoadingScreen", () => {
   return function MockLoadingScreen({ message }) {
     const React = require("react");
     return React.createElement("View", {
@@ -121,7 +122,7 @@ jest.mock("react-native-reanimated", () => {
   };
 });
 
-jest.mock("../../utils/logger", () => ({
+jest.mock("@/app/utils/logger", () => ({
   logger: {
     logDivider: jest.fn(),
   },

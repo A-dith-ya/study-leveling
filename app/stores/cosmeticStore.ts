@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { zustandStorage } from "./mmkv";
-import { logger } from "../utils/logger";
-import { COSMETICS } from "../constants/cosmetics";
-import { fisherYatesShuffle } from "../utils/flashcardUtils";
+import { logger } from "@/app/utils/logger";
+import { COSMETICS } from "@/app/constants/cosmetics";
+import { fisherYatesShuffle } from "@/app/utils/flashcardUtils";
 
 interface CosmeticStore {
   // Map of stickers bought today

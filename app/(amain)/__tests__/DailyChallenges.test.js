@@ -7,9 +7,9 @@ import {
   act,
 } from "@testing-library/react-native";
 
-import DailyChallenges from "../DailyChallenges";
-import useChallengeStore from "../../stores/challengeStore";
-import * as challengeUtils from "../../utils/challengeUtils";
+import DailyChallenges from "@/app/(amain)/DailyChallenges";
+import useChallengeStore from "@/app/stores/challengeStore";
+import * as challengeUtils from "@/app/utils/challengeUtils";
 
 // Mock React hooks
 const mockSetState = jest.fn();
@@ -30,7 +30,7 @@ jest.mock("react", () => ({
 }));
 
 // Mock dependencies
-jest.mock("../../stores/challengeStore", () => {
+jest.mock("@/app/stores/challengeStore", () => {
   const mockStore = {
     dailyChallenges: [],
     claimReward: jest.fn(),
@@ -47,12 +47,12 @@ jest.mock("../../stores/challengeStore", () => {
   };
 });
 
-jest.mock("../../utils/challengeUtils", () => ({
+jest.mock("@/app/utils/challengeUtils", () => ({
   getTimeUntilReset: jest.fn(),
   formatResetTime: jest.fn(),
 }));
 
-jest.mock("../../components/challenges/ChallengeCard", () => {
+jest.mock("@/app/components/challenges/ChallengeCard", () => {
   return function MockChallengeCard({ challenge, onClaim }) {
     const React = require("react");
     return React.createElement("View", {

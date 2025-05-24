@@ -1,10 +1,7 @@
 import React from "react";
 import { View, Text, ScrollView, StyleSheet } from "react-native";
-import COLORS from "../../constants/colors";
-
-interface AIFeedbackProps {
-  explanation: string;
-}
+import COLORS from "@/app/constants/colors";
+import { AIFeedbackProps } from "@/app/types/reviewTypes";
 
 export default function AIFeedback({ explanation }: AIFeedbackProps) {
   return (

@@ -19,13 +19,13 @@ import { useLocalSearchParams, router, useNavigation } from "expo-router";
 import { CommonActions } from "@react-navigation/native";
 
 import COLORS from "@/app/constants/colors";
-import { useUserData, useUpdateUserSessionStats } from "../hooks/useUser";
-import { getLevelFromXP } from "../utils/xpUtils";
-import { updateStreak, formatDuration } from "../utils/dayUtils";
+import { useUserData, useUpdateUserSessionStats } from "@/app/hooks/useUser";
+import { getLevelFromXP } from "@/app/utils/xpUtils";
+import { updateStreak, formatDuration } from "@/app/utils/dayUtils";
 import {
   updateFlashcardChallenges,
   updateSessionChallenges,
-} from "../utils/challengeUtils";
+} from "@/app/utils/challengeUtils";
 
 const { width } = Dimensions.get("window");
 

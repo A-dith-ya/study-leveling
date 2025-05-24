@@ -4,66 +4,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { FlashList } from "@shopify/flash-list";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import Animated, { FadeInUp } from "react-native-reanimated";
 
-import HighlightedAnswer from "../components/ai-review/HighlightedAnswer";
-import AIFeedback from "../components/ai-review/AIFeedback";
-import LoadingScreen from "../components/common/LoadingScreen";
-import { useReviewStore } from "../stores/reviewStore";
-import { useDeck } from "../hooks/useDeck";
-import COLORS from "../constants/colors";
-
-interface FlashcardSummaryItem {
-  id: string;
-  question: string;
-  userAnswer?: string;
-  correctAnswer?: string;
-  aiExplanation?: string;
-  userAnswerSegments?: Array<{
-    text: string;
-    type: "correct" | "incorrect" | "missing" | "none";
-  }>;
-  correctAnswerSegments?: Array<{
-    text: string;
-    type: "correct" | "incorrect" | "missing" | "none";
-  }>;
-}
-
-const FlashcardSummaryCard = React.memo(
-  ({ item }: { item: FlashcardSummaryItem }) => {
-    return (
-      <Animated.View
-        entering={FadeInUp.delay(100)}
-        style={styles.cardContainer}
-      >
-        {/* Question */}
-        <View style={styles.questionContainer}>
-          <Text style={styles.questionText}>{item.question}</Text>
-        </View>
-
-        {/* User Answer */}
-        {item.userAnswerSegments && item.userAnswerSegments.length > 0 && (
-          <HighlightedAnswer
-            label="Your Answer"
-            segments={item.userAnswerSegments}
-          />
-        )}
-
-        {/* Correct Answer */}
-        {item.correctAnswerSegments &&
-          item.correctAnswerSegments.length > 0 && (
-            <HighlightedAnswer
-              label="Correct Answer"
-              segments={item.correctAnswerSegments}
-            />
-          )}
-
-        {/* AI Feedback */}
-        {item.aiExplanation && <AIFeedback explanation={item.aiExplanation} />}
-      </Animated.View>
-    );
-  }
-);
+import LoadingScreen from "@/app/components/common/LoadingScreen";
+import AISummaryCard from "@/app/components/ai-review/AISummaryCard";
+import { useReviewStore } from "@/app/stores/reviewStore";
+import { useDeck } from "@/app/hooks/useDeck";
+import COLORS from "@/app/constants/colors";
+import { AISummaryCardItem } from "@/app/types/reviewTypes";
 
 export default function AISummary() {
   const { deckId, evaluations, userAnswers, hasEvaluation } = useReviewStore();
@@ -85,7 +32,7 @@ export default function AISummary() {
   }
 
   // Filter flashcards to only include evaluated ones
-  const flashcardSummaries: FlashcardSummaryItem[] = deckData.flashcards
+  const flashcardSummaries: AISummaryCardItem[] = deckData.flashcards
     .filter((flashcard) => hasEvaluation(flashcard.flashcardId))
     .map((flashcard) => {
       const evaluation = evaluations[flashcard.flashcardId];
@@ -129,7 +76,7 @@ export default function AISummary() {
           {/* Flashcard List */}
           <FlashList
             data={flashcardSummaries}
-            renderItem={({ item }) => <FlashcardSummaryCard item={item} />}
+            renderItem={({ item }) => <AISummaryCard item={item} />}
             estimatedItemSize={400}
             contentContainerStyle={styles.listContainer}
             showsVerticalScrollIndicator={false}
@@ -181,28 +128,6 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     padding: 16,
-  },
-  cardContainer: {
-    marginBottom: 16,
-  },
-  questionContainer: {
-    backgroundColor: COLORS.white,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: COLORS.shadowColor,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  questionText: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: COLORS.text,
   },
   bottomActions: {
     flexDirection: "row",

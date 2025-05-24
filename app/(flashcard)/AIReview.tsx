@@ -17,21 +17,21 @@ import Animated, {
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 
-import HighlightedAnswer from "../components/ai-review/HighlightedAnswer";
-import { LegendItem } from "../components/ai-review/LegendItem";
-import MicButton from "../components/ai-review/MicButton";
-import AIFeedback from "../components/ai-review/AIFeedback";
-import LoadingScreen from "../components/common/LoadingScreen";
-import { useReviewStore } from "../stores/reviewStore";
-import { useAIReview } from "../services/reviewService";
+import HighlightedAnswer from "@/app/components/ai-review/HighlightedAnswer";
+import { LegendItem } from "@/app/components/ai-review/LegendItem";
+import MicButton from "@/app/components/ai-review/MicButton";
+import AIFeedback from "@/app/components/ai-review/AIFeedback";
+import LoadingScreen from "@/app/components/common/LoadingScreen";
+import { useReviewStore } from "@/app/stores/reviewStore";
+import { useAIReview } from "@/app/services/reviewService";
 import {
   sanitizeInput,
   createUserAnswerSegments,
   createCorrectAnswerSegments,
-} from "../utils/reviewUtils";
-import { useDeck } from "../hooks/useDeck";
-import COLORS from "../constants/colors";
-import { logger } from "../utils/logger";
+} from "@/app/utils/reviewUtils";
+import { useDeck } from "@/app/hooks/useDeck";
+import COLORS from "@/app/constants/colors";
+import { logger } from "@/app/utils/logger";
 
 export default function AIReview() {
   const [userInput, setUserInput] = useState("");

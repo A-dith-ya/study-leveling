@@ -9,30 +9,22 @@ import Animated, {
 } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 
-import { PlacedSticker } from "../types/stickerTypes";
 import {
   CARD_WIDTH,
   CARD_HEIGHT,
   STICKER_SIZE,
   getImageFromId,
-} from "../utils/stickerUtils";
-import COLORS from "../constants/colors";
+} from "@/app/utils/stickerUtils";
+import COLORS from "@/app/constants/colors";
+import { DraggableStickerProps } from "@/app/types/stickerTypes";
 
-interface DraggableStickerProps {
-  sticker: PlacedSticker;
-  isSelected: boolean;
-  onSelect: () => void;
-  onUpdate: (updates: Partial<PlacedSticker>) => void;
-  onDelete: () => void;
-}
-
-export const DraggableSticker: React.FC<DraggableStickerProps> = ({
+export function DraggableSticker({
   sticker,
   isSelected,
   onSelect,
   onUpdate,
   onDelete,
-}) => {
+}: DraggableStickerProps) {
   const translateX = useSharedValue(sticker.x);
   const translateY = useSharedValue(sticker.y);
   const scale = useSharedValue(sticker.scale);
@@ -176,7 +168,7 @@ export const DraggableSticker: React.FC<DraggableStickerProps> = ({
       </Animated.View>
     </GestureDetector>
   );
-};
+}
 
 const styles = StyleSheet.create({
   stickerContainer: {

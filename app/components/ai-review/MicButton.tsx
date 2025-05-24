@@ -9,7 +9,7 @@ import Animated, {
   withSequence,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
-import COLORS from "../../constants/colors";
+import COLORS from "@/app/constants/colors";
 
 export default function MicButton() {
   const [isRecording, setIsRecording] = useState(false);

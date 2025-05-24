@@ -1,9 +1,11 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { zustandStorage } from "./mmkv";
-import { Challenge, CHALLENGES } from "../constants/challenges";
-import { logger } from "../utils/logger";
+import { zustandStorage } from "@/app/stores/mmkv";
 import dayjs from "dayjs";
+
+import { CHALLENGES } from "@/app/constants/challenges";
+import { Challenge } from "@/app/types/challengeTypes";
+import { logger } from "@/app/utils/logger";
 
 export interface DynamicChallengeData {
   progress: number;

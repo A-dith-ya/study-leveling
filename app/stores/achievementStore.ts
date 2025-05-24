@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { zustandStorage } from "./mmkv";
-import { getAchievementsByUserId } from "../services/userService";
-import { logger } from "../utils/logger";
+import { getAchievementsByUserId } from "@/app/services/userService";
+import { logger } from "@/app/utils/logger";
 
 interface AchievementStore {
   unlocked: Record<string, boolean>;

@@ -1,23 +1,17 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { FontAwesome6 } from "@expo/vector-icons";
-import COLORS from "../../constants/colors";
 
-interface DeckCardProps {
-  title: string;
-  cardCount: number;
-  onEdit: () => void;
-  onPractice: () => void;
-  onAIReview: () => void;
-}
+import COLORS from "@/app/constants/colors";
+import { DeckCardProps } from "@/app/types/homeTypes";
 
-const DeckCard: React.FC<DeckCardProps> = ({
+export default function DeckCard({
   title,
   cardCount,
   onEdit,
   onPractice,
   onAIReview,
-}) => {
+}: DeckCardProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
@@ -64,7 +58,7 @@ const DeckCard: React.FC<DeckCardProps> = ({
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -120,5 +114,3 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
-
-export default DeckCard;

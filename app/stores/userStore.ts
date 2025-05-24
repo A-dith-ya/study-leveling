@@ -2,7 +2,8 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { zustandStorage } from "./mmkv";
 import { getCurrentUser } from "aws-amplify/auth";
-import { logger } from "../utils/logger";
+import { logger } from "@/app/utils/logger";
+
 interface User {
   id: string;
   email: string;

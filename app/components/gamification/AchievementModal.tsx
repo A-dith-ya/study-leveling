@@ -10,17 +10,11 @@ import {
 } from "react-native";
 import { FontAwesome6 } from "@expo/vector-icons";
 
-import { Achievement } from "../../constants/achievements";
-import useAchievementStore from "../../stores/achievementStore";
-import COLORS from "../../constants/colors";
+import useAchievementStore from "@/app/stores/achievementStore";
+import COLORS from "@/app/constants/colors";
+import { AchievementModalProps } from "@/app/types/achievementTypes";
 
 const { width } = Dimensions.get("window");
-
-interface AchievementModalProps {
-  achievement: Achievement | null;
-  visible: boolean;
-  onClose: () => void;
-}
 
 export default function AchievementModal({
   achievement,

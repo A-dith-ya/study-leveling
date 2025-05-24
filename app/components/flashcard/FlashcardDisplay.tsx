@@ -4,23 +4,16 @@ import Animated, {
   useAnimatedStyle,
   interpolate,
 } from "react-native-reanimated";
+
 import {
   CARD_WIDTH,
   CARD_HEIGHT,
   STICKER_SIZE,
   getImageFromId,
-} from "../../utils/stickerUtils";
-import COLORS from "../../constants/colors";
-import { PlacedSticker } from "../../types/stickerTypes";
-
-interface FlashcardDisplayProps {
-  front: string;
-  back: string;
-  onFlip: () => void;
-  flipAnimation: any;
-  scaleAnimation: any;
-  decorations?: PlacedSticker[];
-}
+} from "@/app/utils/stickerUtils";
+import COLORS from "@/app/constants/colors";
+import { FlashcardDisplayProps } from "@/app/types/reviewTypes";
+import { PlacedSticker } from "@/app/types/stickerTypes";
 
 export default function FlashcardDisplay({
   front,

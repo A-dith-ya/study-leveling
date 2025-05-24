@@ -1,20 +1,21 @@
 import { View, Text, StyleSheet } from "react-native";
 import COLORS from "@/app/constants/colors";
+import { DotStyleKey } from "@/app/types/reviewTypes";
 
-type DotStyleKey = "correctDot" | "incorrectDot" | "missingDot";
-
-export const LegendItem = ({
+export function LegendItem({
   type,
   label,
 }: {
   type: "correct" | "incorrect" | "missing";
   label: string;
-}) => (
-  <View style={styles.legendItem}>
-    <View style={[styles.legendDot, styles[`${type}Dot` as DotStyleKey]]} />
-    <Text style={styles.legendLabel}>{label}</Text>
-  </View>
-);
+}) {
+  return (
+    <View style={styles.legendItem}>
+      <View style={[styles.legendDot, styles[`${type}Dot` as DotStyleKey]]} />
+      <Text style={styles.legendLabel}>{label}</Text>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   legendItem: {

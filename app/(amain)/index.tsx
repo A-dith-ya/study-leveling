@@ -1,24 +1,18 @@
 import { View, Pressable, Text, StyleSheet } from "react-native";
-import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import SignOutButton from "../components/auth/SignOutButton";
-import DashboardHeader from "../components/dashboard/DashboardHeader";
-import DeckCard from "../components/dashboard/DeckCard";
-import LoadingScreen from "../components/common/LoadingScreen";
-import { useUserData } from "../hooks/useUser";
-import { useDecks } from "../hooks/useDeck";
-import { calculateXPToNextLevel } from "../utils/xpUtils";
-import COLORS from "../constants/colors";
-
-interface DeckItem {
-  title: string;
-  flashcardCount: number;
-  deckId: string;
-}
+import SignOutButton from "@/app/components/auth/SignOutButton";
+import DashboardHeader from "@/app/components/dashboard/DashboardHeader";
+import DeckCard from "@/app/components/dashboard/DeckCard";
+import LoadingScreen from "@/app/components/common/LoadingScreen";
+import { useUserData } from "@/app/hooks/useUser";
+import { useDecks } from "@/app/hooks/useDeck";
+import { calculateXPToNextLevel } from "@/app/utils/xpUtils";
+import COLORS from "@/app/constants/colors";
+import { DeckItem } from "@/app/types/homeTypes";
 
 export default function Index() {
   const { data: userData, isLoading } = useUserData();

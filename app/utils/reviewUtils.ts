@@ -1,5 +1,5 @@
-import { AnswerSegment, SegmentResult } from "../types/reviewTypes";
-import type { Schema } from "../../amplify/data/resource";
+import { AnswerSegment, SegmentResult } from "@/app/types/reviewTypes";
+import type { Schema } from "@/amplify/data/resource";
 
 /**
  * Sanitizes input text by removing leading/trailing spaces and normalizing multiple spaces between words

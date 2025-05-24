@@ -15,15 +15,10 @@ import Animated, {
 } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 
-import COLORS from "../../constants/colors";
-import { getChestImage, getChestStyle } from "../../utils/challengeUtils";
-import type { DailyChallenge } from "../../stores/challengeStore";
-import { useUserData, useUpdateUserRewards } from "../../hooks/useUser";
-
-interface ChallengeCardProps {
-  challenge: DailyChallenge;
-  onClaim: () => void;
-}
+import COLORS from "@/app/constants/colors";
+import { getChestImage, getChestStyle } from "@/app/utils/challengeUtils";
+import { useUserData, useUpdateUserRewards } from "@/app/hooks/useUser";
+import { ChallengeCardProps } from "@/app/types/challengeTypes";
 
 const ChallengeCard: React.FC<ChallengeCardProps> = ({
   challenge,

@@ -1,12 +1,7 @@
 import { logger } from "./logger";
-import useAchievementStore from "../stores/achievementStore";
-import { updateUserAchievements } from "../services/userService";
-
-interface AchievementTier {
-  readonly id: string;
-  readonly threshold: number;
-  readonly type: "flashcards" | "streak" | "sessions" | "time";
-}
+import useAchievementStore from "@/app/stores/achievementStore";
+import { updateUserAchievements } from "@/app/services/userService";
+import { AchievementTier } from "@/app/types/achievementTypes";
 
 const ACHIEVEMENT_TIERS: readonly AchievementTier[] = [
   // Deck builder (awarded after reviewing first card)

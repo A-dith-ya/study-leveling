@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react-native";
 
-import HighlightedAnswer from "../HighlightedAnswer";
+import HighlightedAnswer from "@/app/components/ai-review/HighlightedAnswer";
 
 describe("HighlightedAnswer", () => {
   const mockSegments = [
@@ -17,23 +17,13 @@ describe("HighlightedAnswer", () => {
 
   describe("Rendering", () => {
     it("renders the label correctly", () => {
-      render(
-        <HighlightedAnswer 
-          label="Your Answer" 
-          segments={mockSegments} 
-        />
-      );
+      render(<HighlightedAnswer label="Your Answer" segments={mockSegments} />);
 
       expect(screen.getByText("Your Answer")).toBeTruthy();
     });
 
     it("renders all text segments", () => {
-      render(
-        <HighlightedAnswer 
-          label="Test Answer" 
-          segments={mockSegments} 
-        />
-      );
+      render(<HighlightedAnswer label="Test Answer" segments={mockSegments} />);
 
       expect(screen.getByText("The water ")).toBeTruthy();
       expect(screen.getByText("cycle")).toBeTruthy();
@@ -47,14 +37,14 @@ describe("HighlightedAnswer", () => {
 
     it("applies correct styling based on segment type", () => {
       render(
-        <HighlightedAnswer 
-          label="Test Answer" 
+        <HighlightedAnswer
+          label="Test Answer"
           segments={[
             { text: "correct text", type: "correct" },
             { text: "incorrect text", type: "incorrect" },
             { text: "missing text", type: "missing" },
             { text: "normal text", type: "none" },
-          ]} 
+          ]}
         />
       );
 
@@ -72,24 +62,19 @@ describe("HighlightedAnswer", () => {
 
   describe("Edge Cases", () => {
     it("handles empty segments array", () => {
-      render(
-        <HighlightedAnswer 
-          label="Empty Answer" 
-          segments={[]} 
-        />
-      );
+      render(<HighlightedAnswer label="Empty Answer" segments={[]} />);
 
       expect(screen.getByText("Empty Answer")).toBeTruthy();
     });
 
     it("handles segments with empty text", () => {
       render(
-        <HighlightedAnswer 
-          label="Test Answer" 
+        <HighlightedAnswer
+          label="Test Answer"
           segments={[
             { text: "", type: "correct" },
             { text: "visible text", type: "none" },
-          ]} 
+          ]}
         />
       );
 
@@ -98,11 +83,9 @@ describe("HighlightedAnswer", () => {
 
     it("handles unknown segment types", () => {
       render(
-        <HighlightedAnswer 
-          label="Test Answer" 
-          segments={[
-            { text: "unknown type", type: "unknown" },
-          ]} 
+        <HighlightedAnswer
+          label="Test Answer"
+          segments={[{ text: "unknown type", type: "unknown" }]}
         />
       );
 
@@ -111,12 +94,12 @@ describe("HighlightedAnswer", () => {
 
     it("handles segments with special characters", () => {
       render(
-        <HighlightedAnswer 
-          label="Special Characters" 
+        <HighlightedAnswer
+          label="Special Characters"
           segments={[
             { text: "Text with !@#$%^&*()", type: "correct" },
             { text: "Unicode: 🌟🔬⚡", type: "incorrect" },
-          ]} 
+          ]}
         />
       );
 
@@ -125,14 +108,13 @@ describe("HighlightedAnswer", () => {
     });
 
     it("handles very long text segments", () => {
-      const longText = "This is a very long text segment that should still render correctly even when it contains many words and characters that might cause wrapping or other display issues in the user interface.";
-      
+      const longText =
+        "This is a very long text segment that should still render correctly even when it contains many words and characters that might cause wrapping or other display issues in the user interface.";
+
       render(
-        <HighlightedAnswer 
-          label="Long Text" 
-          segments={[
-            { text: longText, type: "correct" },
-          ]} 
+        <HighlightedAnswer
+          label="Long Text"
+          segments={[{ text: longText, type: "correct" }]}
         />
       );
 
@@ -143,10 +125,7 @@ describe("HighlightedAnswer", () => {
   describe("Props Validation", () => {
     it("handles different label types", () => {
       render(
-        <HighlightedAnswer 
-          label="Correct Answer" 
-          segments={mockSegments} 
-        />
+        <HighlightedAnswer label="Correct Answer" segments={mockSegments} />
       );
 
       expect(screen.getByText("Correct Answer")).toBeTruthy();
@@ -160,9 +139,9 @@ describe("HighlightedAnswer", () => {
       ];
 
       render(
-        <HighlightedAnswer 
-          label="Duplicate Text" 
-          segments={duplicateSegments} 
+        <HighlightedAnswer
+          label="Duplicate Text"
+          segments={duplicateSegments}
         />
       );
 
@@ -174,13 +153,13 @@ describe("HighlightedAnswer", () => {
   describe("Accessibility", () => {
     it("has proper text content for screen readers", () => {
       render(
-        <HighlightedAnswer 
-          label="Screen Reader Test" 
+        <HighlightedAnswer
+          label="Screen Reader Test"
           segments={[
             { text: "This text ", type: "none" },
             { text: "should be readable", type: "correct" },
             { text: " by screen readers", type: "none" },
-          ]} 
+          ]}
         />
       );
 
@@ -194,10 +173,7 @@ describe("HighlightedAnswer", () => {
   describe("Component Structure", () => {
     it("uses ScrollView for scrollable content", () => {
       const { UNSAFE_getByType } = render(
-        <HighlightedAnswer 
-          label="Scrollable Content" 
-          segments={mockSegments} 
-        />
+        <HighlightedAnswer label="Scrollable Content" segments={mockSegments} />
       );
 
       const scrollView = UNSAFE_getByType(require("react-native").ScrollView);
@@ -206,18 +182,18 @@ describe("HighlightedAnswer", () => {
 
     it("maintains proper text hierarchy", () => {
       render(
-        <HighlightedAnswer 
-          label="Hierarchy Test" 
+        <HighlightedAnswer
+          label="Hierarchy Test"
           segments={[
             { text: "First part ", type: "correct" },
             { text: "second part", type: "incorrect" },
-          ]} 
+          ]}
         />
       );
 
       // Label should be rendered as a separate text element
       expect(screen.getByText("Hierarchy Test")).toBeTruthy();
-      
+
       // Segments should be rendered as separate text elements
       expect(screen.getByText("First part ")).toBeTruthy();
       expect(screen.getByText("second part")).toBeTruthy();
@@ -227,10 +203,7 @@ describe("HighlightedAnswer", () => {
   describe("Styling Integration", () => {
     it("applies container styles correctly", () => {
       const { UNSAFE_getByType } = render(
-        <HighlightedAnswer 
-          label="Style Test" 
-          segments={mockSegments} 
-        />
+        <HighlightedAnswer label="Style Test" segments={mockSegments} />
       );
 
       const scrollView = UNSAFE_getByType(require("react-native").ScrollView);

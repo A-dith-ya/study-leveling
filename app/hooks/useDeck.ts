@@ -6,7 +6,7 @@ import {
   createDeck,
   updateDeck,
 } from "@/app/services/deckService";
-import { Flashcard } from "../utils/flashcardUtils";
+import { Flashcard } from "../types/flashcardTypes";
 
 export function useDecks() {
   const user = useUserStore((state) => state.user);

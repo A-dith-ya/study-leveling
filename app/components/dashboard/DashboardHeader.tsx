@@ -1,23 +1,17 @@
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { FontAwesome6 } from "@expo/vector-icons";
-import COLORS from "../../constants/colors";
 
-interface DashboardHeaderProps {
-  level: number;
-  currentXP: number;
-  requiredXP: number;
-  streakCount: number;
-  coins: number;
-}
+import COLORS from "@/app/constants/colors";
+import { DashboardHeaderProps } from "@/app/types/homeTypes";
 
-const DashboardHeader: React.FC<DashboardHeaderProps> = ({
+export default function DashboardHeader({
   level,
   currentXP,
   requiredXP,
   streakCount,
   coins,
-}) => {
+}: DashboardHeaderProps) {
   const progress = (currentXP / requiredXP) * 100;
 
   return (
@@ -47,7 +41,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -122,5 +116,3 @@ const styles = StyleSheet.create({
     marginRight: -8,
   },
 });
-
-export default DashboardHeader;

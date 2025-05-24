@@ -16,7 +16,7 @@ import Purchases, {
 } from "react-native-purchases";
 import { CoinPackModalProps } from "@/app/types/storeTypes";
 import { COIN_PACK_INFO } from "@/app/constants/packs";
-import COLORS from "../../constants/colors";
+import COLORS from "@/app/constants/colors";
 import { logger } from "@/app/utils/logger";
 
 export default function CoinPackModal({

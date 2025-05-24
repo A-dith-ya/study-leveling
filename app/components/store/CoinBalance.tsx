@@ -9,9 +9,9 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 
-import { animateValue } from "../../utils/cosmeticUtils";
-import { CoinBalanceProps } from "../../types/storeTypes";
-import COLORS from "../../constants/colors";
+import { animateValue } from "@/app/utils/cosmeticUtils";
+import { CoinBalanceProps } from "@/app/types/storeTypes";
+import COLORS from "@/app/constants/colors";
 
 export default function CoinBalance({
   coins,

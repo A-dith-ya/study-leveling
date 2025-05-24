@@ -1,17 +1,9 @@
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter, Href } from "expo-router";
-import COLORS from "../../constants/colors";
-
-interface EditHeaderProps {
-  title: string;
-  rightButtonText: string;
-  rightButtonIcon: keyof typeof Ionicons.glyphMap;
-  onRightButtonPress: () => void;
-  showBackButton?: boolean;
-  backButtonDestination?: Href;
-}
+import { router } from "expo-router";
+import COLORS from "@/app/constants/colors";
+import { EditHeaderProps } from "@/app/types/stickerTypes";
 
 export default function EditHeader({
   title,
@@ -21,8 +13,6 @@ export default function EditHeader({
   showBackButton = true,
   backButtonDestination = "/(amain)",
 }: EditHeaderProps) {
-  const router = useRouter();
-
   return (
     <View style={styles.header}>
       <View style={styles.headerLeft}>

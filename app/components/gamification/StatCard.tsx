@@ -1,14 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { FontAwesome6 } from "@expo/vector-icons";
-import COLORS from "../../constants/colors";
-
-interface StatCardProps {
-  icon: string;
-  value: string;
-  label: string;
-  color?: string;
-}
+import COLORS from "@/app/constants/colors";
+import { StatCardProps } from "@/app/types/achievementTypes";
 
 export default function StatCard({
   icon,

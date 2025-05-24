@@ -14,19 +14,19 @@ import { FlashList } from "@shopify/flash-list";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import FlashcardItem from "../components/flashcard/FlashcardItem";
-import LoadingScreen from "../components/common/LoadingScreen";
-import EditHeader from "../components/common/EditHeader";
-import { useDeck, useUpdateDeck } from "../hooks/useDeck";
-import COLORS from "../constants/colors";
+import FlashcardItem from "@/app/components/flashcard/FlashcardItem";
+import LoadingScreen from "@/app/components/common/LoadingScreen";
+import EditHeader from "@/app/components/common/EditHeader";
+import { useDeck, useUpdateDeck } from "@/app/hooks/useDeck";
+import COLORS from "@/app/constants/colors";
 import {
-  Flashcard,
   createNewFlashcard,
   updateFlashcardField,
   deleteFlashcardAndReorder,
   moveFlashcard,
   validateFlashcards,
-} from "../utils/flashcardUtils";
+} from "@/app/utils/flashcardUtils";
+import { Flashcard } from "@/app/types/flashcardTypes";
 
 export default function EditFlashcard() {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);

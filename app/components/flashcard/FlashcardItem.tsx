@@ -1,18 +1,7 @@
 import { View, TextInput, StyleSheet, Pressable } from "react-native";
 import { FontAwesome6 } from "@expo/vector-icons";
-import COLORS from "../../constants/colors";
-
-interface FlashcardItemProps {
-  front: string;
-  back: string;
-  onChangeFront: (text: string) => void;
-  onChangeBack: (text: string) => void;
-  onMoveUp: () => void;
-  onMoveDown: () => void;
-  onDelete: () => void;
-  isFirst?: boolean;
-  isLast?: boolean;
-}
+import COLORS from "@/app/constants/colors";
+import { FlashcardItemProps } from "@/app/types/flashcardTypes";
 
 export default function FlashcardItem({
   front,

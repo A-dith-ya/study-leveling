@@ -1,14 +1,7 @@
 import React from "react";
 import { Text, ScrollView, StyleSheet } from "react-native";
-import COLORS from "../../constants/colors";
-
-interface HighlightedAnswerProps {
-  label: string;
-  segments: Array<{
-    text: string;
-    type: "correct" | "incorrect" | "missing" | "none";
-  }>;
-}
+import COLORS from "@/app/constants/colors";
+import { HighlightedAnswerProps } from "@/app/types/reviewTypes";
 
 export default function HighlightedAnswer({
   label,

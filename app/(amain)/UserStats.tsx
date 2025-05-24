@@ -18,19 +18,20 @@ import Animated, {
   Extrapolation,
 } from "react-native-reanimated";
 
-import LevelDisplay from "../components/gamification/LevelDisplay";
-import StatCard from "../components/gamification/StatCard";
-import AchievementModal from "../components/gamification/AchievementModal";
-import LoadingScreen from "../components/common/LoadingScreen";
-import useAchievementStore from "../stores/achievementStore";
-import useUserStore from "../stores/userStore";
-import { useUserData } from "../hooks/useUser";
-import { calculateXPToNextLevel } from "../utils/xpUtils";
-import { formatDurationToHoursAndMinutes } from "../utils/dayUtils";
-import { ACHIEVEMENTS, Achievement } from "../constants/achievements";
-import { evaluateAchievements } from "../utils/achievementUtils";
-import { logger } from "../utils/logger";
-import COLORS from "../constants/colors";
+import LevelDisplay from "@/app/components/gamification/LevelDisplay";
+import StatCard from "@/app/components/gamification/StatCard";
+import AchievementModal from "@/app/components/gamification/AchievementModal";
+import LoadingScreen from "@/app/components/common/LoadingScreen";
+import useAchievementStore from "@/app/stores/achievementStore";
+import useUserStore from "@/app/stores/userStore";
+import { useUserData } from "@/app/hooks/useUser";
+import { calculateXPToNextLevel } from "@/app/utils/xpUtils";
+import { formatDurationToHoursAndMinutes } from "@/app/utils/dayUtils";
+import { ACHIEVEMENTS } from "@/app/constants/achievements";
+import { evaluateAchievements } from "@/app/utils/achievementUtils";
+import { logger } from "@/app/utils/logger";
+import COLORS from "@/app/constants/colors";
+import { Achievement } from "@/app/types/achievementTypes";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 

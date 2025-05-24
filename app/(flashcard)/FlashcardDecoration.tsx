@@ -8,19 +8,19 @@ import BottomSheet, {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 
-import EditHeader from "../components/common/EditHeader";
-import { DraggableSticker } from "../components/DraggableSticker";
-import LoadingScreen from "../components/common/LoadingScreen";
-import { Sticker, PlacedSticker } from "../types/stickerTypes";
-import { useUserData, useUpdateUserDecorations } from "../hooks/useUser";
+import EditHeader from "@/app/components/common/EditHeader";
+import { DraggableSticker } from "@/app/components/DraggableSticker";
+import LoadingScreen from "@/app/components/common/LoadingScreen";
+import { Sticker, PlacedSticker } from "@/app/types/stickerTypes";
+import { useUserData, useUpdateUserDecorations } from "@/app/hooks/useUser";
 import {
   CARD_WIDTH,
   CARD_HEIGHT,
   STICKER_SIZE,
   getImageFromId,
   formatTitle,
-} from "../utils/stickerUtils";
-import COLORS from "../constants/colors";
+} from "@/app/utils/stickerUtils";
+import COLORS from "@/app/constants/colors";
 
 export default function FlashcardDecoration() {
   const { data: userData, isLoading } = useUserData();

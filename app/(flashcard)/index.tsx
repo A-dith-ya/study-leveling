@@ -15,17 +15,17 @@ import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { v4 as uuidv4 } from "uuid";
 
-import FlashcardItem from "../components/flashcard/FlashcardItem";
-import { useCreateDeck } from "../hooks/useDeck";
-import COLORS from "../constants/colors";
+import FlashcardItem from "@/app/components/flashcard/FlashcardItem";
+import { useCreateDeck } from "@/app/hooks/useDeck";
+import COLORS from "@/app/constants/colors";
 import {
-  Flashcard,
   createNewFlashcard,
   updateFlashcardField,
   deleteFlashcardAndReorder,
   moveFlashcard,
   validateFlashcards,
-} from "../utils/flashcardUtils";
+} from "@/app/utils/flashcardUtils";
+import { Flashcard } from "@/app/types/flashcardTypes";
 
 export default function CreateFlashcard() {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);

@@ -1,10 +1,15 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react-native";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from "@testing-library/react-native";
 import { router } from "expo-router";
 
-import AISummary from "../AISummary";
-import { useReviewStore } from "../../stores/reviewStore";
-import { useDeck } from "../../hooks/useDeck";
+import AISummary from "@/app/(flashcard)/AISummary";
+import { useReviewStore } from "@/app/stores/reviewStore";
+import { useDeck } from "@/app/hooks/useDeck";
 
 // Mock dependencies
 jest.mock("expo-router", () => ({
@@ -13,11 +18,11 @@ jest.mock("expo-router", () => ({
   },
 }));
 
-jest.mock("../../stores/reviewStore", () => ({
+jest.mock("@/app/stores/reviewStore", () => ({
   useReviewStore: jest.fn(),
 }));
 
-jest.mock("../../hooks/useDeck", () => ({
+jest.mock("@/app/hooks/useDeck", () => ({
   useDeck: jest.fn(),
 }));
 
@@ -34,20 +39,24 @@ jest.mock("@expo/vector-icons", () => ({
 }));
 
 // Mock other components
-jest.mock("../../components/ai-review/HighlightedAnswer", () => {
+jest.mock("@/app/components/ai-review/HighlightedAnswer", () => {
   return function MockHighlightedAnswer({ label, segments }) {
     const React = require("react");
     return React.createElement("View", {
-      testID: `highlighted-answer-${label.toLowerCase().replace(/\s+/g, '-')}`,
+      testID: `highlighted-answer-${label.toLowerCase().replace(/\s+/g, "-")}`,
       children: [
         React.createElement("Text", { key: "label" }, label),
-        React.createElement("Text", { key: "segments" }, segments?.map(s => s.text).join('') || ''),
+        React.createElement(
+          "Text",
+          { key: "segments" },
+          segments?.map((s) => s.text).join("") || ""
+        ),
       ],
     });
   };
 });
 
-jest.mock("../../components/ai-review/AIFeedback", () => {
+jest.mock("@/app/components/ai-review/AIFeedback", () => {
   return function MockAIFeedback({ explanation }) {
     const React = require("react");
     return React.createElement("View", {
@@ -57,7 +66,7 @@ jest.mock("../../components/ai-review/AIFeedback", () => {
   };
 });
 
-jest.mock("../../components/common/LoadingScreen", () => {
+jest.mock("@/app/components/common/LoadingScreen", () => {
   return function MockLoadingScreen({ message }) {
     const React = require("react");
     return React.createElement("View", {
@@ -72,19 +81,24 @@ jest.mock("@shopify/flash-list", () => ({
     const React = require("react");
     return React.createElement("View", {
       testID: "flash-list",
-      children: data?.map((item, index) => 
-        React.createElement("View", {
-          key: item.id || index,
-          testID: `flashcard-item-${index}`,
-        }, renderItem({ item, index }))
-      ) || [],
+      children:
+        data?.map((item, index) =>
+          React.createElement(
+            "View",
+            {
+              key: item.id || index,
+              testID: `flashcard-item-${index}`,
+            },
+            renderItem({ item, index })
+          )
+        ) || [],
     });
   },
 }));
 
 jest.mock("react-native-reanimated", () => {
   const Reanimated = require("react-native-reanimated/mock");
-  
+
   return {
     ...Reanimated,
     FadeInUp: {
@@ -102,7 +116,7 @@ describe("AISummary", () => {
         back: "The process by which plants make food using sunlight",
       },
       {
-        flashcardId: "card-2", 
+        flashcardId: "card-2",
         front: "What is the water cycle?",
         back: "The continuous movement of water on Earth",
       },
@@ -140,7 +154,8 @@ describe("AISummary", () => {
         { text: "movement of water", type: "correct" },
         { text: " on Earth", type: "missing" },
       ],
-      aiExplanation: "You understand water movement but missed key details about continuity and Earth's involvement.",
+      aiExplanation:
+        "You understand water movement but missed key details about continuity and Earth's involvement.",
     },
   };
 
@@ -158,14 +173,14 @@ describe("AISummary", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     useReviewStore.mockReturnValue(mockReviewStore);
     useDeck.mockReturnValue({
       data: mockDeckData,
       isLoading: false,
     });
-    
-    mockReviewStore.hasEvaluation.mockImplementation((cardId) => 
+
+    mockReviewStore.hasEvaluation.mockImplementation((cardId) =>
       mockEvaluations.hasOwnProperty(cardId)
     );
   });
@@ -190,15 +205,25 @@ describe("AISummary", () => {
       render(<AISummary />);
 
       // Use getAllByTestId for elements that appear multiple times
-      expect(screen.getAllByTestId("highlighted-answer-your-answer")).toHaveLength(2);
-      expect(screen.getAllByTestId("highlighted-answer-correct-answer")).toHaveLength(2);
+      expect(
+        screen.getAllByTestId("highlighted-answer-your-answer")
+      ).toHaveLength(2);
+      expect(
+        screen.getAllByTestId("highlighted-answer-correct-answer")
+      ).toHaveLength(2);
     });
 
     it("renders AI feedback for evaluated cards", () => {
       render(<AISummary />);
 
-      expect(screen.getByText("Good understanding of photosynthesis basics.")).toBeOnTheScreen();
-      expect(screen.getByText("You understand water movement but missed key details about continuity and Earth's involvement.")).toBeOnTheScreen();
+      expect(
+        screen.getByText("Good understanding of photosynthesis basics.")
+      ).toBeOnTheScreen();
+      expect(
+        screen.getByText(
+          "You understand water movement but missed key details about continuity and Earth's involvement."
+        )
+      ).toBeOnTheScreen();
     });
 
     it("renders bottom action buttons with Ionicons", () => {
@@ -242,7 +267,9 @@ describe("AISummary", () => {
 
       render(<AISummary />);
 
-      expect(screen.getByText("No cards have been reviewed yet.")).toBeOnTheScreen();
+      expect(
+        screen.getByText("No cards have been reviewed yet.")
+      ).toBeOnTheScreen();
       expect(screen.getByText("Start Review")).toBeOnTheScreen();
       expect(screen.getByText("0 of 3 Cards Reviewed")).toBeOnTheScreen();
     });
@@ -341,7 +368,9 @@ describe("AISummary", () => {
       render(<AISummary />);
 
       expect(screen.getByText("0 of 0 Cards Reviewed")).toBeOnTheScreen();
-      expect(screen.getByText("No cards have been reviewed yet.")).toBeOnTheScreen();
+      expect(
+        screen.getByText("No cards have been reviewed yet.")
+      ).toBeOnTheScreen();
     });
 
     it("handles undefined deckId", () => {
@@ -384,8 +413,12 @@ describe("AISummary", () => {
     it("passes correct props to HighlightedAnswer components", () => {
       render(<AISummary />);
 
-      expect(screen.getAllByTestId("highlighted-answer-your-answer")).toHaveLength(2);
-      expect(screen.getAllByTestId("highlighted-answer-correct-answer")).toHaveLength(2);
+      expect(
+        screen.getAllByTestId("highlighted-answer-your-answer")
+      ).toHaveLength(2);
+      expect(
+        screen.getAllByTestId("highlighted-answer-correct-answer")
+      ).toHaveLength(2);
     });
 
     it("passes correct props to AIFeedback component", () => {

@@ -1,9 +1,4 @@
-export interface Achievement {
-  id: string;
-  title: string;
-  description: string;
-  image: any;
-}
+import { Achievement } from "@/app/types/achievementTypes";
 
 export const ACHIEVEMENTS: Achievement[] = [
   {

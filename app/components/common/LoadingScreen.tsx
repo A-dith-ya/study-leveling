@@ -7,15 +7,12 @@ import {
   Animated,
   Easing,
 } from "react-native";
-import COLORS from "../../constants/colors";
+import COLORS from "@/app/constants/colors";
+import { LoadingScreenProps } from "@/app/types/commonTypes";
 
-interface LoadingScreenProps {
-  message?: string;
-}
-
-const LoadingScreen: React.FC<LoadingScreenProps> = ({
+export default function LoadingScreen({
   message = "Loading...",
-}) => {
+}: LoadingScreenProps) {
   const pulseAnim = React.useRef(new Animated.Value(1)).current;
 
   React.useEffect(() => {
@@ -48,7 +45,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
       <Text style={styles.loadingText}>{message}</Text>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -78,5 +75,3 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 });
-
-export default LoadingScreen;

@@ -7,12 +7,12 @@ import {
 } from "@testing-library/react-native";
 import { router, useLocalSearchParams } from "expo-router";
 
-import FlashcardReview from "../FlashcardReview";
-import { useDeck } from "../../hooks/useDeck";
-import { useUserData } from "../../hooks/useUser";
-import * as flashcardUtils from "../../utils/flashcardUtils";
-import * as xpUtils from "../../utils/xpUtils";
-import * as dayUtils from "../../utils/dayUtils";
+import FlashcardReview from "@/app/(flashcard)/FlashcardReview";
+import { useDeck } from "@/app/hooks/useDeck";
+import { useUserData } from "@/app/hooks/useUser";
+import * as flashcardUtils from "@/app/utils/flashcardUtils";
+import * as xpUtils from "@/app/utils/xpUtils";
+import * as dayUtils from "@/app/utils/dayUtils";
 
 // Mock dependencies following Kent C. Dodds' principles
 jest.mock("expo-router", () => ({
@@ -22,28 +22,28 @@ jest.mock("expo-router", () => ({
   useLocalSearchParams: jest.fn(),
 }));
 
-jest.mock("../../hooks/useDeck", () => ({
+jest.mock("@/app/hooks/useDeck", () => ({
   useDeck: jest.fn(),
 }));
 
-jest.mock("../../hooks/useUser", () => ({
+jest.mock("@/app/hooks/useUser", () => ({
   useUserData: jest.fn(),
 }));
 
-jest.mock("../../utils/flashcardUtils", () => ({
+jest.mock("@/app/utils/flashcardUtils", () => ({
   fisherYatesShuffle: jest.fn(),
 }));
 
-jest.mock("../../utils/xpUtils", () => ({
+jest.mock("@/app/utils/xpUtils", () => ({
   calculateXPForSession: jest.fn(),
 }));
 
-jest.mock("../../utils/dayUtils", () => ({
+jest.mock("@/app/utils/dayUtils", () => ({
   getElapsedSeconds: jest.fn(),
 }));
 
 // Mock components with testable interfaces
-jest.mock("../../components/flashcard/ReviewHeader", () => {
+jest.mock("@/app/components/flashcard/ReviewHeader", () => {
   const React = require("react");
   return function MockReviewHeader({
     currentIndex,
@@ -78,7 +78,7 @@ jest.mock("../../components/flashcard/ReviewHeader", () => {
   };
 });
 
-jest.mock("../../components/flashcard/FlashcardDisplay", () => {
+jest.mock("@/app/components/flashcard/FlashcardDisplay", () => {
   const React = require("react");
   return function MockFlashcardDisplay({ front, back, onFlip }) {
     return React.createElement("View", {
@@ -112,7 +112,7 @@ jest.mock("../../components/flashcard/FlashcardDisplay", () => {
   };
 });
 
-jest.mock("../../components/flashcard/ReviewControls", () => {
+jest.mock("@/app/components/flashcard/ReviewControls", () => {
   const React = require("react");
   return function MockReviewControls({
     onPrevious,
@@ -161,7 +161,7 @@ jest.mock("../../components/flashcard/ReviewControls", () => {
   };
 });
 
-jest.mock("../../components/common/LoadingScreen", () => {
+jest.mock("@/app/components/common/LoadingScreen", () => {
   const React = require("react");
   return function MockLoadingScreen({ message }) {
     return React.createElement("View", {

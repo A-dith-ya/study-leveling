@@ -15,9 +15,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { StickerCardProps } from "../../types/storeTypes";
+import { StickerCardProps } from "@/app/types/storeTypes";
 import { formatTitle } from "@/app/utils/stickerUtils";
-import COLORS from "../../constants/colors";
+import COLORS from "@/app/constants/colors";
 
 const { width } = Dimensions.get("window");
 const ITEM_WIDTH = (width - 48) / 2;

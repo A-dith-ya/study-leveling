@@ -1,5 +1,5 @@
 import { Dimensions } from "react-native";
-import { COSMETICS } from "../constants/cosmetics";
+import { COSMETICS } from "@/app/constants/cosmetics";
 
 const { width } = Dimensions.get("window");
 export const CARD_WIDTH = width * 0.8;

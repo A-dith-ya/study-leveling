@@ -1,6 +1,7 @@
-import { ChestType } from "../constants/challenges";
 import dayjs from "dayjs";
-import useChallengeStore from "../stores/challengeStore";
+import { ChestType } from "@/app/types/challengeTypes";
+import useChallengeStore from "@/app/stores/challengeStore";
+
 export const getChestImage = (type: ChestType) => {
   switch (type) {
     case "gold":

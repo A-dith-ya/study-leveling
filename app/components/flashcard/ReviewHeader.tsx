@@ -1,20 +1,14 @@
 import React, { useEffect } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import COLORS from "../../constants/colors";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
-interface ReviewHeaderProps {
-  currentIndex: number;
-  totalCards: number;
-  isReviewingMarked: boolean;
-  shuffleMode: boolean;
-  onToggleShuffle: () => void;
-}
+import COLORS from "@/app/constants/colors";
+import { ReviewHeaderProps } from "@/app/types/reviewTypes";
 
 export default function ReviewHeader({
   currentIndex,

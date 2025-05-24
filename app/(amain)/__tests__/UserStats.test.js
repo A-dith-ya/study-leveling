@@ -6,18 +6,18 @@ import {
   waitFor,
 } from "@testing-library/react-native";
 
-import UserStats from "../UserStats";
-import { useUserData } from "../../hooks/useUser";
-import useUserStore from "../../stores/userStore";
-import useAchievementStore from "../../stores/achievementStore";
-import * as achievementUtils from "../../utils/achievementUtils";
+import UserStats from "@/app/(amain)/UserStats";
+import { useUserData } from "@/app/hooks/useUser";
+import useUserStore from "@/app/stores/userStore";
+import useAchievementStore from "@/app/stores/achievementStore";
+import * as achievementUtils from "@/app/utils/achievementUtils";
 
 // Mock dependencies
-jest.mock("../../hooks/useUser", () => ({
+jest.mock("@/app/hooks/useUser", () => ({
   useUserData: jest.fn(),
 }));
 
-jest.mock("../../stores/userStore", () => {
+jest.mock("@/app/stores/userStore", () => {
   const mockStore = {
     user: null,
     setUser: jest.fn(),
@@ -42,7 +42,7 @@ jest.mock("../../stores/userStore", () => {
   };
 });
 
-jest.mock("../../stores/achievementStore", () => {
+jest.mock("@/app/stores/achievementStore", () => {
   // Create a global mock store object that will be shared
   const mockStore = {
     isUnlocked: jest.fn(),
@@ -64,19 +64,19 @@ jest.mock("../../stores/achievementStore", () => {
   };
 });
 
-jest.mock("../../utils/achievementUtils", () => ({
+jest.mock("@/app/utils/achievementUtils", () => ({
   evaluateAchievements: jest.fn(),
 }));
 
-jest.mock("../../utils/xpUtils", () => ({
+jest.mock("@/app/utils/xpUtils", () => ({
   calculateXPToNextLevel: jest.fn(),
 }));
 
-jest.mock("../../utils/dayUtils", () => ({
+jest.mock("@/app/utils/dayUtils", () => ({
   formatDurationToHoursAndMinutes: jest.fn(),
 }));
 
-jest.mock("../../utils/logger", () => ({
+jest.mock("@/app/utils/logger", () => ({
   logger: {
     error: jest.fn(),
   },
@@ -119,7 +119,7 @@ jest.mock("react-native-reanimated", () => {
 });
 
 // Mock components
-jest.mock("../../components/gamification/LevelDisplay", () => {
+jest.mock("@/app/components/gamification/LevelDisplay", () => {
   return function MockLevelDisplay({ level, nextLevel, currentXP, targetXP }) {
     const React = require("react");
     return React.createElement("View", {
@@ -133,7 +133,7 @@ jest.mock("../../components/gamification/LevelDisplay", () => {
   };
 });
 
-jest.mock("../../components/gamification/StatCard", () => {
+jest.mock("@/app/components/gamification/StatCard", () => {
   return function MockStatCard({ icon, value, label, color }) {
     const React = require("react");
     return React.createElement("View", {
@@ -146,7 +146,7 @@ jest.mock("../../components/gamification/StatCard", () => {
   };
 });
 
-jest.mock("../../components/gamification/AchievementModal", () => {
+jest.mock("@/app/components/gamification/AchievementModal", () => {
   return function MockAchievementModal({ achievement, visible, onClose }) {
     const React = require("react");
     if (!visible) return null;
@@ -169,7 +169,7 @@ jest.mock("../../components/gamification/AchievementModal", () => {
   };
 });
 
-jest.mock("../../components/common/LoadingScreen", () => {
+jest.mock("@/app/components/common/LoadingScreen", () => {
   return function MockLoadingScreen({ message }) {
     const React = require("react");
     return React.createElement("View", {
@@ -179,7 +179,7 @@ jest.mock("../../components/common/LoadingScreen", () => {
   };
 });
 
-jest.mock("../../constants/achievements", () => ({
+jest.mock("@/app/constants/achievements", () => ({
   ACHIEVEMENTS: [
     {
       id: "first-review",
@@ -246,12 +246,12 @@ describe("UserStats", () => {
     useAchievementStore.mockReturnValue(mockAchievementStore);
 
     // Mock utility functions
-    require("../../utils/xpUtils").calculateXPToNextLevel.mockReturnValue(1500);
-    require("../../utils/dayUtils").formatDurationToHoursAndMinutes.mockReturnValue(
+    require("@/app/utils/xpUtils").calculateXPToNextLevel.mockReturnValue(1500);
+    require("@/app/utils/dayUtils").formatDurationToHoursAndMinutes.mockReturnValue(
       "2h 11m"
     );
-    require("../../utils/achievementUtils").evaluateAchievements.mockResolvedValue();
-    require("../../utils/logger").logger.error.mockImplementation(() => {});
+    require("@/app/utils/achievementUtils").evaluateAchievements.mockResolvedValue();
+    require("@/app/utils/logger").logger.error.mockImplementation(() => {});
   });
 
   describe("Loading State", () => {
@@ -445,7 +445,7 @@ describe("UserStats", () => {
         isLoading: false,
       });
 
-      require("../../utils/dayUtils").formatDurationToHoursAndMinutes.mockReturnValue(
+      require("@/app/utils/dayUtils").formatDurationToHoursAndMinutes.mockReturnValue(
         "0h 0m"
       );
 
@@ -527,7 +527,7 @@ describe("UserStats", () => {
         isLoading: false,
       });
 
-      require("../../utils/dayUtils").formatDurationToHoursAndMinutes.mockReturnValue(
+      require("@/app/utils/dayUtils").formatDurationToHoursAndMinutes.mockReturnValue(
         "10h 0m"
       );
 

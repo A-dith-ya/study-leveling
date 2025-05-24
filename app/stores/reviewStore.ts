@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { AnswerSegment } from "../types/reviewTypes";
+import { AnswerSegment } from "@/app/types/reviewTypes";
 
 interface ReviewState {
   deckId: string | null;

@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import StickerCard from "../components/store/StickerCard";
-import CoinBalance from "../components/store/CoinBalance";
-import LoadingScreen from "../components/common/LoadingScreen";
-import CoinPackModal from "../components/store/CoinPackModal";
-import { useUserData, useUpdateUserCosmetics } from "../hooks/useUser";
-import useCosmeticStore from "../stores/cosmeticStore";
-import { Cosmetic } from "../types/storeTypes";
-import COLORS from "../constants/colors";
+import StickerCard from "@/app/components/store/StickerCard";
+import CoinBalance from "@/app/components/store/CoinBalance";
+import LoadingScreen from "@/app/components/common/LoadingScreen";
+import CoinPackModal from "@/app/components/store/CoinPackModal";
+import { useUserData, useUpdateUserCosmetics } from "@/app/hooks/useUser";
+import useCosmeticStore from "@/app/stores/cosmeticStore";
+import { Cosmetic } from "@/app/types/storeTypes";
+import COLORS from "@/app/constants/colors";
 
 export default function Store() {
   const { data: userData, isLoading } = useUserData();

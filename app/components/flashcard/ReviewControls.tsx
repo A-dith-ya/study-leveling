@@ -1,15 +1,9 @@
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import COLORS from "../../constants/colors";
 
-interface ReviewControlsProps {
-  onPrevious: () => void;
-  onNext: () => void;
-  onMark: () => void;
-  isFirstCard: boolean;
-  isLastCard: boolean;
-}
+import COLORS from "@/app/constants/colors";
+import { ReviewControlsProps } from "@/app/types/reviewTypes";
 
 export default function ReviewControls({
   onPrevious,

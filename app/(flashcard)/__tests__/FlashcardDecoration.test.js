@@ -6,15 +6,15 @@ import {
   waitFor,
 } from "@testing-library/react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import FlashcardDecoration from "../FlashcardDecoration";
+import FlashcardDecoration from "@/app/(flashcard)/FlashcardDecoration";
 
 // Mock dependencies
-jest.mock("../../hooks/useUser", () => ({
+jest.mock("@/app/hooks/useUser", () => ({
   useUserData: jest.fn(),
   useUpdateUserDecorations: jest.fn(),
 }));
 
-jest.mock("../../components/common/EditHeader", () => {
+jest.mock("@/app/components/common/EditHeader", () => {
   return function MockEditHeader({
     title,
     rightButtonText,
@@ -36,14 +36,14 @@ jest.mock("../../components/common/EditHeader", () => {
   };
 });
 
-jest.mock("../../components/common/LoadingScreen", () => {
+jest.mock("@/app/components/common/LoadingScreen", () => {
   return function MockLoadingScreen() {
     const { Text } = require("react-native");
     return <Text>Loading...</Text>;
   };
 });
 
-jest.mock("../../components/DraggableSticker", () => {
+jest.mock("@/app/components/DraggableSticker", () => {
   return {
     DraggableSticker: function MockDraggableSticker({
       sticker,
@@ -69,7 +69,7 @@ jest.mock("../../components/DraggableSticker", () => {
   };
 });
 
-jest.mock("../../utils/stickerUtils", () => ({
+jest.mock("@/app/utils/stickerUtils", () => ({
   CARD_WIDTH: 300,
   CARD_HEIGHT: 200,
   STICKER_SIZE: 50,
@@ -138,7 +138,7 @@ jest.mock("@expo/vector-icons", () => ({
 const {
   useUserData,
   useUpdateUserDecorations,
-} = require("../../hooks/useUser");
+} = require("@/app/hooks/useUser");
 
 // Test data
 const mockUserData = {

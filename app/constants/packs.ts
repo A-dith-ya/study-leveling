@@ -1,4 +1,4 @@
-import { CoinPackInfo } from "../types/storeTypes";
+import { CoinPackInfo } from "@/app/types/storeTypes";
 
 export const COIN_PACK_INFO: Record<string, CoinPackInfo> = {
   starter_pack: {
