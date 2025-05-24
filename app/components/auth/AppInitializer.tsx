@@ -86,14 +86,17 @@ export default function AppInitializer() {
   useEffect(() => {
     Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
 
-    if (Platform.OS === "ios") {
-      Purchases.configure({
-        apiKey: process.env.EXPO_PUBLIC_REVENUECAT_API_KEY,
-      });
-    } else if (Platform.OS === "android") {
-      Purchases.configure({
-        apiKey: process.env.EXPO_PUBLIC_REVENUECAT_API_KEY,
-      });
+    const apiKey = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY;
+    if (apiKey) {
+      if (Platform.OS === "ios") {
+        Purchases.configure({
+          apiKey,
+        });
+      } else if (Platform.OS === "android") {
+        Purchases.configure({
+          apiKey,
+        });
+      }
     }
   }, []);
 
