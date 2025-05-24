@@ -40,6 +40,10 @@ export async function evaluateAchievements(
   timeSpent?: number
 ): Promise<string[]> {
   try {
+    if (!userId) {
+      throw new Error("User ID is required to evaluate achievements");
+    }
+
     const achievementStore = useAchievementStore.getState();
 
     // Find achievements that should be unlocked based on type and threshold
