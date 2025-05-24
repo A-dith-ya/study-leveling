@@ -14,10 +14,12 @@ import { FlashList } from "@shopify/flash-list";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { v4 as uuidv4 } from "uuid";
+import type { Schema } from "@/amplify/data/resource";
 
 import FlashcardItem from "@/app/components/flashcard/FlashcardItem";
+import FileUploadModal from "@/app/components/flashcard/FileUploadModal";
 import { useCreateDeck } from "@/app/hooks/useDeck";
-import COLORS from "@/app/constants/colors";
+import { useGenerateFlashcards } from "@/app/services/generateService";
 import {
   createNewFlashcard,
   updateFlashcardField,
@@ -25,13 +27,17 @@ import {
   moveFlashcard,
   validateFlashcards,
 } from "@/app/utils/flashcardUtils";
-import { Flashcard } from "@/app/types/flashcardTypes";
+import { Flashcard, UploadedFile } from "@/app/types/flashcardTypes";
+import COLORS from "@/app/constants/colors";
+import { logger } from "@/app/utils/logger";
 
 export default function CreateFlashcard() {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
   const [deckTitle, setDeckTitle] = useState("");
+  const [showFileUpload, setShowFileUpload] = useState(false);
   const router = useRouter();
   const createDeckMutation = useCreateDeck();
+  const generateFlashcardsMutation = useGenerateFlashcards();
 
   const addFlashcard = () => {
     setFlashcards([...flashcards, createNewFlashcard(flashcards.length)]);
@@ -96,11 +102,35 @@ export default function CreateFlashcard() {
           router.dismissTo("/(amain)");
         },
         onError: (error) => {
-          console.error("Error saving deck:", error);
+          logger.error("Error saving deck:", error);
           Alert.alert("Error", "Failed to create deck. Please try again.");
         },
       }
     );
+  };
+
+  const handleAIGeneration = async (files: UploadedFile[]) => {
+    try {
+      const aiGeneratedCards: Schema["generateFlashcardsResponse"]["type"][] =
+        await generateFlashcardsMutation.mutateAsync(
+          files.map((file) => file.content || "").join("\n")
+        );
+
+      const generatedFlashcards: Flashcard[] = aiGeneratedCards.map(
+        (card, index) => ({
+          id: uuidv4(),
+          front: card.question,
+          back: card.answer,
+          order: flashcards.length + index,
+        })
+      );
+
+      setFlashcards((prev) => [...prev, ...generatedFlashcards]);
+      setShowFileUpload(false);
+    } catch (error) {
+      logger.error("AI generation error:", error);
+      Alert.alert("Error", "Failed to generate flashcards. Please try again.");
+    }
   };
 
   return (
@@ -157,11 +187,21 @@ export default function CreateFlashcard() {
           )}
         </Pressable>
 
-        <Pressable style={styles.button}>
+        <Pressable
+          style={styles.button}
+          onPress={() => setShowFileUpload(true)}
+        >
           <Ionicons name="sparkles" size={24} color={COLORS.white} />
           <Text style={styles.buttonText}>AI Generate</Text>
         </Pressable>
       </View>
+
+      <FileUploadModal
+        visible={showFileUpload}
+        onClose={() => setShowFileUpload(false)}
+        onGenerate={handleAIGeneration}
+        isGenerating={generateFlashcardsMutation.isPending}
+      />
     </SafeAreaView>
   );
 }
