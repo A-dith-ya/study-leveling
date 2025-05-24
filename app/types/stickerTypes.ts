@@ -1,3 +1,6 @@
+import { Ionicons } from "@expo/vector-icons";
+import { Href } from "expo-router";
+
 export interface Sticker {
   cosmeticId: string;
   category: "STICKER";
@@ -12,4 +15,22 @@ export interface PlacedSticker {
   rotation: number;
   flipX: boolean;
   flipY: boolean;
+}
+
+// Sticker components
+export interface EditHeaderProps {
+  title: string;
+  rightButtonText: string;
+  rightButtonIcon: keyof typeof Ionicons.glyphMap;
+  onRightButtonPress: () => void;
+  showBackButton?: boolean;
+  backButtonDestination?: Href;
+}
+
+export interface DraggableStickerProps {
+  sticker: PlacedSticker;
+  isSelected: boolean;
+  onSelect: () => void;
+  onUpdate: (updates: Partial<PlacedSticker>) => void;
+  onDelete: () => void;
 }
