@@ -138,23 +138,30 @@ export default function CreateFlashcard() {
         />
       </View>
 
-      <Pressable
-        style={[
-          styles.saveAllButton,
-          createDeckMutation.isPending && styles.saveButtonDisabled,
-        ]}
-        onPress={handleSave}
-        disabled={createDeckMutation.isPending}
-      >
-        {createDeckMutation.isPending ? (
-          <ActivityIndicator color={COLORS.white} />
-        ) : (
-          <>
-            <Ionicons name="save-outline" size={24} color={COLORS.white} />
-            <Text style={styles.saveAllButtonText}>Save All</Text>
-          </>
-        )}
-      </Pressable>
+      <View style={styles.buttonContainer}>
+        <Pressable
+          style={[
+            styles.button,
+            createDeckMutation.isPending && styles.buttonDisabled,
+          ]}
+          onPress={handleSave}
+          disabled={createDeckMutation.isPending}
+        >
+          {createDeckMutation.isPending ? (
+            <ActivityIndicator color={COLORS.white} />
+          ) : (
+            <>
+              <Ionicons name="save-outline" size={24} color={COLORS.white} />
+              <Text style={styles.buttonText}>Save All</Text>
+            </>
+          )}
+        </Pressable>
+
+        <Pressable style={styles.button}>
+          <Ionicons name="sparkles" size={24} color={COLORS.white} />
+          <Text style={styles.buttonText}>AI Generate</Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 }
@@ -200,6 +207,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
   },
+  titleInput: {
+    backgroundColor: COLORS.white,
+    padding: 16,
+    fontSize: 18,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.lightGray,
+    color: COLORS.text,
+    textAlign: "center",
+  },
   listContentContainer: {
     paddingVertical: 8,
     paddingBottom: 16,
@@ -216,8 +232,14 @@ const styles = StyleSheet.create({
     color: COLORS.darkGray,
     fontSize: 16,
   },
-  saveAllButton: {
-    width: "50%",
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 16,
+  },
+  button: {
+    width: "40%",
     alignSelf: "center",
     backgroundColor: COLORS.primary,
     flexDirection: "row",
@@ -228,22 +250,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 16,
   },
-  saveAllButtonText: {
+  buttonText: {
     color: COLORS.white,
     fontSize: 16,
     fontWeight: "600",
     marginLeft: 8,
   },
-  titleInput: {
-    backgroundColor: COLORS.white,
-    padding: 16,
-    fontSize: 18,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.lightGray,
-    color: COLORS.text,
-    textAlign: "center",
-  },
-  saveButtonDisabled: {
+  buttonDisabled: {
     opacity: 0.7,
   },
 });
