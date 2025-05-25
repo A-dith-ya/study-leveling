@@ -143,6 +143,18 @@ export default function FlashcardReview() {
   // When navigating away, you can calculate total time with:
   // const totalTimeInSeconds = Math.floor((Date.now() - startTimeRef.current) / 1000);
 
+  // Add complete review handler
+  const handleComplete = () => {
+    router.push(
+      `/(flashcard)/FlashcardReward?deckId=${deckId}&totalCards=${deckData?.flashcards?.length}&duration=${getElapsedSeconds(
+        startTimeRef.current
+      )}&xpEarned=${calculateXPForSession(
+        deckData?.flashcards?.length ?? 0,
+        getElapsedSeconds(startTimeRef.current)
+      )}`
+    );
+  };
+
   if (isLoading) return <LoadingScreen message="Loading flashcards..." />;
 
   return (
@@ -181,28 +193,10 @@ export default function FlashcardReview() {
         onPrevious={handlePrevious}
         onNext={handleNext}
         onMark={handleMark}
+        onComplete={handleComplete}
         isFirstCard={currentIndex === 0}
         isLastCard={isLastCard}
       />
-
-      {isLastCard && (
-        <Pressable
-          style={styles.submitButton}
-          onPress={() => {
-            router.push(
-              `/(flashcard)/FlashcardReward?deckId=${deckId}&totalCards=${deckData?.flashcards?.length}&duration=${getElapsedSeconds(
-                startTimeRef.current
-              )}&xpEarned=${calculateXPForSession(
-                deckData?.flashcards?.length ?? 0,
-                getElapsedSeconds(startTimeRef.current)
-              )}`
-            );
-          }}
-          accessibilityRole="button"
-        >
-          <Text style={styles.submitButtonText}>Complete Review</Text>
-        </Pressable>
-      )}
     </SafeAreaView>
   );
 }

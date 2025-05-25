@@ -31,6 +31,7 @@ export interface ReviewControlsProps {
   onPrevious: () => void;
   onNext: () => void;
   onMark: () => void;
+  onComplete: () => void;
   isFirstCard: boolean;
   isLastCard: boolean;
 }

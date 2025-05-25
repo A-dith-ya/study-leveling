@@ -9,6 +9,7 @@ export default function ReviewControls({
   onPrevious,
   onNext,
   onMark,
+  onComplete,
   isFirstCard,
   isLastCard,
 }: ReviewControlsProps) {
@@ -26,7 +27,12 @@ export default function ReviewControls({
         />
       </Pressable>
 
-      {!isLastCard && (
+      {isLastCard ? (
+        <Pressable style={styles.completeButton} onPress={onComplete}>
+          <Ionicons name="flag" size={20} color={COLORS.white} />
+          <Text style={styles.completeButtonText}>Finish</Text>
+        </Pressable>
+      ) : (
         <Pressable style={styles.markButton} onPress={onMark}>
           <Ionicons name="bookmark-outline" size={20} color={COLORS.white} />
           <Text style={styles.markButtonText}>Mark</Text>
@@ -93,6 +99,28 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   markButtonText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: "600",
+    marginLeft: 8,
+  },
+  completeButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.success,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 24,
+    shadowColor: COLORS.shadowColor,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  completeButtonText: {
     color: COLORS.white,
     fontSize: 16,
     fontWeight: "600",
