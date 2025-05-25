@@ -1,6 +1,6 @@
 type LogLevel = "debug" | "info" | "warn" | "error";
 
-const isDebugMode = process.env.NODE_ENV !== "production";
+const isDebugMode = process.env.EXPO_PUBLIC_NODE_ENV !== "production";
 
 export const logger = {
   debug: (...args: any[]) => {
@@ -29,8 +29,10 @@ export const logger = {
   },
 
   logDivider: () => {
-    console.log(
-      "--------------------------------------------------------------------------------------------------------------------------------"
-    );
+    if (isDebugMode) {
+      console.log(
+        "--------------------------------------------------------------------------------------------------------------------------------"
+      );
+    }
   },
 };
