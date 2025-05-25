@@ -112,6 +112,7 @@ export default function UserStats() {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
+        <Text style={styles.sectionTitle}>Your Progress</Text>
         {/* Level and XP Progress */}
         <LevelDisplay
           level={userData?.level || 1}
@@ -227,6 +228,7 @@ const styles = StyleSheet.create({
   },
   achievementsGrid: {
     flexDirection: "row",
+    justifyContent: "space-between",
     flexWrap: "wrap",
     gap: 16,
   },

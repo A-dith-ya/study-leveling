@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   levelText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "800",
     color: COLORS.white,
     backgroundColor: COLORS.primary,

@@ -114,7 +114,6 @@ const styles = StyleSheet.create({
   appIcon: {
     width: 40,
     height: 40,
-    transform: [{ scale: 1.4 }],
   },
   appTitle: {
     fontSize: 16,
