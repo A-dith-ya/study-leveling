@@ -78,3 +78,5 @@ export const useReviewStore = create<ReviewState & ReviewActions>(
     },
   })
 );
+
+export default useReviewStore;

@@ -2,9 +2,6 @@ import { StyleSheet } from "react-native";
 import COLORS from "../../constants/colors";
 
 const styles = StyleSheet.create({
-  signOutButton: {
-    alignSelf: "flex-end",
-  },
   SignInHeader: {
     alignItems: "center",
     gap: 10,

@@ -23,6 +23,7 @@ interface ChallengeStore {
   updateProgress: (challengeId: string, progress: number) => void;
   claimReward: (challengeId: string) => void;
   shouldResetChallenges: () => boolean;
+  reset: () => void;
 }
 
 const getRandomChallenges = (count: number): DailyChallenge[] => {
@@ -81,9 +82,16 @@ const useChallengeStore = create<ChallengeStore>()(
         const lastUpdate = dayjs(dailyChallenges[0].lastUpdated);
         return !lastUpdate.isSame(dayjs(), "day");
       },
+
+      reset: () => {
+        set({
+          dailyChallenges: [],
+          hasInitialized: false,
+        });
+      },
     }),
     {
-      name: "challenge-storage5",
+      name: "challenge-storage",
       storage: createJSONStorage(() => zustandStorage),
       partialize: (state) => ({
         dailyChallenges: state.dailyChallenges,

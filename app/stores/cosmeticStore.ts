@@ -18,6 +18,7 @@ interface CosmeticStore {
 
   // Initial setup and reset
   initializeStore: () => void;
+  reset: () => void;
 }
 
 const useCosmeticStore = create<CosmeticStore>()(
@@ -41,6 +42,13 @@ const useCosmeticStore = create<CosmeticStore>()(
 
       initializeStore: () => {
         logger.debug("Initializing cosmetic store");
+        set({
+          boughtToday: {},
+          available: fisherYatesShuffle(COSMETICS, 8),
+        });
+      },
+
+      reset: () => {
         set({
           boughtToday: {},
           available: fisherYatesShuffle(COSMETICS, 8),

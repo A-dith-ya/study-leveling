@@ -10,6 +10,7 @@ interface AchievementStore {
   fetchAchievements: (userId: string) => Promise<void>;
   unlock: (achievementId: string) => void;
   isUnlocked: (achievementId: string) => boolean;
+  reset: () => void;
 }
 
 const useAchievementStore = create<AchievementStore>()(

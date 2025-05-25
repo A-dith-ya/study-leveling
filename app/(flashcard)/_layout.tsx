@@ -14,6 +14,7 @@ export default function FlashcardLayout() {
       <Stack.Screen name="FlashcardDecoration" />
       <Stack.Screen name="AIReview" />
       <Stack.Screen name="AISummary" />
+      <Stack.Screen name="Account" />
     </Stack>
   );
 }
