@@ -44,7 +44,11 @@ const scanPolicy = new Policy(Stack.of(deckTable), "DeleteUserScanPolicy", {
         "dynamodb:BatchWriteItem",
         "dynamodb:DeleteItem",
       ],
-      resources: [deckTable.tableArn, flashcardTable.tableArn],
+      resources: [
+        deckTable.tableArn,
+        flashcardTable.tableArn,
+        userTable.tableArn,
+      ],
     }),
   ],
 });
