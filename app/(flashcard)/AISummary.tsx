@@ -13,10 +13,19 @@ import COLORS from "@/app/constants/colors";
 import { AISummaryCardItem } from "@/app/types/reviewTypes";
 
 export default function AISummary() {
-  const { deckId, evaluations, userAnswers, hasEvaluation } = useReviewStore();
+  const {
+    deckId,
+    evaluations,
+    userAnswers,
+    setCurrentFlashcardIndex,
+    hasEvaluation,
+    reset,
+  } = useReviewStore();
   const { data: deckData, isLoading } = useDeck(deckId as string);
 
   const handleRetry = () => {
+    setCurrentFlashcardIndex(0);
+
     router.replace({
       pathname: "/(flashcard)/AIReview",
       params: { deckId },
@@ -24,6 +33,7 @@ export default function AISummary() {
   };
 
   const handleBackToDashboard = () => {
+    reset();
     router.replace("/(amain)");
   };
 
