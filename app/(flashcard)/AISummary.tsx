@@ -64,12 +64,6 @@ export default function AISummary() {
       {evaluatedCount === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>No cards have been reviewed yet.</Text>
-          <Pressable
-            style={[styles.button, styles.primaryButton, styles.emptyButton]}
-            onPress={handleRetry}
-          >
-            <Text style={styles.primaryButtonText}>Start Review</Text>
-          </Pressable>
         </View>
       ) : (
         <>
@@ -81,26 +75,26 @@ export default function AISummary() {
             contentContainerStyle={styles.listContainer}
             showsVerticalScrollIndicator={false}
           />
-
-          {/* Bottom Actions */}
-          <View style={styles.bottomActions}>
-            <Pressable
-              style={[styles.button, styles.primaryButton]}
-              onPress={handleRetry}
-            >
-              <Ionicons name="refresh-outline" size={20} color={COLORS.white} />
-              <Text style={styles.primaryButtonText}>Retry Session</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.button, styles.secondaryButton]}
-              onPress={handleBackToDashboard}
-            >
-              <Ionicons name="home-outline" size={20} color={COLORS.primary} />
-              <Text style={styles.secondaryButtonText}>Dashboard</Text>
-            </Pressable>
-          </View>
         </>
       )}
+
+      {/* Bottom Actions */}
+      <View style={styles.bottomActions}>
+        <Pressable
+          style={[styles.button, styles.primaryButton]}
+          onPress={handleRetry}
+        >
+          <Ionicons name="refresh-outline" size={20} color={COLORS.white} />
+          <Text style={styles.primaryButtonText}>Retry Session</Text>
+        </Pressable>
+        <Pressable
+          style={[styles.button, styles.secondaryButton]}
+          onPress={handleBackToDashboard}
+        >
+          <Ionicons name="home-outline" size={20} color={COLORS.primary} />
+          <Text style={styles.secondaryButtonText}>Dashboard</Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 }
