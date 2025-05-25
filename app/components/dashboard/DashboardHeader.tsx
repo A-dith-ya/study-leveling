@@ -20,7 +20,7 @@ export default function DashboardHeader({
         <Text style={styles.levelText}>Level {level}</Text>
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
-            <FontAwesome6 name="fire" size={40} color={COLORS.secondaryLight} />
+            <FontAwesome6 name="fire" size={24} color={COLORS.secondaryLight} />
             <Text style={styles.statText}>{streakCount}</Text>
           </View>
           <View style={styles.statItem}>
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   levelText: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: "800",
     color: COLORS.white,
     backgroundColor: COLORS.primary,
@@ -106,12 +106,12 @@ const styles = StyleSheet.create({
   },
   statText: {
     color: COLORS.white,
-    fontSize: 32,
+    fontSize: 16,
     fontWeight: "bold",
   },
   coinImage: {
-    width: 60,
-    height: 60,
+    width: 35,
+    height: 35,
     resizeMode: "contain",
     marginRight: -8,
   },

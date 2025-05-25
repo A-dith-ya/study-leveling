@@ -1,4 +1,4 @@
-import { View, Pressable, Text, StyleSheet } from "react-native";
+import { View, Pressable, Text, StyleSheet, Image } from "react-native";
 import { router } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
 import { Ionicons } from "@expo/vector-icons";
@@ -47,12 +47,18 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <Pressable
-        style={styles.accountButton}
-        onPress={() => router.push("/(flashcard)/Account")}
-      >
-        <Ionicons name="person" size={34} color={COLORS.primary} />
-      </Pressable>
+      <View style={styles.headerRow}>
+        <View style={styles.appBranding}>
+          <Image
+            source={require("@/assets/images/icon.png")}
+            style={styles.appIcon}
+          />
+          <Text style={styles.appTitle}>Study Leveling</Text>
+        </View>
+        <Pressable onPress={() => router.push("/(flashcard)/Account")}>
+          <Ionicons name="person" size={34} color={COLORS.primary} />
+        </Pressable>
+      </View>
       <DashboardHeader
         level={userData?.level ?? 1}
         currentXP={userData?.xp ?? 0}
@@ -94,9 +100,26 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  accountButton: {
-    alignSelf: "flex-end",
-    marginRight: 16,
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+  },
+  appBranding: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  appIcon: {
+    width: 40,
+    height: 40,
+    transform: [{ scale: 1.4 }],
+  },
+  appTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: COLORS.primaryDark,
   },
   listContainer: {
     flex: 1,
