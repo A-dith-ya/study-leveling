@@ -8,16 +8,12 @@ import Animated, {
   withRepeat,
   withSequence,
 } from "react-native-reanimated";
-import * as Haptics from "expo-haptics";
 import COLORS from "@/app/constants/colors";
 import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
 } from "expo-speech-recognition";
-
-interface MicButtonProps {
-  onTranscriptChange: (transcript: string) => void;
-}
+import { MicButtonProps } from "@/app/types/reviewTypes";
 
 export default function MicButton({ onTranscriptChange }: MicButtonProps) {
   const [isRecording, setIsRecording] = useState(false);
@@ -57,8 +53,6 @@ export default function MicButton({ onTranscriptChange }: MicButtonProps) {
   });
 
   const handleMicPress = async () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-
     if (!isRecording) {
       // Start recording
       try {
