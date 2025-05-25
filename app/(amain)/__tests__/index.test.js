@@ -55,13 +55,6 @@ jest.mock("react-native-safe-area-context", () => {
 });
 
 // Mock components that are complex and not the focus of this test
-jest.mock("@/app/components/auth/SignOutButton", () => {
-  const { Text } = require("react-native");
-  return function MockSignOutButton() {
-    return <Text>Sign Out</Text>;
-  };
-});
-
 jest.mock("@/app/components/dashboard/DashboardHeader", () => {
   const { View, Text } = require("react-native");
   return function MockDashboardHeader({
@@ -184,6 +177,37 @@ describe("Index Screen", () => {
       renderWithQueryClient(<Index />);
 
       expect(screen.getByText("Loading decks...")).toBeOnTheScreen();
+    });
+  });
+
+  describe("Header Section", () => {
+    beforeEach(() => {
+      useUserData.mockReturnValue({
+        data: { level: 1, xp: 500, streak: 5, coins: 100 },
+        isLoading: false,
+        error: null,
+      });
+
+      useDecks.mockReturnValue({
+        data: [],
+        isLoading: false,
+        error: null,
+      });
+    });
+
+    it("displays app branding with title", () => {
+      renderWithQueryClient(<Index />);
+
+      expect(screen.getByText("Study Leveling")).toBeOnTheScreen();
+    });
+
+    it("navigates to account screen when account icon is pressed", () => {
+      renderWithQueryClient(<Index />);
+
+      const accountButton = screen.getByText("person");
+      fireEvent.press(accountButton);
+
+      expect(router.push).toHaveBeenCalledWith("/(flashcard)/Account");
     });
   });
 
@@ -399,7 +423,6 @@ describe("Index Screen", () => {
       renderWithQueryClient(<Index />);
 
       // Verify all main sections are present
-      expect(screen.getByText("Sign Out")).toBeOnTheScreen();
       expect(screen.getByText("Level 3")).toBeOnTheScreen();
       expect(screen.getByText("Biology Terms")).toBeOnTheScreen();
       expect(screen.getByText("Create Deck")).toBeOnTheScreen();
