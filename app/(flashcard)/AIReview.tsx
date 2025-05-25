@@ -6,6 +6,8 @@ import {
   Pressable,
   TextInput,
   ActivityIndicator,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, {
@@ -154,61 +156,63 @@ export default function AIReview() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.container}>
-        {/* Question Section */}
-        <View style={styles.questionContainer}>
-          <Text style={styles.questionLabel}>
-            Question {currentFlashcardIndex + 1}
-          </Text>
-          <Text style={styles.questionText}>{question}</Text>
-        </View>
-
-        {/* Legend Bar */}
-        <View style={styles.legendBar}>
-          <LegendItem type="correct" label="Correct" />
-          <LegendItem type="incorrect" label="Incorrect" />
-          <LegendItem type="missing" label="Missing" />
-        </View>
-
-        {/* Answer Input/Display Section */}
-        {!isEvaluated && (
-          <View style={styles.answerContainer}>
-            <Text style={styles.sectionLabel}>Your Answer</Text>
-            <TextInput
-              style={styles.answerInput}
-              value={userInput}
-              onChangeText={setUserInput}
-              multiline
-              placeholder="Type your answer here..."
-              placeholderTextColor={COLORS.darkGray}
-            />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          {/* Question Section */}
+          <View style={styles.questionContainer}>
+            <Text style={styles.questionLabel}>
+              Question {currentFlashcardIndex + 1}
+            </Text>
+            <Text style={styles.questionText}>{question}</Text>
           </View>
-        )}
 
-        {/* Correct Answer Section (shown after evaluation) */}
-        {isEvaluated &&
-          currentEvaluation?.userAnswerSegments &&
-          currentEvaluation?.correctAnswerSegments && (
-            <>
-              <HighlightedAnswer
-                label="Your Answer"
-                segments={currentEvaluation.userAnswerSegments}
+          {/* Legend Bar */}
+          <View style={styles.legendBar}>
+            <LegendItem type="correct" label="Correct" />
+            <LegendItem type="incorrect" label="Incorrect" />
+            <LegendItem type="missing" label="Missing" />
+          </View>
+
+          {/* Answer Input/Display Section */}
+          {!isEvaluated && (
+            <View style={styles.answerContainer}>
+              <Text style={styles.sectionLabel}>Your Answer</Text>
+              <TextInput
+                style={styles.answerInput}
+                value={userInput}
+                onChangeText={setUserInput}
+                multiline
+                placeholder="Type your answer here..."
+                placeholderTextColor={COLORS.darkGray}
               />
-              <HighlightedAnswer
-                label="Correct Answer"
-                segments={currentEvaluation.correctAnswerSegments}
-              />
-            </>
+            </View>
           )}
 
-        {/* Mic Button */}
-        {!isEvaluated && <MicButton onTranscriptChange={setUserInput} />}
+          {/* Correct Answer Section (shown after evaluation) */}
+          {isEvaluated &&
+            currentEvaluation?.userAnswerSegments &&
+            currentEvaluation?.correctAnswerSegments && (
+              <>
+                <HighlightedAnswer
+                  label="Your Answer"
+                  segments={currentEvaluation.userAnswerSegments}
+                />
+                <HighlightedAnswer
+                  label="Correct Answer"
+                  segments={currentEvaluation.correctAnswerSegments}
+                />
+              </>
+            )}
 
-        {/* AI Feedback Section */}
-        {isEvaluated && aiExplanation && (
-          <AIFeedback explanation={aiExplanation} />
-        )}
-      </View>
+          {/* Mic Button */}
+          {!isEvaluated && <MicButton onTranscriptChange={setUserInput} />}
+
+          {/* AI Feedback Section */}
+          {isEvaluated && aiExplanation && (
+            <AIFeedback explanation={aiExplanation} />
+          )}
+        </View>
+      </TouchableWithoutFeedback>
       {/* Controls */}
       <View style={styles.controls}>
         <Pressable
