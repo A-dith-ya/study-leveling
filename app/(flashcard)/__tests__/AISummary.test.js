@@ -169,6 +169,8 @@ describe("AISummary", () => {
     evaluations: mockEvaluations,
     userAnswers: mockUserAnswers,
     hasEvaluation: jest.fn(),
+    reset: jest.fn(),
+    setCurrentFlashcardIndex: jest.fn(),
   };
 
   beforeEach(() => {
@@ -270,7 +272,8 @@ describe("AISummary", () => {
       expect(
         screen.getByText("No cards have been reviewed yet.")
       ).toBeOnTheScreen();
-      expect(screen.getByText("Start Review")).toBeOnTheScreen();
+      expect(screen.getByText("Retry Session")).toBeOnTheScreen();
+      expect(screen.getByText("Dashboard")).toBeOnTheScreen();
       expect(screen.getByText("0 of 3 Cards Reviewed")).toBeOnTheScreen();
     });
 
@@ -279,7 +282,8 @@ describe("AISummary", () => {
 
       render(<AISummary />);
 
-      expect(screen.getByText("Start Review")).toBeOnTheScreen();
+      expect(screen.getByText("Retry Session")).toBeOnTheScreen();
+      expect(screen.getByText("Dashboard")).toBeOnTheScreen();
     });
   });
 
@@ -301,19 +305,6 @@ describe("AISummary", () => {
       fireEvent.press(screen.getByText("Dashboard"));
 
       expect(router.replace).toHaveBeenCalledWith("/(amain)");
-    });
-
-    it("navigates to AIReview when start review button is pressed in empty state", () => {
-      mockReviewStore.hasEvaluation.mockReturnValue(false);
-
-      render(<AISummary />);
-
-      fireEvent.press(screen.getByText("Start Review"));
-
-      expect(router.replace).toHaveBeenCalledWith({
-        pathname: "/(flashcard)/AIReview",
-        params: { deckId: "deck-1" },
-      });
     });
   });
 

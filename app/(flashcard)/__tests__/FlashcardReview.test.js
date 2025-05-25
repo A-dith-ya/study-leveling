@@ -118,6 +118,7 @@ jest.mock("@/app/components/flashcard/ReviewControls", () => {
     onPrevious,
     onNext,
     onMark,
+    onComplete,
     isFirstCard,
     isLastCard,
   }) {
@@ -135,16 +136,28 @@ jest.mock("@/app/components/flashcard/ReviewControls", () => {
           },
           React.createElement("Text", {}, "Previous")
         ),
-        !isLastCard &&
-          React.createElement(
-            "Pressable",
-            {
-              key: "mark",
-              testID: "mark-button",
-              onPress: onMark,
-            },
-            React.createElement("Text", {}, "Mark")
-          ),
+        isLastCard
+          ? React.createElement(
+              "Pressable",
+              {
+                key: "complete",
+                testID: "complete-button",
+                onPress: onComplete,
+                role: "button",
+                accessibilityRole: "button",
+                accessibilityLabel: "Finish",
+              },
+              React.createElement("Text", {}, "Finish")
+            )
+          : React.createElement(
+              "Pressable",
+              {
+                key: "mark",
+                testID: "mark-button",
+                onPress: onMark,
+              },
+              React.createElement("Text", {}, "Mark")
+            ),
         React.createElement(
           "Pressable",
           {
@@ -276,9 +289,7 @@ describe("FlashcardReview", () => {
       fireEvent.press(nextButton);
       fireEvent.press(nextButton);
 
-      expect(
-        screen.getByRole("button", { name: /complete review/i })
-      ).toBeOnTheScreen();
+      expect(screen.getByTestId("complete-button")).toBeOnTheScreen();
     });
   });
 
@@ -436,9 +447,7 @@ describe("FlashcardReview", () => {
       fireEvent.press(nextButton);
       fireEvent.press(nextButton);
 
-      const completeButton = screen.getByRole("button", {
-        name: /complete review/i,
-      });
+      const completeButton = screen.getByTestId("complete-button");
       fireEvent.press(completeButton);
 
       expect(router.push).toHaveBeenCalledWith(
@@ -460,9 +469,7 @@ describe("FlashcardReview", () => {
       fireEvent.press(nextButton);
       fireEvent.press(nextButton);
 
-      const completeButton = screen.getByRole("button", {
-        name: /complete review/i,
-      });
+      const completeButton = screen.getByTestId("complete-button");
       fireEvent.press(completeButton);
 
       const expectedUrl =
@@ -547,9 +554,7 @@ describe("FlashcardReview", () => {
       render(<FlashcardReview />);
 
       expect(screen.getByText("1 / 1")).toBeOnTheScreen();
-      expect(
-        screen.getByRole("button", { name: /complete review/i })
-      ).toBeOnTheScreen();
+      expect(screen.getByTestId("complete-button")).toBeOnTheScreen();
     });
 
     it("resets flip state when navigating between cards", () => {
@@ -597,9 +602,7 @@ describe("FlashcardReview", () => {
       fireEvent.press(nextButton);
       fireEvent.press(nextButton);
 
-      const completeButton = screen.getByRole("button", {
-        name: /complete review/i,
-      });
+      const completeButton = screen.getByTestId("complete-button");
       expect(completeButton).toBeOnTheScreen();
     });
   });
