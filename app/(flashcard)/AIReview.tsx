@@ -202,7 +202,7 @@ export default function AIReview() {
           )}
 
         {/* Mic Button */}
-        {!isEvaluated && <MicButton />}
+        {!isEvaluated && <MicButton onTranscriptChange={setUserInput} />}
 
         {/* AI Feedback Section */}
         {isEvaluated && aiExplanation && (

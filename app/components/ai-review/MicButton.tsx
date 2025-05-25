@@ -10,36 +10,95 @@ import Animated, {
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 import COLORS from "@/app/constants/colors";
+import {
+  ExpoSpeechRecognitionModule,
+  useSpeechRecognitionEvent,
+} from "expo-speech-recognition";
 
-export default function MicButton() {
+interface MicButtonProps {
+  onTranscriptChange: (transcript: string) => void;
+}
+
+export default function MicButton({ onTranscriptChange }: MicButtonProps) {
   const [isRecording, setIsRecording] = useState(false);
   const micScale = useSharedValue(1);
   const micGlow = useSharedValue(0);
 
-  const handleMicPress = () => {
+  useSpeechRecognitionEvent("start", () => {
+    setIsRecording(true);
+    console.log("Speech recognition started");
+  });
+
+  useSpeechRecognitionEvent("end", () => {
+    setIsRecording(false);
+    micScale.value = withSpring(1);
+    micGlow.value = withSpring(0);
+    console.log("Speech recognition ended");
+  });
+
+  useSpeechRecognitionEvent("result", (event) => {
+    const transcript = event.results[0]?.transcript;
+    if (transcript) {
+      onTranscriptChange(transcript);
+      console.log("Transcript received:", transcript);
+    }
+  });
+
+  useSpeechRecognitionEvent("error", (event) => {
+    console.log(
+      "Speech recognition error:",
+      event.error,
+      "message:",
+      event.message
+    );
+    setIsRecording(false);
+    micScale.value = withSpring(1);
+    micGlow.value = withSpring(0);
+  });
+
+  const handleMicPress = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setIsRecording(!isRecording);
 
     if (!isRecording) {
-      micScale.value = withRepeat(
-        withSequence(
-          withSpring(1.1, { damping: 2 }),
-          withSpring(1, { damping: 2 })
-        ),
-        -1,
-        true
-      );
-      micGlow.value = withRepeat(
-        withSequence(
-          withSpring(0.8, { damping: 2 }),
-          withSpring(0.2, { damping: 2 })
-        ),
-        -1,
-        true
-      );
+      // Start recording
+      try {
+        const result =
+          await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+        if (!result.granted) {
+          console.warn("Permissions not granted", result);
+          return;
+        }
+
+        // Start speech recognition
+        ExpoSpeechRecognitionModule.start({
+          lang: "en-US",
+          interimResults: true,
+          continuous: false,
+        });
+
+        // Start animations
+        micScale.value = withRepeat(
+          withSequence(
+            withSpring(1.1, { damping: 2 }),
+            withSpring(1, { damping: 2 })
+          ),
+          -1,
+          true
+        );
+        micGlow.value = withRepeat(
+          withSequence(
+            withSpring(0.8, { damping: 2 }),
+            withSpring(0.2, { damping: 2 })
+          ),
+          -1,
+          true
+        );
+      } catch (error) {
+        console.error("Error starting speech recognition:", error);
+      }
     } else {
-      micScale.value = withSpring(1);
-      micGlow.value = withSpring(0);
+      // Stop recording
+      ExpoSpeechRecognitionModule.stop();
     }
   };
 

@@ -51,6 +51,10 @@ export interface AIFeedbackProps {
   explanation: string;
 }
 
+export interface MicButtonProps {
+  onTranscriptChange: (transcript: string) => void;
+}
+
 // AISummary components
 export interface AISummaryCardItem {
   id: string;
