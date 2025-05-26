@@ -83,13 +83,19 @@ export default function Index() {
         >
           <Ionicons name="brush-outline" size={24} color={COLORS.white} />
         </Pressable>
-        <Pressable
-          style={styles.createDeckButton}
-          onPress={() => router.push("/(flashcard)")}
-        >
-          <Ionicons name="add-circle-outline" size={24} color={COLORS.white} />
-          <Text style={styles.createDeckButtonText}>Create Deck</Text>
-        </Pressable>
+        <View style={styles.createDeckButtonWrapper}>
+          <Pressable
+            style={styles.createDeckButton}
+            onPress={() => router.push("/(flashcard)")}
+          >
+            <Ionicons
+              name="add-circle-outline"
+              size={24}
+              color={COLORS.white}
+            />
+            <Text style={styles.createDeckButtonText}>Create Deck</Text>
+          </Pressable>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -130,10 +136,9 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     marginBottom: 8,
-    gap: 50,
   },
   decorateButton: {
     backgroundColor: COLORS.secondary,
@@ -142,9 +147,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  createDeckButtonWrapper: {
+    flex: 1,
+    alignItems: "center",
+  },
   createDeckButton: {
-    width: "50%",
-    alignSelf: "center",
     backgroundColor: COLORS.primary,
     flexDirection: "row",
     alignItems: "center",
