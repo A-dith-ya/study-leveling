@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   },
   achievementsGrid: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     flexWrap: "wrap",
     gap: 16,
   },

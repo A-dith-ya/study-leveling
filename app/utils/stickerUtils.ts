@@ -2,8 +2,8 @@ import { Dimensions } from "react-native";
 import { COSMETICS } from "@/app/constants/cosmetics";
 
 const { width } = Dimensions.get("window");
-export const CARD_WIDTH = width * 0.8;
-export const CARD_HEIGHT = CARD_WIDTH * 1.5;
+export const CARD_WIDTH = Math.min(width * 0.8, 600);
+export const CARD_HEIGHT = Math.min(CARD_WIDTH * 1.5, 900);
 export const STICKER_SIZE = 60;
 
 export const getImageFromId = (id: string) => {
