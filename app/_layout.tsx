@@ -15,7 +15,15 @@ import SignUpFooter from "./components/auth/SignUpFooter";
 import AppInitializer from "./components/auth/AppInitializer";
 import { clientPersister } from "./services/mmkv";
 
-Amplify.configure(outputs);
+const getAmplifyConfig = () => {
+  if (process.env.EXPO_PUBLIC_AMPLIFY_ENV === "production") {
+    return require("../amplify_outputs.prod.json");
+  } else {
+    return require("../amplify_outputs.json");
+  }
+};
+
+Amplify.configure(getAmplifyConfig());
 
 const theme = {
   tokens: {

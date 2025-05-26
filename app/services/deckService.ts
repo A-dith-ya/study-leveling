@@ -67,25 +67,11 @@ export async function createDeck(
   flashcards: Flashcard[]
 ) {
   try {
-    // Create the deck first
-    const { data: deck, errors: deckErrors } = await client.models.Deck.create({
-      deckId,
-      title,
-      userId,
-      flashcardCount: flashcards.length,
-    });
-
-    if (deckErrors) {
-      logger.error("Error creating deck:", deckErrors);
-      throw new Error("Error creating deck");
-    }
-    logger.debug("Created deck", deck);
-
-    const { data: flashcardData, errors: flashcardErrors } =
-      await client.mutations.BatchCreateFlashcard({
+    const { data: result, errors: flashcardErrors } =
+      await client.queries.batchCreateFlashcard({
         deckId,
-        // title,
-        // userId,
+        title,
+        userId,
         flashcards: flashcards.map((card) => ({
           flashcardId: card.id,
           front: card.front,
@@ -98,9 +84,9 @@ export async function createDeck(
       logger.error("Error creating flashcards:", flashcardErrors);
       throw new Error("Error creating flashcards");
     }
-    logger.debug("Created flashcards", flashcardData);
+    logger.debug("Created flashcards", result);
 
-    return deck;
+    return result;
   } catch (error) {
     logger.error("Error creating deck:", error);
     throw error;
@@ -115,37 +101,26 @@ export async function updateDeck(
   deletedFlashcardIds: string[]
 ) {
   try {
-    // Update the deck first
-    const deck = await client.models.Deck.update({
+    const { data: result, errors } = await client.queries.batchUpdateFlashcard({
       deckId,
       title,
-      flashcardCount: flashcards.length,
+      userId,
+      flashcards: flashcards.map((card) => ({
+        flashcardId: card.id,
+        front: card.front,
+        back: card.back,
+        order: card.order,
+      })),
+      deletedFlashcardIds,
     });
 
-    // Delete existing flashcards
-    await client.mutations.BatchDeleteFlashcard({
-      flashcardIds: deletedFlashcardIds,
-    });
-
-    // Create new flashcards
-    const { data: flashcardData, errors: flashcardErrors } =
-      await client.mutations.BatchCreateFlashcard({
-        deckId,
-        flashcards: flashcards.map((card) => ({
-          flashcardId: card.id,
-          front: card.front,
-          back: card.back,
-          order: card.order,
-        })),
-      });
-
-    if (flashcardErrors) {
-      logger.error("Error creating flashcards:", flashcardErrors);
-      throw new Error("Error creating flashcards");
+    if (errors) {
+      logger.error("Error updating deck and flashcards:", errors);
+      throw new Error("Error updating deck and flashcards");
     }
-    logger.debug("Create flashcard data", flashcardData);
+    logger.debug("Updated deck and flashcards", result);
 
-    return deck;
+    return result;
   } catch (error) {
     logger.error("Error updating deck:", error);
     throw error;
