@@ -6,7 +6,7 @@ export default function SignInHeader() {
     <View style={styles.SignInHeader}>
       <View style={styles.logoContainer}>
         <Image
-          source={require("../../../assets/images/react-logo.png")}
+          source={require("@/assets/images/icon.png")}
           style={styles.logo}
         />
         <Text style={styles.headerTitle}>Study Leveling</Text>
