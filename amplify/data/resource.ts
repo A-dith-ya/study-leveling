@@ -3,6 +3,8 @@ import { postConfirmation } from "../auth/post-confirmation/resource";
 import { feedback } from "../functions/feedback/resource";
 import { deleteUser } from "../functions/delete-user/resource";
 import { generateFlashcards } from "../functions/generate-flashcards/resource";
+import { batchCreateFlashcards } from "../functions/batch-create-flashcards/resource";
+import { batchUpdateFlashcards } from "../functions/batch-update-flashcards/resource";
 
 /*== STEP 1 ===============================================================
 The section below creates a Todo database table with a "content" field. Try
@@ -81,36 +83,30 @@ const schema = a
       order: a.integer(),
     }),
 
-    BatchCreateFlashcard: a
-      .mutation()
+    batchCreateFlashcard: a
+      .query()
       .arguments({
         deckId: a.string().required(),
-        // title: a.string().required(),
-        // userId: a.string().required(),
+        title: a.string().required(),
+        userId: a.string().required(),
         flashcards: a.ref("FlashcardInput").array().required(),
       })
       .returns(a.boolean())
       .authorization((allow) => [allow.authenticated()])
-      .handler(
-        a.handler.custom({
-          dataSource: a.ref("Flashcard"),
-          entry: "./batchCreateFlashcards.js",
-        })
-      ),
+      .handler(a.handler.function(batchCreateFlashcards)),
 
-    BatchDeleteFlashcard: a
-      .mutation()
+    batchUpdateFlashcard: a
+      .query()
       .arguments({
-        flashcardIds: a.string().array().required(),
+        deckId: a.string().required(),
+        title: a.string().required(),
+        userId: a.string().required(),
+        flashcards: a.ref("FlashcardInput").array().required(),
+        deletedFlashcardIds: a.string().array().required(),
       })
       .returns(a.boolean())
       .authorization((allow) => [allow.authenticated()])
-      .handler(
-        a.handler.custom({
-          dataSource: a.ref("Flashcard"),
-          entry: "./batchDeleteFlashcards.js",
-        })
-      ),
+      .handler(a.handler.function(batchUpdateFlashcards)),
 
     FeedbackResponse: a.customType({
       correctParts: a.string().array().required(),
