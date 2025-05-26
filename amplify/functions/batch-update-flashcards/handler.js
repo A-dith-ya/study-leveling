@@ -68,7 +68,7 @@ export const handler = async (event) => {
           deckId: deckId,
           createdAt: now, // For new cards
           updatedAt: now,
-          owner: event.identity.username,
+          owner: userId,
           __typename: "Flashcard",
         },
       },

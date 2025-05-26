@@ -22,7 +22,7 @@ export const handler = async (event) => {
           flashcardCount: flashcards ? flashcards.length : 0,
           createdAt: now,
           updatedAt: now,
-          owner: event.identity.username,
+          owner: userId,
           __typename: "Deck",
         },
       })
@@ -44,7 +44,7 @@ export const handler = async (event) => {
           deckId: deckId,
           createdAt: now,
           updatedAt: now,
-          owner: event.identity.username,
+          owner: userId,
           __typename: "Flashcard",
         },
       },
