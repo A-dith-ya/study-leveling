@@ -11,7 +11,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     id: "streak-king-3",
     title: "Streak King 3",
     description: "Maintain a streak for 3 consecutive days",
-    image: require("../../assets/images/achievements/streak-king-10.webp"),
+    image: require("../../assets/images/achievements/streak-king-3.webp"),
   },
   {
     id: "flashcard-master-10",
