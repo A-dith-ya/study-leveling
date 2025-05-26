@@ -2,7 +2,7 @@
   "expo": {
     "name": "Study Leveling",
     "slug": "study-leveling",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -12,7 +12,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.musigma.studyleveling",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSPhotoLibraryUsageDescription": "This app allows you to upload document files (.txt, .md, .csv) from your photo library to automatically generate flashcards for studying."
       }
     },
     "android": {
