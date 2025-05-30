@@ -84,7 +84,11 @@ export default function AppInitializer() {
   }, [authStatus]);
 
   useEffect(() => {
-    Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+    Purchases.setLogLevel(
+      process.env.NODE_ENV === "development"
+        ? LOG_LEVEL.VERBOSE
+        : LOG_LEVEL.ERROR
+    );
 
     const apiKey = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY;
     if (apiKey) {
