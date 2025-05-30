@@ -25,7 +25,7 @@ const useCosmeticStore = create<CosmeticStore>()(
   persist(
     (set, get) => ({
       boughtToday: {},
-      available: fisherYatesShuffle(COSMETICS, 8),
+      available: fisherYatesShuffle(COSMETICS, 10),
 
       markAsBoughtToday: (cosmeticId: string) => {
         set((state) => ({
@@ -44,14 +44,14 @@ const useCosmeticStore = create<CosmeticStore>()(
         logger.debug("Initializing cosmetic store");
         set({
           boughtToday: {},
-          available: fisherYatesShuffle(COSMETICS, 8),
+          available: fisherYatesShuffle(COSMETICS, 10),
         });
       },
 
       reset: () => {
         set({
           boughtToday: {},
-          available: fisherYatesShuffle(COSMETICS, 8),
+          available: fisherYatesShuffle(COSMETICS, 10),
         });
       },
     }),
