@@ -35,6 +35,7 @@ jest.mock("@/app/utils/dayUtils", () => ({
 jest.mock("@/app/utils/challengeUtils", () => ({
   updateFlashcardChallenges: jest.fn(),
   updateSessionChallenges: jest.fn(),
+  updateTimeChallenges: jest.fn(),
 }));
 
 jest.mock("react-native-reanimated", () => {
@@ -152,6 +153,7 @@ describe("FlashcardReward", () => {
       await waitFor(() => {
         expect(challengeUtils.updateFlashcardChallenges).toHaveBeenCalledWith(15);
         expect(challengeUtils.updateSessionChallenges).toHaveBeenCalledWith(1);
+        expect(challengeUtils.updateTimeChallenges).toHaveBeenCalledWith(300000);
       });
     });
 

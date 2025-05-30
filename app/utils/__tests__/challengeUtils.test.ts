@@ -45,6 +45,7 @@ import {
   formatResetTime,
   updateFlashcardChallenges,
   updateSessionChallenges,
+  updateTimeChallenges,
 } from "@/app/utils/challengeUtils";
 
 const mockUseChallengeStore = useChallengeStore as jest.MockedFunction<
@@ -528,6 +529,218 @@ describe("challengeUtils", () => {
       expect(mockStore.updateProgress).toHaveBeenCalledWith("session-1", 10);
       expect(mockStore.updateProgress).toHaveBeenCalledWith("session-3", 12);
       expect(mockStore.updateProgress).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe("updateTimeChallenges", () => {
+    let mockStore: any;
+
+    beforeEach(() => {
+      mockStore = {
+        dailyChallenges: [
+          {
+            id: "study-1-min",
+            progress: 0,
+            target: 60,
+          },
+          {
+            id: "study-3-mins",
+            progress: 120,
+            target: 180,
+          },
+          {
+            id: "study-5-mins",
+            progress: 240,
+            target: 300,
+          },
+          {
+            id: "reward-10",
+            progress: 5,
+            target: 10,
+          },
+          {
+            id: "session-1",
+            progress: 0,
+            target: 1,
+          },
+        ],
+        updateProgress: jest.fn(),
+      };
+
+      mockUseChallengeStore.getState = jest.fn().mockReturnValue(mockStore);
+    });
+
+    it("should update progress for time challenges only", () => {
+      updateTimeChallenges(30);
+
+      expect(mockStore.updateProgress).toHaveBeenCalledWith("study-1-min", 30);
+      expect(mockStore.updateProgress).toHaveBeenCalledWith(
+        "study-3-mins",
+        150
+      );
+      expect(mockStore.updateProgress).toHaveBeenCalledWith(
+        "study-5-mins",
+        270
+      );
+      expect(mockStore.updateProgress).not.toHaveBeenCalledWith(
+        "reward-10",
+        expect.any(Number)
+      );
+      expect(mockStore.updateProgress).not.toHaveBeenCalledWith(
+        "session-1",
+        expect.any(Number)
+      );
+      expect(mockStore.updateProgress).toHaveBeenCalledTimes(3);
+    });
+
+    it("should handle zero time spent", () => {
+      updateTimeChallenges(0);
+
+      expect(mockStore.updateProgress).toHaveBeenCalledWith("study-1-min", 0);
+      expect(mockStore.updateProgress).toHaveBeenCalledWith(
+        "study-3-mins",
+        120
+      );
+      expect(mockStore.updateProgress).toHaveBeenCalledWith(
+        "study-5-mins",
+        240
+      );
+      expect(mockStore.updateProgress).toHaveBeenCalledTimes(3);
+    });
+
+    it("should handle negative time spent", () => {
+      updateTimeChallenges(-10);
+
+      expect(mockStore.updateProgress).toHaveBeenCalledWith("study-1-min", -10);
+      expect(mockStore.updateProgress).toHaveBeenCalledWith(
+        "study-3-mins",
+        110
+      );
+      expect(mockStore.updateProgress).toHaveBeenCalledWith(
+        "study-5-mins",
+        230
+      );
+      expect(mockStore.updateProgress).toHaveBeenCalledTimes(3);
+    });
+
+    it("should handle large time values", () => {
+      updateTimeChallenges(600); // 10 minutes
+
+      expect(mockStore.updateProgress).toHaveBeenCalledWith("study-1-min", 600);
+      expect(mockStore.updateProgress).toHaveBeenCalledWith(
+        "study-3-mins",
+        720
+      );
+      expect(mockStore.updateProgress).toHaveBeenCalledWith(
+        "study-5-mins",
+        840
+      );
+      expect(mockStore.updateProgress).toHaveBeenCalledTimes(3);
+    });
+
+    it("should handle decimal time values", () => {
+      updateTimeChallenges(30.5);
+
+      expect(mockStore.updateProgress).toHaveBeenCalledWith(
+        "study-1-min",
+        30.5
+      );
+      expect(mockStore.updateProgress).toHaveBeenCalledWith(
+        "study-3-mins",
+        150.5
+      );
+      expect(mockStore.updateProgress).toHaveBeenCalledWith(
+        "study-5-mins",
+        270.5
+      );
+      expect(mockStore.updateProgress).toHaveBeenCalledTimes(3);
+    });
+
+    it("should handle empty challenge list", () => {
+      mockStore.dailyChallenges = [];
+
+      updateTimeChallenges(60);
+
+      expect(mockStore.updateProgress).not.toHaveBeenCalled();
+    });
+
+    it("should handle challenges with no time challenges", () => {
+      mockStore.dailyChallenges = [
+        {
+          id: "reward-10",
+          progress: 5,
+          target: 10,
+        },
+        {
+          id: "session-1",
+          progress: 0,
+          target: 1,
+        },
+      ];
+
+      updateTimeChallenges(60);
+
+      expect(mockStore.updateProgress).not.toHaveBeenCalled();
+    });
+
+    it("should handle store errors gracefully", () => {
+      mockUseChallengeStore.getState = jest.fn().mockImplementation(() => {
+        throw new Error("Store error");
+      });
+
+      expect(() => updateTimeChallenges(60)).toThrow("Store error");
+    });
+
+    it("should handle updateProgress errors", () => {
+      mockStore.updateProgress.mockImplementation(() => {
+        throw new Error("Update error");
+      });
+
+      expect(() => updateTimeChallenges(60)).toThrow("Update error");
+    });
+
+    it("should work with mixed challenge ID patterns", () => {
+      mockStore.dailyChallenges = [
+        { id: "study-custom-min", progress: 0, target: 120 },
+        { id: "study-extra-mins", progress: 30, target: 300 },
+        { id: "study-special", progress: 0, target: 60 }, // Should not match (no "min")
+        { id: "other-study-1-min", progress: 0, target: 60 }, // Should not match (doesn't start with "study-")
+      ];
+
+      updateTimeChallenges(45);
+
+      expect(mockStore.updateProgress).toHaveBeenCalledWith(
+        "study-custom-min",
+        45
+      );
+      expect(mockStore.updateProgress).toHaveBeenCalledWith(
+        "study-extra-mins",
+        75
+      );
+      expect(mockStore.updateProgress).not.toHaveBeenCalledWith(
+        "study-special",
+        expect.any(Number)
+      );
+      expect(mockStore.updateProgress).not.toHaveBeenCalledWith(
+        "other-study-1-min",
+        expect.any(Number)
+      );
+      expect(mockStore.updateProgress).toHaveBeenCalledTimes(2);
+    });
+
+    it("should handle edge case with very small progress", () => {
+      updateTimeChallenges(1);
+
+      expect(mockStore.updateProgress).toHaveBeenCalledWith("study-1-min", 1);
+      expect(mockStore.updateProgress).toHaveBeenCalledWith(
+        "study-3-mins",
+        121
+      );
+      expect(mockStore.updateProgress).toHaveBeenCalledWith(
+        "study-5-mins",
+        241
+      );
+      expect(mockStore.updateProgress).toHaveBeenCalledTimes(3);
     });
   });
 
