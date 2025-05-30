@@ -82,3 +82,18 @@ export const updateSessionChallenges = (sessionsCompleted: number = 1) => {
     }
   });
 };
+
+/**
+ * Updates progress for time-based challenges
+ * @param timeSpentSeconds Time spent studying in seconds
+ */
+export const updateTimeChallenges = (timeSpentSeconds: number) => {
+  const { dailyChallenges, updateProgress } = useChallengeStore.getState();
+
+  dailyChallenges.forEach((challenge) => {
+    if (challenge.id.startsWith("study-") && challenge.id.includes("min")) {
+      const currentProgress = challenge.progress;
+      updateProgress(challenge.id, currentProgress + timeSpentSeconds);
+    }
+  });
+};

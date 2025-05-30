@@ -49,4 +49,28 @@ export const CHALLENGES: Challenge[] = [
     target: 5,
     chestType: "gold",
   },
+  {
+    id: "study-1-min",
+    title: "Study for 1 Minute",
+    target: 60, // 1 minute in seconds
+    coinReward: 2,
+    xpReward: 10,
+    chestType: "bronze",
+  },
+  {
+    id: "study-3-mins",
+    title: "Study for 3 Minutes",
+    target: 180, // 3 minutes in seconds
+    coinReward: 5,
+    xpReward: 25,
+    chestType: "silver",
+  },
+  {
+    id: "study-5-mins",
+    title: "Study for 5 Minutes",
+    target: 300, // 5 minutes in seconds
+    coinReward: 10,
+    xpReward: 50,
+    chestType: "gold",
+  },
 ];

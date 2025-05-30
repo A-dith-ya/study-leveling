@@ -25,6 +25,7 @@ import { updateStreak, formatDuration } from "@/app/utils/dayUtils";
 import {
   updateFlashcardChallenges,
   updateSessionChallenges,
+  updateTimeChallenges,
 } from "@/app/utils/challengeUtils";
 
 const { width } = Dimensions.get("window");
@@ -84,6 +85,7 @@ export default function FlashcardReward() {
       // Update challenge progress
       updateFlashcardChallenges(Number(totalCards));
       updateSessionChallenges(1);
+      updateTimeChallenges(Number(duration));
     }
   }, []);
 
