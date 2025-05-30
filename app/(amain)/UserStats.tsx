@@ -176,6 +176,9 @@ export default function UserStats() {
                   onPress={handlePress}
                 >
                   <Image
+                    key={
+                      isUnlocked ? `${badge.id}-unlocked` : `${badge.id}-locked`
+                    }
                     source={badge.image}
                     style={[
                       styles.achievementImage,
