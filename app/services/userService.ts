@@ -140,12 +140,13 @@ export async function updateUserAchievements(
 }
 
 /**
- * Updates user's coins and XP in the database
+ * Updates user's coins, XP, and level in the database
  */
 export async function updateUserRewards(
   userId: string,
   coins: number,
-  xp: number
+  xp: number,
+  level: number
 ) {
   try {
     const { data: user, errors } = await client.models.User.update(
@@ -153,9 +154,10 @@ export async function updateUserRewards(
         userId,
         coins,
         xp,
+        level,
       },
       {
-        selectionSet: ["coins", "xp"],
+        selectionSet: ["coins", "xp", "level"],
       }
     );
 

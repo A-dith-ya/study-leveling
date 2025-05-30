@@ -76,8 +76,15 @@ export function useUpdateUserRewards() {
   const user = useUserStore((state) => state.user);
 
   return useMutation({
-    mutationFn: async ({ coins, xp }: { coins: number; xp: number }) =>
-      updateUserRewards(user?.id || "", coins, xp),
+    mutationFn: async ({
+      coins,
+      xp,
+      level,
+    }: {
+      coins: number;
+      xp: number;
+      level: number;
+    }) => updateUserRewards(user?.id || "", coins, xp, level),
     onSuccess: (updatedUser) => {
       updateUserCache(
         queryClient,

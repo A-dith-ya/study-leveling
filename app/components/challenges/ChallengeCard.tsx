@@ -19,6 +19,7 @@ import COLORS from "@/app/constants/colors";
 import { getChestImage, getChestStyle } from "@/app/utils/challengeUtils";
 import { useUserData, useUpdateUserRewards } from "@/app/hooks/useUser";
 import { ChallengeCardProps } from "@/app/types/challengeTypes";
+import { getLevelFromXP } from "@/app/utils/xpUtils";
 
 const ChallengeCard: React.FC<ChallengeCardProps> = ({
   challenge,
@@ -41,14 +42,20 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
     buttonScale.value = withSequence(withSpring(1.1), withSpring(1));
     cardScale.value = withSequence(withSpring(1.02), withSpring(1));
 
-    // Update user's coins and XP
-    await updateRewards.mutateAsync({
-      coins: (userData?.coins ?? 0) + challenge.coinReward,
-      xp: (userData?.xp ?? 0) + challenge.xpReward,
-    });
+    if (userData) {
+      const newXP = (userData.xp ?? 0) + challenge.xpReward;
+      const { level, xp } = getLevelFromXP(newXP, userData.level ?? 1);
 
-    // Mark challenge as claimed in store
-    onClaim();
+      // Update user's coins, XP, and level
+      await updateRewards.mutateAsync({
+        coins: (userData.coins ?? 0) + challenge.coinReward,
+        xp,
+        level,
+      });
+
+      // Mark challenge as claimed in store
+      onClaim();
+    }
   };
 
   const progress = (challenge.progress / challenge.target) * 100;
