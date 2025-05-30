@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  Pressable,
-  Dimensions,
-} from "react-native";
+import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -19,10 +12,7 @@ import { StickerCardProps } from "@/app/types/storeTypes";
 import { formatTitle } from "@/app/utils/stickerUtils";
 import COLORS from "@/app/constants/colors";
 
-const { width } = Dimensions.get("window");
-const ITEM_WIDTH = (width - 48) / 2;
-
-export function StickerCard({
+export default function StickerCard({
   sticker,
   isBoughtToday,
   hasEnoughCoins,
@@ -123,7 +113,7 @@ export function StickerCard({
 
 const styles = StyleSheet.create({
   container: {
-    width: ITEM_WIDTH,
+    width: 160,
     backgroundColor: COLORS.white,
     borderRadius: 12,
     padding: 8,
@@ -136,8 +126,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   imageContainer: {
-    width: "100%",
-    aspectRatio: 1,
+    width: 120,
+    height: 120,
     marginBottom: 8,
     borderRadius: 12,
     overflow: "hidden",
@@ -146,7 +136,7 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "100%",
-    resizeMode: "cover",
+    resizeMode: "contain",
     padding: 10,
   },
   name: {
@@ -183,5 +173,3 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
-
-export default StickerCard;
