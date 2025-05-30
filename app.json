@@ -2,7 +2,7 @@
   "expo": {
     "name": "Study Leveling",
     "slug": "study-leveling",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -35,7 +35,8 @@
         {
           "image": "./assets/images/splash-icon.png",
           "resizeMode": "cover",
-          "backgroundColor": "#141528"
+          "backgroundColor": "#141528",
+          "enableFullScreenImage_legacy": true
         }
       ],
       [
