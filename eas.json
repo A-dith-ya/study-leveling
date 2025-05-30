@@ -1,12 +1,22 @@
 {
-    "build": {
-      "development": {
-        "developmentClient": true,
-        "distribution": "internal",
-        "ios": {
-          "simulator": true
-        }
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
       }
+    },
+    "preview": {
+      "distribution": "internal",
+      "environment": "production"
+    },
+    "production": {
+      "autoIncrement": true,
+      "environment": "production"
     }
+  },
+  "cli": {
+    "appVersionSource": "remote"
+  }
 }
-  
