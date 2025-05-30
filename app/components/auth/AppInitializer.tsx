@@ -16,6 +16,13 @@ export default function AppInitializer() {
 
   logger.debug("AppInitializer rendered");
 
+  // Reset hasRunRef when auth status changes to unauthenticated
+  useEffect(() => {
+    if (authStatus === "unauthenticated") {
+      hasRunRef.current = false;
+    }
+  }, [authStatus]);
+
   // Handle app state changes
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (nextAppState) => {
