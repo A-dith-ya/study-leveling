@@ -6,7 +6,6 @@ import { translations } from "@aws-amplify/ui";
 import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 
-import outputs from "../amplify_outputs.json";
 import COLORS from "./constants/colors";
 import SignInHeader from "./components/auth/SignInHeader";
 import SignInFooter from "./components/auth/SignInFooter";
@@ -17,7 +16,7 @@ import { clientPersister } from "./services/mmkv";
 
 const getAmplifyConfig = () => {
   if (process.env.EXPO_PUBLIC_AMPLIFY_ENV === "production") {
-    return require("../amplify_outputs.prod.json");
+    return require("../amplify_outputs.json");
   } else {
     return require("../amplify_outputs.json");
   }
