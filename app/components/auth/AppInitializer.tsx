@@ -84,6 +84,7 @@ export default function AppInitializer() {
   }, [authStatus]);
 
   useEffect(() => {
+    if (Platform.OS === "web") return;
     Purchases.setLogLevel(
       process.env.NODE_ENV === "development"
         ? LOG_LEVEL.VERBOSE
