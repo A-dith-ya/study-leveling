@@ -8,6 +8,7 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
@@ -19,6 +20,9 @@ import {
   readFileContent,
   formatFileSize,
   getTotalCharacters,
+  pickFilesWeb,
+  readWebFileContent,
+  validateWebFile,
 } from "@/app/utils/flashcardUtils";
 import { UploadedFile, FileUploadModalProps } from "@/app/types/flashcardTypes";
 import COLORS from "@/app/constants/colors";
@@ -35,26 +39,68 @@ export default function FileUploadModal({
 
   const handleFileUpload = async () => {
     try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: ["text/plain", "text/markdown", "text/csv"],
-        multiple: true,
-        copyToCacheDirectory: true,
-      });
+      let assets: any[] = [];
+      let canceled = true;
 
-      if (result.canceled) return;
+      if (Platform.OS === "web") {
+        // Use web-specific file picker
+        const webResult = await pickFilesWeb();
+        if (!webResult.canceled && webResult.assets) {
+          canceled = false;
+          assets = webResult.assets.map((file: File) => ({
+            name: file.name,
+            uri: URL.createObjectURL(file),
+            size: file.size,
+            mimeType: file.type,
+            file: file, // Keep reference to the original File object for web
+          }));
+        }
+      } else {
+        // Use expo-document-picker for mobile
+        const mobileResult = await DocumentPicker.getDocumentAsync({
+          type: ["text/plain", "text/markdown", "text/csv"],
+          multiple: true,
+          copyToCacheDirectory: true,
+        });
+
+        if (!mobileResult.canceled && mobileResult.assets) {
+          canceled = false;
+          assets = mobileResult.assets;
+        }
+      }
+
+      if (canceled || assets.length === 0) return;
 
       const newFiles: UploadedFile[] = [];
       const fileErrors: string[] = [];
 
-      for (const file of result.assets) {
-        const validationError = validateFile(file);
+      for (const file of assets) {
+        let validationError: string | null = null;
+
+        if (Platform.OS === "web" && file.file) {
+          // Validate web file
+          validationError = validateWebFile(file.file);
+        } else {
+          // Validate mobile file
+          validationError = validateFile(file);
+        }
+
         if (validationError) {
           fileErrors.push(validationError);
           continue;
         }
 
         try {
-          const content = await readFileContent(file);
+          let content: string;
+
+          if (Platform.OS === "web" && file.file) {
+            // Read web file content
+            content = await readWebFileContent(file.file);
+          } else {
+            // Read mobile file content
+            content = await readFileContent(file);
+          }
+
           newFiles.push({
             name: file.name,
             uri: file.uri,
@@ -64,7 +110,9 @@ export default function FileUploadModal({
           });
         } catch (error) {
           fileErrors.push(
-            `Failed to read "${file.name}": ${error instanceof Error ? error.message : "Unknown error"}`
+            `Failed to read "${file.name}": ${
+              error instanceof Error ? error.message : "Unknown error"
+            }`
           );
         }
       }

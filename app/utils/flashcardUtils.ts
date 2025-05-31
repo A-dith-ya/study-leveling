@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
+import { Platform } from "react-native";
 
 import { Flashcard, UploadedFile } from "@/app/types/flashcardTypes";
 import { logger } from "@/app/utils/logger";
@@ -161,12 +162,88 @@ export const readFileContent = async (
   file: DocumentPicker.DocumentPickerAsset
 ): Promise<string> => {
   try {
-    const content = await FileSystem.readAsStringAsync(file.uri);
-    return content;
+    if (Platform.OS === "web") {
+      // For web platform, use fetch to read the file
+      const response = await fetch(file.uri);
+      const content = await response.text();
+      return content;
+    } else {
+      // For mobile platforms, use FileSystem
+      const content = await FileSystem.readAsStringAsync(file.uri);
+      return content;
+    }
   } catch (error) {
     logger.error("Error reading file content:", error);
     throw new Error(`Failed to read content from "${file.name}"`);
   }
+};
+
+// Web-specific file upload handler using HTML5 File API
+export const pickFilesWeb = (): Promise<{
+  canceled: boolean;
+  assets?: File[];
+}> => {
+  return new Promise((resolve) => {
+    if (Platform.OS !== "web") {
+      resolve({ canceled: true });
+      return;
+    }
+
+    const input = document.createElement("input");
+    input.type = "file";
+    input.multiple = true;
+    input.accept = ".txt,.md,.csv,text/plain,text/markdown,text/csv";
+
+    input.onchange = (event) => {
+      const files = Array.from((event.target as HTMLInputElement).files || []);
+      if (files.length === 0) {
+        resolve({ canceled: true });
+      } else {
+        resolve({ canceled: false, assets: files });
+      }
+    };
+
+    input.oncancel = () => {
+      resolve({ canceled: true });
+    };
+
+    input.click();
+  });
+};
+
+// Read web file content
+export const readWebFileContent = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      resolve(content);
+    };
+
+    reader.onerror = () => {
+      reject(new Error(`Failed to read file: ${file.name}`));
+    };
+
+    reader.readAsText(file);
+  });
+};
+
+// Validate web file
+export const validateWebFile = (file: File): string | null => {
+  // Check file type
+  const fileName = file.name.toLowerCase();
+  const allowedExtensions = [".txt", ".md", ".csv"];
+  const hasValidExtension = allowedExtensions.some((ext) =>
+    fileName.endsWith(ext)
+  );
+
+  if (!hasValidExtension) {
+    const fileExtension = fileName.substring(fileName.lastIndexOf("."));
+    return `File type ${fileExtension} is not allowed. Only .txt, .md, and .csv files are supported.`;
+  }
+
+  return null;
 };
 
 export const formatFileSize = (bytes: number): string => {
