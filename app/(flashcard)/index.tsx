@@ -289,6 +289,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 8,
     marginBottom: 16,
+    borderBottomWidth: 3,
+    borderBottomColor: COLORS.primaryDark,
   },
   buttonText: {
     color: COLORS.white,
