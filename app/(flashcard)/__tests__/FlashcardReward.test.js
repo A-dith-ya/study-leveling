@@ -1,5 +1,10 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react-native";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from "@testing-library/react-native";
 import { useLocalSearchParams, router, useNavigation } from "expo-router";
 import { CommonActions } from "@react-navigation/native";
 
@@ -16,6 +21,19 @@ jest.mock("expo-router", () => ({
     replace: jest.fn(),
   },
   useNavigation: jest.fn(),
+}));
+
+// Mock Ionicons to prevent font loading issues
+jest.mock("@expo/vector-icons", () => ({
+  Ionicons: ({ name, size, color, ...props }) => {
+    const { Text } = require("react-native");
+    const { createElement } = require("react");
+    return createElement(Text, {
+      ...props,
+      testID: `icon-${name}`,
+      children: name,
+    });
+  },
 }));
 
 jest.mock("@/app/hooks/useUser", () => ({
@@ -40,10 +58,10 @@ jest.mock("@/app/utils/challengeUtils", () => ({
 
 jest.mock("react-native-reanimated", () => {
   const Reanimated = require("react-native-reanimated/mock");
-  
+
   // Add any missing mocks
   Reanimated.default.createAnimatedComponent = (component) => component;
-  
+
   return {
     ...Reanimated,
     useSharedValue: jest.fn(() => ({ value: 0 })),
@@ -84,12 +102,12 @@ describe("FlashcardReward", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     useLocalSearchParams.mockReturnValue(mockParams);
     useNavigation.mockReturnValue(mockNavigation);
     useUserData.mockReturnValue({ data: mockUserData });
     useUpdateUserSessionStats.mockReturnValue(mockUpdateStats);
-    
+
     xpUtils.getLevelFromXP.mockReturnValue({ level: 3, xp: 175 });
     dayUtils.updateStreak.mockReturnValue(6);
     dayUtils.formatDuration.mockReturnValue("5m 0s");
@@ -121,8 +139,10 @@ describe("FlashcardReward", () => {
     it("renders navigation buttons", () => {
       render(<FlashcardReward />);
 
-      expect(screen.getByRole("button", { name: /back to dashboard/i })).toBeTruthy();
-      expect(screen.getByRole("button", { name: /retry deck/i })).toBeTruthy();
+      expect(screen.getByRole("button", { name: /dashboard/i })).toBeTruthy();
+      expect(
+        screen.getByRole("button", { name: /practice again/i })
+      ).toBeTruthy();
     });
   });
 
@@ -151,9 +171,13 @@ describe("FlashcardReward", () => {
       render(<FlashcardReward />);
 
       await waitFor(() => {
-        expect(challengeUtils.updateFlashcardChallenges).toHaveBeenCalledWith(15);
+        expect(challengeUtils.updateFlashcardChallenges).toHaveBeenCalledWith(
+          15
+        );
         expect(challengeUtils.updateSessionChallenges).toHaveBeenCalledWith(1);
-        expect(challengeUtils.updateTimeChallenges).toHaveBeenCalledWith(300000);
+        expect(challengeUtils.updateTimeChallenges).toHaveBeenCalledWith(
+          300000
+        );
       });
     });
 
@@ -200,7 +224,7 @@ describe("FlashcardReward", () => {
     it("navigates to dashboard when back button is pressed", () => {
       render(<FlashcardReward />);
 
-      const backButton = screen.getByRole("button", { name: /back to dashboard/i });
+      const backButton = screen.getByText("Dashboard");
       fireEvent.press(backButton);
 
       expect(router.replace).toHaveBeenCalledWith("/(amain)");
@@ -209,7 +233,9 @@ describe("FlashcardReward", () => {
     it("dispatches reset navigation when retry button is pressed", () => {
       render(<FlashcardReward />);
 
-      const retryButton = screen.getByRole("button", { name: /retry deck/i });
+      const retryButton = screen.getByRole("button", {
+        name: /practice again/i,
+      });
       fireEvent.press(retryButton);
 
       expect(mockNavigation.dispatch).toHaveBeenCalledWith(
@@ -224,7 +250,7 @@ describe("FlashcardReward", () => {
   describe("Data Formatting", () => {
     it("formats duration correctly", () => {
       dayUtils.formatDuration.mockReturnValue("2m 30s");
-      
+
       render(<FlashcardReward />);
 
       expect(dayUtils.formatDuration).toHaveBeenCalledWith(300000);
@@ -290,7 +316,9 @@ describe("FlashcardReward", () => {
 
       expect(screen.getByText("+invalid XP")).toBeTruthy();
       expect(dayUtils.formatDuration).toHaveBeenCalledWith(NaN);
-      expect(challengeUtils.updateFlashcardChallenges).toHaveBeenCalledWith(NaN);
+      expect(challengeUtils.updateFlashcardChallenges).toHaveBeenCalledWith(
+        NaN
+      );
     });
   });
 
@@ -298,10 +326,8 @@ describe("FlashcardReward", () => {
     it("has accessible button labels", () => {
       render(<FlashcardReward />);
 
-      const dashboardButton = screen.getByRole("button", {
-        name: /back to dashboard/i,
-      });
-      const retryButton = screen.getByRole("button", { name: /retry deck/i });
+      const dashboardButton = screen.getByText("Dashboard");
+      const retryButton = screen.getByText("Practice Again");
 
       expect(dashboardButton).toBeTruthy();
       expect(retryButton).toBeTruthy();
@@ -317,8 +343,9 @@ describe("FlashcardReward", () => {
 
   describe("Animation Integration", () => {
     it("initializes animation values", () => {
-      const mockUseSharedValue = require("react-native-reanimated").useSharedValue;
-      
+      const mockUseSharedValue =
+        require("react-native-reanimated").useSharedValue;
+
       render(<FlashcardReward />);
 
       expect(mockUseSharedValue).toHaveBeenCalledWith(0.3);
@@ -327,8 +354,9 @@ describe("FlashcardReward", () => {
     });
 
     it("creates animated styles", () => {
-      const mockUseAnimatedStyle = require("react-native-reanimated").useAnimatedStyle;
-      
+      const mockUseAnimatedStyle =
+        require("react-native-reanimated").useAnimatedStyle;
+
       render(<FlashcardReward />);
 
       expect(mockUseAnimatedStyle).toHaveBeenCalled();
@@ -338,11 +366,11 @@ describe("FlashcardReward", () => {
   describe("Performance", () => {
     it("only runs effects once on mount", () => {
       const { rerender } = render(<FlashcardReward />);
-      
+
       expect(mockUpdateStats.mutate).toHaveBeenCalledTimes(1);
-      
+
       rerender(<FlashcardReward />);
-      
+
       // Should not be called again on rerender
       expect(mockUpdateStats.mutate).toHaveBeenCalledTimes(1);
     });
