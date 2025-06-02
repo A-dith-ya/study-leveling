@@ -29,7 +29,12 @@ export default function ReviewControls({
 
       {isLastCard ? (
         <Pressable style={styles.completeButton} onPress={onComplete}>
-          <Ionicons name="flag" size={20} color={COLORS.white} />
+          <Ionicons
+            name="flag"
+            size={20}
+            color={COLORS.white}
+            style={{ transform: [{ scaleX: -1 }] }}
+          />
           <Text style={styles.completeButtonText}>Finish</Text>
         </Pressable>
       ) : (
@@ -60,6 +65,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 24,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.lightGray,
   },
   navButton: {
     width: 48,
@@ -97,6 +104,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    borderBottomWidth: 2,
+    borderBottomColor: COLORS.primaryLight,
   },
   markButtonText: {
     color: COLORS.white,
