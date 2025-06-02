@@ -14,19 +14,38 @@ export default function DeckCard({
 }: DeckCardProps) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
-      <View style={styles.row}>
-        <View style={styles.cardCountContainer}>
-          <FontAwesome6
-            name="credit-card"
-            size={16}
-            color={COLORS.text}
-            style={styles.cardCountIcon}
-          />
-          <Text style={styles.cardCount}>{cardCount} cards</Text>
+      <View style={styles.header}>
+        <View style={styles.titleRow}>
+          <Text style={styles.title} numberOfLines={2}>
+            {title}
+          </Text>
+          <View style={styles.cardBadge}>
+            <FontAwesome6 name="layer-group" size={12} color={COLORS.primary} />
+            <Text style={styles.cardCount}>{cardCount} cards</Text>
+          </View>
         </View>
+      </View>
 
+      <View style={styles.row}>
         <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.button, styles.practiceButton]}
+            onPress={onPractice}
+            accessibilityRole="button"
+            accessibilityLabel="Practice deck"
+          >
+            <FontAwesome6 name="play" size={16} color={COLORS.white} />
+            <Text style={styles.buttonText}>Practice</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, styles.reviewButton]}
+            onPress={onAIReview}
+            accessibilityRole="button"
+            accessibilityLabel="AI review"
+          >
+            <FontAwesome6 name="robot" size={16} color={COLORS.white} />
+            <Text style={styles.buttonText}>AI Review</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={[styles.button, styles.editButton]}
             onPress={onEdit}
@@ -35,24 +54,6 @@ export default function DeckCard({
           >
             <FontAwesome6 name="pen" size={16} color={COLORS.white} />
             <Text style={styles.buttonText}>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, styles.practiceButton]}
-            onPress={onAIReview}
-            accessibilityRole="button"
-            accessibilityLabel="AI review"
-          >
-            <FontAwesome6 name="robot" size={16} color={COLORS.white} />
-            <Text style={styles.buttonText}>AI</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, styles.practiceButton]}
-            onPress={onPractice}
-            accessibilityRole="button"
-            accessibilityLabel="Practice deck"
-          >
-            <FontAwesome6 name="play" size={16} color={COLORS.white} />
-            <Text style={styles.buttonText}>Review</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -68,31 +69,44 @@ const styles = StyleSheet.create({
     borderColor: COLORS.black,
     borderWidth: 0.2,
   },
+  header: {
+    marginBottom: 8,
+  },
+  titleRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: 12,
+  },
   title: {
-    fontSize: 20,
-    fontWeight: "600",
+    fontSize: 18,
+    fontWeight: "700",
     color: COLORS.text,
-    marginBottom: 4,
+    lineHeight: 24,
+    flex: 1,
+  },
+  cardBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.lightGray,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    gap: 4,
+  },
+  cardCount: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: COLORS.primary,
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  cardCountContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  cardCountIcon: {
-    transform: [{ rotate: "90deg" }],
-  },
-  cardCount: {
-    fontSize: 14,
-    color: COLORS.darkGray,
-  },
   buttonContainer: {
     flexDirection: "row",
     gap: 8,
+    flex: 1,
   },
   button: {
     flexDirection: "row",
@@ -106,6 +120,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primaryLight,
   },
   practiceButton: {
+    flex: 1,
+    backgroundColor: COLORS.primaryDark,
+    gap: 8,
+  },
+  reviewButton: {
     backgroundColor: COLORS.primaryDark,
   },
   buttonText: {

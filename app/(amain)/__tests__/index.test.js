@@ -376,7 +376,7 @@ describe("Index Screen", () => {
     it("navigates to flashcard decoration when decorate button is pressed", () => {
       renderWithQueryClient(<Index />);
 
-      const decorateButton = screen.getByText("brush-outline");
+      const decorateButton = screen.getByText("color-palette");
       fireEvent.press(decorateButton);
 
       expect(router.push).toHaveBeenCalledWith(

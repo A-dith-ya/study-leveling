@@ -16,6 +16,7 @@ const COLORS = {
   darkGray: "#888888",
   white: "#FFFFFF",
   black: "#000000",
+  gold: "#F59E0B",
 
   cardBackground: "#FFFFFF",
   shadowColor: "rgba(94, 53, 177, 0.2)",

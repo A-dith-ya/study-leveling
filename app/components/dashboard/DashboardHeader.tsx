@@ -21,14 +21,14 @@ export default function DashboardHeader({
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
             <FontAwesome6 name="fire" size={24} color={COLORS.secondaryLight} />
-            <Text style={styles.statText}>{streakCount}</Text>
+            <Text style={styles.streakText}>{streakCount}</Text>
           </View>
           <View style={styles.statItem}>
             <Image
               source={require("../../../assets/images/coin.webp")}
               style={styles.coinImage}
             />
-            <Text style={styles.statText}>{coins}</Text>
+            <Text style={styles.coinText}>{coins}</Text>
           </View>
         </View>
       </View>
@@ -102,10 +102,15 @@ const styles = StyleSheet.create({
   statItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    gap: 6,
   },
-  statText: {
-    color: COLORS.white,
+  streakText: {
+    color: COLORS.secondaryLight,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  coinText: {
+    color: COLORS.gold,
     fontSize: 16,
     fontWeight: "bold",
   },

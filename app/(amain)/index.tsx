@@ -53,7 +53,10 @@ export default function Index() {
             source={require("@/assets/images/icon.png")}
             style={styles.appIcon}
           />
-          <Text style={styles.appTitle}>Study Leveling</Text>
+          <View>
+            <Text style={styles.appTitle}>Study Leveling</Text>
+            <Text style={styles.appSubtitle}>Learn • Level Up • Succeed</Text>
+          </View>
         </View>
         <Pressable onPress={() => router.push("/(flashcard)/Account")}>
           <Ionicons name="person" size={34} color={COLORS.primary} />
@@ -81,7 +84,7 @@ export default function Index() {
           style={styles.decorateButton}
           onPress={() => router.push("/(flashcard)/FlashcardDecoration")}
         >
-          <Ionicons name="brush-outline" size={24} color={COLORS.white} />
+          <Ionicons name="color-palette" size={24} color={COLORS.white} />
         </Pressable>
         <View style={styles.createDeckButtonWrapper}>
           <Pressable
@@ -126,6 +129,12 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: COLORS.primaryDark,
   },
+  appSubtitle: {
+    fontSize: 12,
+    fontWeight: "400",
+    color: COLORS.primary,
+    marginTop: 4,
+  },
   listContainer: {
     flex: 1,
   },
@@ -143,22 +152,31 @@ const styles = StyleSheet.create({
   decorateButton: {
     backgroundColor: COLORS.secondary,
     padding: 12,
-    borderRadius: 8,
+    borderRadius: 28,
     alignItems: "center",
     justifyContent: "center",
+    shadowColor: COLORS.secondary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+    borderBottomWidth: 3,
+    borderBottomColor: COLORS.secondaryDark,
   },
   createDeckButtonWrapper: {
     flex: 1,
     alignItems: "center",
   },
   createDeckButton: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryLight,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
+    borderBottomWidth: 3,
+    borderBottomColor: COLORS.primaryDark,
   },
   createDeckButtonText: {
     color: COLORS.white,
