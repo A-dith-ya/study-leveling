@@ -17,6 +17,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useLocalSearchParams, router, useNavigation } from "expo-router";
 import { CommonActions } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 
 import COLORS from "@/app/constants/colors";
 import { useUserData, useUpdateUserSessionStats } from "@/app/hooks/useUser";
@@ -93,21 +94,42 @@ export default function FlashcardReward() {
     <SafeAreaView style={styles.container}>
       <Animated.View style={[styles.card, containerStyle]}>
         <View style={styles.header}>
+          {/* Trophy icon for celebration */}
+          <View style={styles.iconContainer}>
+            <Ionicons name="trophy" size={48} color={COLORS.secondary} />
+          </View>
           <Text style={styles.title}>Great Job!</Text>
           <Text style={styles.subtitle}>Session summary</Text>
-          <Animated.Text style={[styles.xpText]}>+{xpEarned} XP</Animated.Text>
+
+          {/* XP badge with bolt icon */}
+          <View style={styles.xpBadge}>
+            <Ionicons name="flash" size={20} color={COLORS.white} />
+            <Animated.Text style={[styles.xpText]}>
+              +{xpEarned} XP
+            </Animated.Text>
+          </View>
         </View>
 
         <Animated.View style={[styles.statsContainer, statsStyle]}>
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Time Spent</Text>
+            <View style={styles.statLabelContainer}>
+              <Ionicons name="time-outline" size={20} color={COLORS.primary} />
+              <Text style={styles.statLabel}>Time Spent</Text>
+            </View>
             <Text style={styles.statValue}>
               {formatDuration(Number(duration))}
             </Text>
           </View>
 
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Cards Reviewed</Text>
+            <View style={styles.statLabelContainer}>
+              <Ionicons
+                name="layers-outline"
+                size={20}
+                color={COLORS.primary}
+              />
+              <Text style={styles.statLabel}>Cards Reviewed</Text>
+            </View>
             <Text style={styles.statValue}>{totalCards}</Text>
           </View>
         </Animated.View>
@@ -120,7 +142,8 @@ export default function FlashcardReward() {
             }}
             accessibilityRole="button"
           >
-            <Text style={styles.buttonText}>Back to Dashboard</Text>
+            <Ionicons name="home" size={20} color={COLORS.white} />
+            <Text style={styles.buttonText}>Dashboard</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -137,8 +160,9 @@ export default function FlashcardReward() {
             }}
             accessibilityRole="button"
           >
+            <Ionicons name="refresh" size={20} color={COLORS.secondary} />
             <Text style={[styles.buttonText, styles.secondaryButtonText]}>
-              Retry Deck
+              Practice Again
             </Text>
           </TouchableOpacity>
         </View>
@@ -184,11 +208,41 @@ const styles = StyleSheet.create({
     color: COLORS.darkGray,
     marginBottom: 12,
   },
+  iconContainer: {
+    backgroundColor: COLORS.white,
+    borderRadius: 30,
+    padding: 15,
+    marginBottom: 16,
+    shadowColor: COLORS.secondary,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  xpBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.secondary,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    gap: 8,
+    shadowColor: COLORS.secondary,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
+  },
   xpText: {
-    fontSize: 36,
+    fontSize: 24,
     fontWeight: "bold",
-    color: COLORS.secondary,
-    marginVertical: 16,
+    color: COLORS.white,
   },
   statsContainer: {
     marginBottom: 32,
@@ -200,6 +254,11 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.lightGray,
+  },
+  statLabelContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   statLabel: {
     fontSize: 16,
@@ -214,17 +273,24 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   button: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 16,
     borderRadius: 12,
-    alignItems: "center",
+    gap: 8,
   },
   primaryButton: {
     backgroundColor: COLORS.primary,
+    borderBottomWidth: 4,
+    borderBottomColor: COLORS.primaryDark,
   },
   secondaryButton: {
     backgroundColor: COLORS.white,
     borderWidth: 2,
     borderColor: COLORS.secondary,
+    borderBottomWidth: 4,
+    borderBottomColor: COLORS.secondaryDark,
   },
   buttonText: {
     fontSize: 16,
