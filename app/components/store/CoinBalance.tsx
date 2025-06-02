@@ -9,7 +9,7 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 
-import { animateValue } from "@/app/utils/cosmeticUtils";
+import { animateValue } from "@/app/utils/animateUtils";
 import { CoinBalanceProps } from "@/app/types/storeTypes";
 import COLORS from "@/app/constants/colors";
 
