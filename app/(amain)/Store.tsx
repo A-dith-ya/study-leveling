@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import StickerCard from "@/app/components/store/StickerCard";
 import CoinBalance from "@/app/components/store/CoinBalance";
+import CountdownTimer from "../components/common/CountdownTimer";
 import LoadingScreen from "@/app/components/common/LoadingScreen";
 import CoinPackModal from "@/app/components/store/CoinPackModal";
 import { useUserData, useUpdateUserCosmetics } from "@/app/hooks/useUser";
@@ -106,7 +107,6 @@ export default function Store() {
         />
       </View>
 
-      {/* Sticker Grid */}
       <FlatList
         data={available}
         keyExtractor={(item) => item.id}
@@ -122,11 +122,14 @@ export default function Store() {
           </View>
         }
         ListFooterComponent={
-          <View style={styles.refreshNotice}>
-            <Text style={styles.refreshText}>
-              Stickers can be purchased once per day!
-            </Text>
-          </View>
+          <>
+            <CountdownTimer />
+            <View style={styles.refreshNotice}>
+              <Text style={styles.refreshText}>
+                Stickers can be purchased once per day!
+              </Text>
+            </View>
+          </>
         }
       />
 

@@ -1,34 +1,20 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import ChallengeCard from "@/app/components/challenges/ChallengeCard";
+import CountdownTimer from "@/app/components/common/CountdownTimer";
 import useChallengeStore from "@/app/stores/challengeStore";
-import { getTimeUntilReset, formatResetTime } from "@/app/utils/challengeUtils";
 import COLORS from "@/app/constants/colors";
 
 export default function DailyChallenges() {
   const { dailyChallenges, claimReward } = useChallengeStore();
-  const [resetTime, setResetTime] = React.useState({ hours: 0, minutes: 0 });
-
-  useEffect(() => {
-    const updateResetTime = () => {
-      const { hours, minutes } = getTimeUntilReset();
-      setResetTime({ hours, minutes });
-    };
-
-    updateResetTime();
-    const interval = setInterval(updateResetTime, 60000); // Update every minute
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.header}>
         <Text style={styles.title}>Daily Challenges</Text>
-        <Text style={styles.resetTimer}>
-          Next reset in: {formatResetTime(resetTime.hours, resetTime.minutes)}
-        </Text>
+        <CountdownTimer />
       </View>
       <ScrollView
         style={styles.scrollView}
@@ -53,16 +39,14 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 16,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     color: COLORS.text,
-    marginBottom: 4,
-  },
-  resetTimer: {
-    fontSize: 14,
-    color: COLORS.darkGray,
+    marginBottom: 8,
   },
   scrollView: {
     flex: 1,

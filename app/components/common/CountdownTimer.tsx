@@ -18,7 +18,7 @@ interface CountdownTimerProps {
 }
 
 export default function CountdownTimer({
-  title = "Next reset in",
+  title = "Next reset in:",
   onReset,
 }: CountdownTimerProps) {
   const [resetTime, setResetTime] = useState({ hours: 0, minutes: 0 });
