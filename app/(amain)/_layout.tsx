@@ -9,6 +9,10 @@ export default function MainLayout() {
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: COLORS.darkGray,
         headerShown: false,
+        tabBarStyle: {
+          borderTopWidth: 1,
+          borderTopColor: COLORS.mediumGray,
+        },
       }}
     >
       <Tabs.Screen
