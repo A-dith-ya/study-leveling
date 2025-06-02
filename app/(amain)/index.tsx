@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
-    borderBottomWidth: 3,
+    borderBottomWidth: 2,
     borderBottomColor: COLORS.secondaryDark,
   },
   createDeckButtonWrapper: {
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
-    borderBottomWidth: 3,
+    borderBottomWidth: 2,
     borderBottomColor: COLORS.primaryDark,
   },
   createDeckButtonText: {

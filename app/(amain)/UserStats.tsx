@@ -112,7 +112,7 @@ export default function UserStats() {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.sectionTitle}>Your Progress</Text>
+        <Text style={styles.header}>Your Progress</Text>
         {/* Level and XP Progress */}
         <LevelDisplay
           level={userData?.level || 1}
@@ -222,6 +222,12 @@ const styles = StyleSheet.create({
   },
   achievementsSection: {
     marginBottom: 24,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: COLORS.text,
+    marginBottom: 8,
   },
   sectionTitle: {
     fontSize: 20,

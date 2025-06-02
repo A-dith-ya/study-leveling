@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 8,
     marginBottom: 16,
-    borderBottomWidth: 3,
+    borderBottomWidth: 2,
     borderBottomColor: COLORS.primaryDark,
   },
   saveAllButtonText: {

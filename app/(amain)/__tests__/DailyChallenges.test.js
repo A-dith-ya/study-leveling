@@ -29,6 +29,18 @@ jest.mock("react", () => ({
   }),
 }));
 
+// Mock @expo/vector-icons
+jest.mock("@expo/vector-icons", () => ({
+  Ionicons: ({ name, size, color, ...props }) => {
+    const React = require("react");
+    return React.createElement("Text", {
+      testID: `ionicon-${name}`,
+      children: name,
+      ...props,
+    });
+  },
+}));
+
 // Mock dependencies
 jest.mock("@/app/stores/challengeStore", () => {
   const mockStore = {
@@ -165,7 +177,8 @@ describe("DailyChallenges", () => {
     it("shows the reset timer", () => {
       render(<DailyChallenges />);
 
-      expect(screen.getByText("Next reset in: 2h 30m")).toBeOnTheScreen();
+      expect(screen.getByText("Next reset in:")).toBeOnTheScreen();
+      expect(screen.getByText("2h 30m")).toBeOnTheScreen();
     });
 
     it("renders all challenge cards", () => {
@@ -282,7 +295,8 @@ describe("DailyChallenges", () => {
 
       render(<DailyChallenges />);
 
-      expect(screen.getByText("Next reset in: 45m")).toBeOnTheScreen();
+      expect(screen.getByText("Next reset in:")).toBeOnTheScreen();
+      expect(screen.getByText("45m")).toBeOnTheScreen();
     });
 
     it("handles edge case when reset is imminent", () => {
@@ -294,7 +308,8 @@ describe("DailyChallenges", () => {
 
       render(<DailyChallenges />);
 
-      expect(screen.getByText("Next reset in: 1m")).toBeOnTheScreen();
+      expect(screen.getByText("Next reset in:")).toBeOnTheScreen();
+      expect(screen.getByText("1m")).toBeOnTheScreen();
     });
   });
 
@@ -305,7 +320,8 @@ describe("DailyChallenges", () => {
       render(<DailyChallenges />);
 
       expect(screen.getByText("Daily Challenges")).toBeOnTheScreen();
-      expect(screen.getByText("Next reset in: 2h 30m")).toBeOnTheScreen();
+      expect(screen.getByText("Next reset in:")).toBeOnTheScreen();
+      expect(screen.getByText("2h 30m")).toBeOnTheScreen();
       expect(
         screen.queryByTestId("challenge-card-reward-10")
       ).not.toBeOnTheScreen();
@@ -478,7 +494,8 @@ describe("DailyChallenges", () => {
       render(<DailyChallenges />);
 
       expect(screen.getByText("Daily Challenges")).toBeOnTheScreen();
-      expect(screen.getByText("Next reset in: 2h 30m")).toBeOnTheScreen();
+      expect(screen.getByText("Next reset in:")).toBeOnTheScreen();
+      expect(screen.getByText("2h 30m")).toBeOnTheScreen();
     });
 
     it("maintains readable content hierarchy", () => {
@@ -488,7 +505,8 @@ describe("DailyChallenges", () => {
       expect(screen.getByText("Daily Challenges")).toBeOnTheScreen();
 
       // Reset timer should be secondary information
-      expect(screen.getByText("Next reset in: 2h 30m")).toBeOnTheScreen();
+      expect(screen.getByText("Next reset in:")).toBeOnTheScreen();
+      expect(screen.getByText("2h 30m")).toBeOnTheScreen();
 
       // Challenge content should be accessible
       expect(screen.getByText("Study 10 Flashcards")).toBeOnTheScreen();

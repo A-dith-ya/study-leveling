@@ -282,14 +282,14 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     backgroundColor: COLORS.primary,
-    borderBottomWidth: 4,
+    borderBottomWidth: 2,
     borderBottomColor: COLORS.primaryDark,
   },
   secondaryButton: {
     backgroundColor: COLORS.white,
     borderWidth: 2,
     borderColor: COLORS.secondary,
-    borderBottomWidth: 4,
+    borderBottomWidth: 2,
     borderBottomColor: COLORS.secondaryDark,
   },
   buttonText: {

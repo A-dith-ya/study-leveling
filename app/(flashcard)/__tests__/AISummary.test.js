@@ -231,7 +231,7 @@ describe("AISummary", () => {
     it("renders bottom action buttons with Ionicons", () => {
       render(<AISummary />);
 
-      expect(screen.getByText("Retry Session")).toBeOnTheScreen();
+      expect(screen.getByText("Practice Again")).toBeOnTheScreen();
       expect(screen.getByText("Dashboard")).toBeOnTheScreen();
       expect(screen.getByTestId("ionicon-refresh-outline")).toBeOnTheScreen();
       expect(screen.getByTestId("ionicon-home-outline")).toBeOnTheScreen();
@@ -272,7 +272,7 @@ describe("AISummary", () => {
       expect(
         screen.getByText("No cards have been reviewed yet.")
       ).toBeOnTheScreen();
-      expect(screen.getByText("Retry Session")).toBeOnTheScreen();
+      expect(screen.getByText("Practice Again")).toBeOnTheScreen();
       expect(screen.getByText("Dashboard")).toBeOnTheScreen();
       expect(screen.getByText("0 of 3 Cards Reviewed")).toBeOnTheScreen();
     });
@@ -282,7 +282,7 @@ describe("AISummary", () => {
 
       render(<AISummary />);
 
-      expect(screen.getByText("Retry Session")).toBeOnTheScreen();
+      expect(screen.getByText("Practice Again")).toBeOnTheScreen();
       expect(screen.getByText("Dashboard")).toBeOnTheScreen();
     });
   });
@@ -291,7 +291,7 @@ describe("AISummary", () => {
     it("navigates to AIReview when retry button is pressed", () => {
       render(<AISummary />);
 
-      fireEvent.press(screen.getByText("Retry Session"));
+      fireEvent.press(screen.getByText("Practice Again"));
 
       expect(router.replace).toHaveBeenCalledWith({
         pathname: "/(flashcard)/AIReview",

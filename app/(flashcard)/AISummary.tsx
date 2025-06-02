@@ -95,7 +95,7 @@ export default function AISummary() {
           onPress={handleRetry}
         >
           <Ionicons name="refresh-outline" size={20} color={COLORS.white} />
-          <Text style={styles.primaryButtonText}>Retry Session</Text>
+          <Text style={styles.primaryButtonText}>Practice Again</Text>
         </Pressable>
         <Pressable
           style={[styles.button, styles.secondaryButton]}
@@ -152,11 +152,15 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     backgroundColor: COLORS.primary,
+    borderBottomWidth: 2,
+    borderBottomColor: COLORS.primaryDark,
   },
   secondaryButton: {
     backgroundColor: COLORS.white,
     borderWidth: 1,
     borderColor: COLORS.primary,
+    borderBottomWidth: 2,
+    borderBottomColor: COLORS.primaryDark,
   },
   primaryButtonText: {
     color: COLORS.white,
