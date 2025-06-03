@@ -9,6 +9,7 @@ import {
   Alert,
   ActivityIndicator,
   Platform,
+  TextInput,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
@@ -36,6 +37,7 @@ export default function FileUploadModal({
 }: FileUploadModalProps) {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
+  const [pastedText, setPastedText] = useState("");
 
   const handleFileUpload = async () => {
     try {
@@ -163,7 +165,30 @@ export default function FileUploadModal({
   const handleClose = () => {
     setUploadedFiles([]);
     setErrors([]);
+    setPastedText("");
     onClose();
+  };
+
+  const handleAddPastedText = () => {
+    if (!pastedText.trim()) {
+      Alert.alert("No Text", "Please enter some text to add.");
+      return;
+    }
+
+    const textFile: UploadedFile = {
+      name: "Pasted Text",
+      uri: "pasted-text",
+      size: pastedText.length,
+      type: "text/plain",
+      content: pastedText.trim(),
+    };
+
+    const updatedFiles = [...uploadedFiles, textFile];
+    const totalErrors = validateTotalLimits(updatedFiles);
+
+    setUploadedFiles(updatedFiles);
+    setErrors(totalErrors);
+    setPastedText("");
   };
 
   const canGenerate =
@@ -187,15 +212,28 @@ export default function FileUploadModal({
           style={styles.content}
           contentContainerStyle={styles.contentContainer}
         >
-          <View style={styles.infoSection}>
-            <Text style={styles.infoTitle}>Upload Requirements:</Text>
-            <Text style={styles.infoText}>
-              • Allowed types: .txt, .md, .csv
-            </Text>
-            <Text style={styles.infoText}>
-              • Maximum {MAX_TOTAL_CHARACTERS.toLocaleString()} characters
-              combined
-            </Text>
+          <View style={styles.textInputSection}>
+            <Text style={styles.sectionTitle}>Copy & Paste Text</Text>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Paste your text here to generate flashcards..."
+              value={pastedText}
+              onChangeText={setPastedText}
+              multiline
+              numberOfLines={4}
+              placeholderTextColor={COLORS.darkGray}
+            />
+            <Pressable
+              style={[
+                styles.addTextButton,
+                !pastedText.trim() && styles.addTextButtonDisabled,
+              ]}
+              onPress={handleAddPastedText}
+              disabled={!pastedText.trim()}
+            >
+              <Ionicons name="add" size={16} color={COLORS.white} />
+              <Text style={styles.addTextButtonText}>Add Text</Text>
+            </Pressable>
           </View>
 
           <Pressable style={styles.uploadButton} onPress={handleFileUpload}>
@@ -260,6 +298,17 @@ export default function FileUploadModal({
               ))}
             </View>
           )}
+
+          <View style={styles.infoSection}>
+            <Text style={styles.infoTitle}>Upload Requirements:</Text>
+            <Text style={styles.infoText}>
+              • Allowed types: .txt, .md, .csv
+            </Text>
+            <Text style={styles.infoText}>
+              • Maximum {MAX_TOTAL_CHARACTERS.toLocaleString()} characters
+              combined
+            </Text>
+          </View>
         </ScrollView>
 
         <View style={styles.footer}>
@@ -315,6 +364,48 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 16,
+  },
+  textInputSection: {
+    backgroundColor: COLORS.white,
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: COLORS.text,
+    marginBottom: 12,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: COLORS.lightGray,
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 14,
+    color: COLORS.text,
+    textAlignVertical: "top",
+    height: 120,
+    marginBottom: 12,
+  },
+  addTextButton: {
+    backgroundColor: COLORS.primary,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+    alignSelf: "flex-start",
+  },
+  addTextButtonDisabled: {
+    opacity: 0.5,
+  },
+  addTextButtonText: {
+    color: COLORS.white,
+    fontSize: 14,
+    fontWeight: "500",
+    marginLeft: 4,
   },
   infoSection: {
     backgroundColor: COLORS.white,
