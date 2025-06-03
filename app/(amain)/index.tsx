@@ -7,16 +7,19 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import DashboardHeader from "@/app/components/dashboard/DashboardHeader";
 import DeckCard from "@/app/components/dashboard/DeckCard";
 import LoadingScreen from "@/app/components/common/LoadingScreen";
+import UpdateModal from "@/app/components/common/UpdateModal";
 import { useUserData } from "@/app/hooks/useUser";
 import { useDecks } from "@/app/hooks/useDeck";
+import { useAppStoreVersionCheck } from "@/app/hooks/useAppStoreVersionCheck";
 import { calculateXPToNextLevel } from "@/app/utils/xpUtils";
 import COLORS from "@/app/constants/colors";
 import { DeckItem } from "@/app/types/homeTypes";
 
 export default function Index() {
   const { data: userData, isLoading } = useUserData();
-
   const { data: decks, isLoading: decksLoading } = useDecks();
+  const { versionInfo, openStoreUpdate, dismissUpdate } =
+    useAppStoreVersionCheck();
 
   if (isLoading) return <LoadingScreen />;
   if (decksLoading) return <LoadingScreen message="Loading decks..." />;
@@ -62,6 +65,19 @@ export default function Index() {
           <Ionicons name="person" size={34} color={COLORS.primary} />
         </Pressable>
       </View>
+
+      {/* App Store Update Modal */}
+      {versionInfo?.needsUpdate && (
+        <UpdateModal
+          visible={true}
+          currentVersion={versionInfo.currentVersion}
+          storeVersion={versionInfo.storeVersion}
+          releaseNotes={versionInfo.releaseNotes}
+          onUpdate={openStoreUpdate}
+          onNotNow={dismissUpdate}
+        />
+      )}
+
       <DashboardHeader
         level={userData?.level ?? 1}
         currentXP={userData?.xp ?? 0}
