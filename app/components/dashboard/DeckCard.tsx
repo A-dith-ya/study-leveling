@@ -117,15 +117,15 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   editButton: {
-    backgroundColor: COLORS.primaryLight,
+    backgroundColor: COLORS.primaryDark,
   },
   practiceButton: {
     flex: 1,
-    backgroundColor: COLORS.primaryDark,
+    backgroundColor: COLORS.primaryLight,
     gap: 8,
   },
   reviewButton: {
-    backgroundColor: COLORS.primaryDark,
+    backgroundColor: COLORS.primaryLight,
   },
   buttonText: {
     color: COLORS.white,

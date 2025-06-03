@@ -13,11 +13,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { v4 as uuidv4 } from "uuid";
+import type { Schema } from "@/amplify/data/resource";
 
 import FlashcardItem from "@/app/components/flashcard/FlashcardItem";
+import FileUploadModal from "@/app/components/flashcard/FileUploadModal";
 import LoadingScreen from "@/app/components/common/LoadingScreen";
 import EditHeader from "@/app/components/common/EditHeader";
 import { useDeck, useUpdateDeck } from "@/app/hooks/useDeck";
+import { useGenerateFlashcards } from "@/app/services/generateService";
 import COLORS from "@/app/constants/colors";
 import {
   createNewFlashcard,
@@ -26,17 +30,20 @@ import {
   moveFlashcard,
   validateFlashcards,
 } from "@/app/utils/flashcardUtils";
-import { Flashcard } from "@/app/types/flashcardTypes";
+import { Flashcard, UploadedFile } from "@/app/types/flashcardTypes";
+import { logger } from "@/app/utils/logger";
 
 export default function EditFlashcard() {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
   const [deckTitle, setDeckTitle] = useState("");
+  const [showFileUpload, setShowFileUpload] = useState(false);
   const router = useRouter();
   const { deckId } = useLocalSearchParams();
   const [deletedFlashcardIds, setDeletedFlashcardIds] = useState<string[]>([]);
 
   const { data: deckData, isLoading } = useDeck(deckId as string);
   const updateDeckMutation = useUpdateDeck();
+  const generateFlashcardsMutation = useGenerateFlashcards();
 
   useEffect(() => {
     if (deckData) {
@@ -115,6 +122,30 @@ export default function EditFlashcard() {
     );
   };
 
+  const handleAIGeneration = async (files: UploadedFile[]) => {
+    try {
+      const aiGeneratedCards: Schema["generateFlashcardsResponse"]["type"][] =
+        await generateFlashcardsMutation.mutateAsync(
+          files.map((file) => file.content || "").join("\n")
+        );
+
+      const generatedFlashcards: Flashcard[] = aiGeneratedCards.map(
+        (card, index) => ({
+          id: uuidv4(),
+          front: card.question,
+          back: card.answer,
+          order: flashcards.length + index,
+        })
+      );
+
+      setFlashcards((prev) => [...prev, ...generatedFlashcards]);
+      setShowFileUpload(false);
+    } catch (error) {
+      logger.error("AI generation error:", error);
+      Alert.alert("Error", "Failed to generate flashcards. Please try again.");
+    }
+  };
+
   if (isLoading) return <LoadingScreen message="Loading flashcards..." />;
 
   return (
@@ -142,23 +173,40 @@ export default function EditFlashcard() {
         />
       </View>
 
-      <Pressable
-        style={[
-          styles.saveAllButton,
-          updateDeckMutation.isPending && styles.saveButtonDisabled,
-        ]}
-        onPress={handleSave}
-        disabled={updateDeckMutation.isPending}
-      >
-        {updateDeckMutation.isPending ? (
-          <ActivityIndicator color={COLORS.white} />
-        ) : (
-          <>
-            <Ionicons name="save-outline" size={24} color={COLORS.white} />
-            <Text style={styles.saveAllButtonText}>Save Changes</Text>
-          </>
-        )}
-      </Pressable>
+      <View style={styles.buttonContainer}>
+        <Pressable
+          style={[
+            styles.button,
+            updateDeckMutation.isPending && styles.buttonDisabled,
+          ]}
+          onPress={handleSave}
+          disabled={updateDeckMutation.isPending}
+        >
+          {updateDeckMutation.isPending ? (
+            <ActivityIndicator color={COLORS.white} />
+          ) : (
+            <>
+              <Ionicons name="save-outline" size={24} color={COLORS.white} />
+              <Text style={styles.buttonText}>Save Changes</Text>
+            </>
+          )}
+        </Pressable>
+
+        <Pressable
+          style={styles.button}
+          onPress={() => setShowFileUpload(true)}
+        >
+          <Ionicons name="sparkles" size={24} color={COLORS.white} />
+          <Text style={styles.buttonText}>AI Generate</Text>
+        </Pressable>
+      </View>
+
+      <FileUploadModal
+        visible={showFileUpload}
+        onClose={() => setShowFileUpload(false)}
+        onGenerate={handleAIGeneration}
+        isGenerating={generateFlashcardsMutation.isPending}
+      />
     </SafeAreaView>
   );
 }
@@ -175,8 +223,23 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingBottom: 16,
   },
-  saveAllButton: {
-    width: "50%",
+  titleInput: {
+    backgroundColor: COLORS.white,
+    padding: 16,
+    fontSize: 18,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.lightGray,
+    color: COLORS.text,
+    textAlign: "center",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 16,
+  },
+  button: {
+    width: "40%",
     alignSelf: "center",
     backgroundColor: COLORS.primary,
     flexDirection: "row",
@@ -189,22 +252,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: COLORS.primaryDark,
   },
-  saveAllButtonText: {
+  buttonText: {
     color: COLORS.white,
     fontSize: 16,
     fontWeight: "600",
     marginLeft: 8,
   },
-  titleInput: {
-    backgroundColor: COLORS.white,
-    padding: 16,
-    fontSize: 18,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.lightGray,
-    color: COLORS.text,
-    textAlign: "center",
-  },
-  saveButtonDisabled: {
+  buttonDisabled: {
     opacity: 0.7,
   },
 });

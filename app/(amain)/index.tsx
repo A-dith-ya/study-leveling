@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
+    marginBottom: 16,
   },
   appBranding: {
     flexDirection: "row",
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   createDeckButton: {
-    backgroundColor: COLORS.primaryLight,
+    backgroundColor: COLORS.primary,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
