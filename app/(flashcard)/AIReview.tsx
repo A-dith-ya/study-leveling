@@ -31,6 +31,7 @@ import {
   createUserAnswerSegments,
   createCorrectAnswerSegments,
 } from "@/app/utils/reviewUtils";
+import { handleExit } from "@/app/utils/flashcardUtils";
 import { useDeck } from "@/app/hooks/useDeck";
 import COLORS from "@/app/constants/colors";
 import { logger } from "@/app/utils/logger";
@@ -160,9 +161,14 @@ export default function AIReview() {
         <View style={styles.container}>
           {/* Question Section */}
           <View style={styles.questionContainer}>
-            <Text style={styles.questionLabel}>
-              Question {currentFlashcardIndex + 1}
-            </Text>
+            <View style={styles.questionHeader}>
+              <Pressable onPress={handleExit}>
+                <Ionicons name="close" size={24} color={COLORS.darkGray} />
+              </Pressable>
+              <Text style={styles.questionLabel}>
+                Question {currentFlashcardIndex + 1}
+              </Text>
+            </View>
             <Text style={styles.questionText}>{question}</Text>
           </View>
 
@@ -263,10 +269,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.lightGray,
   },
+  questionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   questionLabel: {
     fontSize: 14,
     color: COLORS.darkGray,
-    marginBottom: 4,
   },
   questionText: {
     fontSize: 18,

@@ -1,10 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
-import { Platform } from "react-native";
+import { Platform, Alert } from "react-native";
 
 import { Flashcard, UploadedFile } from "@/app/types/flashcardTypes";
 import { logger } from "@/app/utils/logger";
+import { router } from "expo-router";
 
 export const fisherYatesShuffle = <T>(array: T[], count?: number): T[] => {
   const result = [...array];
@@ -254,4 +255,23 @@ export const formatFileSize = (bytes: number): string => {
 
 export const getTotalCharacters = (files: UploadedFile[]) => {
   return files.reduce((sum, file) => sum + (file.content?.length || 0), 0);
+};
+
+export const handleExit = () => {
+  Alert.alert(
+    "Exit Review",
+    "Your progress will not be saved.",
+    [
+      {
+        text: "Continue Review",
+        style: "cancel",
+      },
+      {
+        text: "Go to Dashboard",
+        style: "destructive",
+        onPress: () => router.replace("/(amain)"),
+      },
+    ],
+    { cancelable: true }
+  );
 };

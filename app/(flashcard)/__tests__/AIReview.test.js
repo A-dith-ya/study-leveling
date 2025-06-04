@@ -40,6 +40,10 @@ jest.mock("@/app/utils/reviewUtils", () => ({
   createCorrectAnswerSegments: jest.fn(),
 }));
 
+jest.mock("@/app/utils/flashcardUtils", () => ({
+  handleExit: jest.fn(),
+}));
+
 // Mock @expo/vector-icons
 jest.mock("@expo/vector-icons", () => ({
   Ionicons: ({ name, size, color, ...props }) => {

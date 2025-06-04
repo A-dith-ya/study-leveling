@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { SafeAreaView, StyleSheet, Alert } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import {
   useSharedValue,
   withTiming,
@@ -10,7 +10,7 @@ import { useLocalSearchParams, router } from "expo-router";
 
 import { useDeck } from "@/app/hooks/useDeck";
 import { useUserData } from "@/app/hooks/useUser";
-import { fisherYatesShuffle } from "@/app/utils/flashcardUtils";
+import { fisherYatesShuffle, handleExit } from "@/app/utils/flashcardUtils";
 import { calculateXPForSession } from "@/app/utils/xpUtils";
 import { getElapsedSeconds } from "@/app/utils/dayUtils";
 import ReviewHeader from "@/app/components/flashcard/ReviewHeader";
@@ -152,26 +152,6 @@ export default function FlashcardReview() {
         deckData?.flashcards?.length ?? 0,
         getElapsedSeconds(startTimeRef.current)
       )}`
-    );
-  };
-
-  // Handle exit with confirmation dialog
-  const handleExit = () => {
-    Alert.alert(
-      "Exit Review",
-      "Your progress will not be saved.",
-      [
-        {
-          text: "Continue Review",
-          style: "cancel",
-        },
-        {
-          text: "Go to Dashboard",
-          style: "destructive",
-          onPress: () => router.replace("/(amain)"),
-        },
-      ],
-      { cancelable: true }
     );
   };
 

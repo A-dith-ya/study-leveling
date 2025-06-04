@@ -32,6 +32,7 @@ jest.mock("@/app/hooks/useUser", () => ({
 
 jest.mock("@/app/utils/flashcardUtils", () => ({
   fisherYatesShuffle: jest.fn(),
+  handleExit: jest.fn(),
 }));
 
 jest.mock("@/app/utils/xpUtils", () => ({
@@ -728,28 +729,12 @@ describe("FlashcardReview", () => {
     });
 
     it("calls handleExit when exit button is pressed", () => {
-      // Mock Alert.alert to verify it's called
-      const mockAlert = jest.spyOn(require("react-native").Alert, "alert");
-
       render(<FlashcardReview />);
 
       const exitButton = screen.getByTestId("exit-button");
       fireEvent.press(exitButton);
 
-      expect(mockAlert).toHaveBeenCalledWith(
-        "Exit Review",
-        "Are you sure you want to exit? Your progress will be lost.",
-        expect.arrayContaining([
-          expect.objectContaining({ text: "Continue Review", style: "cancel" }),
-          expect.objectContaining({
-            text: "Go to Dashboard",
-            style: "destructive",
-          }),
-        ]),
-        { cancelable: true }
-      );
-
-      mockAlert.mockRestore();
+      expect(flashcardUtils.handleExit).toHaveBeenCalled();
     });
   });
 });
