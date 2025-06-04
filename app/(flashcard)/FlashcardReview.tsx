@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { SafeAreaView, StyleSheet, Pressable, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Alert } from "react-native";
 import {
   useSharedValue,
   withTiming,
@@ -155,6 +155,26 @@ export default function FlashcardReview() {
     );
   };
 
+  // Handle exit with confirmation dialog
+  const handleExit = () => {
+    Alert.alert(
+      "Exit Review",
+      "Your progress will not be saved.",
+      [
+        {
+          text: "Continue Review",
+          style: "cancel",
+        },
+        {
+          text: "Go to Dashboard",
+          style: "destructive",
+          onPress: () => router.replace("/(amain)"),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   if (isLoading) return <LoadingScreen message="Loading flashcards..." />;
 
   return (
@@ -165,6 +185,7 @@ export default function FlashcardReview() {
         isReviewingMarked={isReviewingMarked}
         shuffleMode={shuffleMode}
         onToggleShuffle={shuffleCards}
+        onExit={handleExit}
       />
 
       <FlashcardDisplay

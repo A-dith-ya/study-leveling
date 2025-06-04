@@ -16,6 +16,7 @@ export default function ReviewHeader({
   isReviewingMarked,
   shuffleMode,
   onToggleShuffle,
+  onExit,
 }: ReviewHeaderProps) {
   const progress = useSharedValue(0);
 
@@ -33,6 +34,10 @@ export default function ReviewHeader({
 
   return (
     <View style={styles.header}>
+      <Pressable style={styles.exitButton} onPress={onExit}>
+        <Ionicons name="close" size={24} color={COLORS.darkGray} />
+      </Pressable>
+
       <View style={styles.progressContainer}>
         <Text style={styles.progressText}>
           {currentIndex + 1} / {totalCards}
@@ -42,6 +47,7 @@ export default function ReviewHeader({
           <Animated.View style={[styles.progressFill, animatedStyle]} />
         </View>
       </View>
+
       <Pressable
         style={[styles.shuffleButton, shuffleMode && styles.shuffleActive]}
         onPress={onToggleShuffle}
@@ -62,6 +68,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     padding: 16,
+  },
+  exitButton: {
+    padding: 8,
   },
   progressContainer: {
     flex: 1,

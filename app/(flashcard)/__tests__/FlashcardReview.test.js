@@ -51,10 +51,20 @@ jest.mock("@/app/components/flashcard/ReviewHeader", () => {
     isReviewingMarked,
     shuffleMode,
     onToggleShuffle,
+    onExit,
   }) {
     return React.createElement("View", {
       testID: "review-header",
       children: [
+        React.createElement(
+          "Pressable",
+          {
+            key: "exit",
+            testID: "exit-button",
+            onPress: onExit,
+          },
+          React.createElement("Text", {}, "Exit")
+        ),
         React.createElement(
           "Text",
           {
@@ -706,6 +716,40 @@ describe("FlashcardReview", () => {
 
       expect(screen.getByText("1 / 100")).toBeOnTheScreen();
       expect(screen.getByText("Question 0")).toBeOnTheScreen();
+    });
+  });
+
+  describe("Exit Functionality", () => {
+    it("renders exit button in header", () => {
+      render(<FlashcardReview />);
+
+      const exitButton = screen.getByTestId("exit-button");
+      expect(exitButton).toBeOnTheScreen();
+    });
+
+    it("calls handleExit when exit button is pressed", () => {
+      // Mock Alert.alert to verify it's called
+      const mockAlert = jest.spyOn(require("react-native").Alert, "alert");
+
+      render(<FlashcardReview />);
+
+      const exitButton = screen.getByTestId("exit-button");
+      fireEvent.press(exitButton);
+
+      expect(mockAlert).toHaveBeenCalledWith(
+        "Exit Review",
+        "Are you sure you want to exit? Your progress will be lost.",
+        expect.arrayContaining([
+          expect.objectContaining({ text: "Continue Review", style: "cancel" }),
+          expect.objectContaining({
+            text: "Go to Dashboard",
+            style: "destructive",
+          }),
+        ]),
+        { cancelable: true }
+      );
+
+      mockAlert.mockRestore();
     });
   });
 });

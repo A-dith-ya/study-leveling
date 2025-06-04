@@ -16,6 +16,7 @@ export interface ReviewHeaderProps {
   isReviewingMarked: boolean;
   shuffleMode: boolean;
   onToggleShuffle: () => void;
+  onExit: () => void;
 }
 
 export interface FlashcardDisplayProps {
