@@ -372,7 +372,9 @@ describe("UserStats", () => {
           247, // totalCardsReviewed
           14, // streak
           23, // totalSessionsCompleted
-          7890000 // timeSpent
+          7890000, // timeSpent
+          [], // dailyChallenges (from mock challenge store)
+          0
         );
       });
     });

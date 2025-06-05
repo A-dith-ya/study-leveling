@@ -22,10 +22,15 @@ jest.mock("expo-router", () => ({
 
 jest.mock("@/app/hooks/useUser", () => ({
   useUserData: jest.fn(),
+  useUpdateUserCosmetics: jest.fn(),
 }));
 
 jest.mock("@/app/hooks/useDeck", () => ({
   useDecks: jest.fn(),
+}));
+
+jest.mock("@/app/hooks/useAppStoreVersionCheck", () => ({
+  useAppStoreVersionCheck: jest.fn(),
 }));
 
 jest.mock("@/app/utils/xpUtils", () => ({
@@ -111,13 +116,45 @@ jest.mock("@/app/components/common/LoadingScreen", () => {
   };
 });
 
+jest.mock("@/app/components/common/UpdateModal", () => {
+  const { View } = require("react-native");
+  return function MockUpdateModal() {
+    return <View />;
+  };
+});
+
+jest.mock("@/app/components/common/CodeRedemptionModal", () => {
+  const { View } = require("react-native");
+  return function MockCodeRedemptionModal() {
+    return <View />;
+  };
+});
+
 // Mock FlashList as FlatList for testing
 jest.mock("@shopify/flash-list", () => ({
   FlashList: require("react-native").FlatList,
 }));
 
+// Mock Image component
+jest.mock("react-native", () => {
+  const RN = jest.requireActual("react-native");
+  const { View, Text } = RN;
+
+  RN.Image = ({ source, style, ...props }) => (
+    <View style={style} {...props}>
+      <Text>MockImage</Text>
+    </View>
+  );
+
+  return RN;
+});
+
 describe("Index Screen", () => {
   let queryClient;
+  const mockUseAppStoreVersionCheck =
+    require("@/app/hooks/useAppStoreVersionCheck").useAppStoreVersionCheck;
+  const mockUseUpdateUserCosmetics =
+    require("@/app/hooks/useUser").useUpdateUserCosmetics;
 
   beforeEach(() => {
     queryClient = new QueryClient({
@@ -132,6 +169,18 @@ describe("Index Screen", () => {
 
     // Default mock implementations
     calculateXPToNextLevel.mockReturnValue(1000);
+
+    // Mock useAppStoreVersionCheck
+    mockUseAppStoreVersionCheck.mockReturnValue({
+      versionInfo: null,
+      openStoreUpdate: jest.fn(),
+      dismissUpdate: jest.fn(),
+    });
+
+    // Mock useUpdateUserCosmetics
+    mockUseUpdateUserCosmetics.mockReturnValue({
+      mutate: jest.fn(),
+    });
   });
 
   const renderWithQueryClient = (component) => {

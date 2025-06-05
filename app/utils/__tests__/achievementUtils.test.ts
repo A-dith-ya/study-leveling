@@ -1,3 +1,12 @@
+// Mock dayjs to control time for testing
+jest.mock("dayjs", () => {
+  const originalDayjs = jest.requireActual("dayjs");
+  return jest.fn(() => ({
+    hour: jest.fn(() => 14), // Default to 2 PM (not night time)
+    ...originalDayjs(),
+  }));
+});
+
 // Mock AWS Amplify and related dependencies before any imports
 jest.mock("aws-amplify/data", () => ({
   generateClient: jest.fn(() => ({
@@ -75,6 +84,7 @@ describe("achievementUtils", () => {
   let mockAchievementStore: {
     isUnlocked: jest.MockedFunction<(id: string) => boolean>;
     unlock: jest.MockedFunction<(id: string) => void>;
+    getUnlockedAchievements: jest.MockedFunction<() => string[]>;
   };
 
   beforeEach(() => {
@@ -84,12 +94,16 @@ describe("achievementUtils", () => {
     mockAchievementStore = {
       isUnlocked: jest.fn(),
       unlock: jest.fn(),
+      getUnlockedAchievements: jest.fn(),
     };
 
     (mockUseAchievementStore as any).getState = jest
       .fn()
       .mockReturnValue(mockAchievementStore);
     mockUpdateUserAchievements.mockResolvedValue(undefined);
+
+    // Default return value for getUnlockedAchievements
+    mockAchievementStore.getUnlockedAchievements.mockReturnValue([]);
   });
 
   describe("evaluateAchievements", () => {
@@ -511,6 +525,171 @@ describe("achievementUtils", () => {
         await evaluateAchievements(userId, 1000);
 
         expect(mockUpdateUserAchievements).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("challenge achievements", () => {
+      it("should unlock challenge achievement when all challenges are completed and claimed", async () => {
+        mockAchievementStore.isUnlocked.mockReturnValue(false);
+
+        const dailyChallenges = [
+          { isCompleted: true, isClaimed: true },
+          { isCompleted: true, isClaimed: true },
+          { isCompleted: true, isClaimed: true },
+        ];
+
+        const result = await evaluateAchievements(
+          userId,
+          5,
+          undefined,
+          undefined,
+          undefined,
+          dailyChallenges
+        );
+
+        expect(result).toContain("challenge-champ");
+      });
+
+      it("should not unlock challenge achievement when some challenges are incomplete", async () => {
+        mockAchievementStore.isUnlocked.mockReturnValue(false);
+
+        const dailyChallenges = [
+          { isCompleted: true, isClaimed: true },
+          { isCompleted: false, isClaimed: false },
+          { isCompleted: true, isClaimed: true },
+        ];
+
+        const result = await evaluateAchievements(
+          userId,
+          5,
+          undefined,
+          undefined,
+          undefined,
+          dailyChallenges
+        );
+
+        expect(result).not.toContain("challenge-champ");
+      });
+
+      it("should not unlock challenge achievement when challenges are completed but not claimed", async () => {
+        mockAchievementStore.isUnlocked.mockReturnValue(false);
+
+        const dailyChallenges = [
+          { isCompleted: true, isClaimed: false },
+          { isCompleted: true, isClaimed: true },
+          { isCompleted: true, isClaimed: true },
+        ];
+
+        const result = await evaluateAchievements(
+          userId,
+          5,
+          undefined,
+          undefined,
+          undefined,
+          dailyChallenges
+        );
+
+        expect(result).not.toContain("challenge-champ");
+      });
+    });
+
+    describe("night owl achievements", () => {
+      const mockDayjs = require("dayjs");
+
+      it("should unlock night owl achievement when app is used between 12am-5am", async () => {
+        mockAchievementStore.isUnlocked.mockReturnValue(false);
+
+        // Mock night time (2 AM)
+        mockDayjs.mockReturnValue({
+          hour: jest.fn(() => 2),
+        });
+
+        const result = await evaluateAchievements(userId, 5);
+
+        expect(result).toContain("night-owl");
+      });
+
+      it("should unlock night owl achievement at midnight (12am)", async () => {
+        mockAchievementStore.isUnlocked.mockReturnValue(false);
+
+        // Mock midnight
+        mockDayjs.mockReturnValue({
+          hour: jest.fn(() => 0),
+        });
+
+        const result = await evaluateAchievements(userId, 5);
+
+        expect(result).toContain("night-owl");
+      });
+
+      it("should unlock night owl achievement at 4am", async () => {
+        mockAchievementStore.isUnlocked.mockReturnValue(false);
+
+        // Mock 4 AM
+        mockDayjs.mockReturnValue({
+          hour: jest.fn(() => 4),
+        });
+
+        const result = await evaluateAchievements(userId, 5);
+
+        expect(result).toContain("night-owl");
+      });
+
+      it("should not unlock night owl achievement during day time", async () => {
+        mockAchievementStore.isUnlocked.mockReturnValue(false);
+
+        // Mock day time (2 PM) - this is the default mock
+        mockDayjs.mockReturnValue({
+          hour: jest.fn(() => 14),
+        });
+
+        const result = await evaluateAchievements(userId, 5);
+
+        expect(result).not.toContain("night-owl");
+      });
+
+      it("should not unlock night owl achievement at 5am", async () => {
+        mockAchievementStore.isUnlocked.mockReturnValue(false);
+
+        // Mock 5 AM (outside night owl range)
+        mockDayjs.mockReturnValue({
+          hour: jest.fn(() => 5),
+        });
+
+        const result = await evaluateAchievements(userId, 5);
+
+        expect(result).not.toContain("night-owl");
+      });
+
+      it("should not unlock night owl achievement if already unlocked", async () => {
+        mockAchievementStore.isUnlocked.mockImplementation((id: string) => {
+          return id === "night-owl";
+        });
+
+        // Mock night time
+        mockDayjs.mockReturnValue({
+          hour: jest.fn(() => 2),
+        });
+
+        const result = await evaluateAchievements(userId, 5);
+
+        expect(result).not.toContain("night-owl");
+      });
+
+      it("should work with other achievements during night time", async () => {
+        mockAchievementStore.isUnlocked.mockReturnValue(false);
+
+        // Mock night time
+        mockDayjs.mockReturnValue({
+          hour: jest.fn(() => 1),
+        });
+
+        const result = await evaluateAchievements(userId, 100);
+
+        expect(result).toContain("night-owl");
+        expect(result).toContain("deck-builder");
+        expect(result).toContain("flashcard-master-10");
+        expect(result).toContain("flashcard-master-100");
       });
     });
   });
