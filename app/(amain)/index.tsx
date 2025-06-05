@@ -3,12 +3,14 @@ import { router } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useState, useRef } from "react";
 
 import DashboardHeader from "@/app/components/dashboard/DashboardHeader";
 import DeckCard from "@/app/components/dashboard/DeckCard";
 import LoadingScreen from "@/app/components/common/LoadingScreen";
 import UpdateModal from "@/app/components/common/UpdateModal";
-import { useUserData } from "@/app/hooks/useUser";
+import CodeRedemptionModal from "@/app/components/common/CodeRedemptionModal";
+import { useUserData, useUpdateUserCosmetics } from "@/app/hooks/useUser";
 import { useDecks } from "@/app/hooks/useDeck";
 import { useAppStoreVersionCheck } from "@/app/hooks/useAppStoreVersionCheck";
 import { calculateXPToNextLevel } from "@/app/utils/xpUtils";
@@ -20,9 +22,50 @@ export default function Index() {
   const { data: decks, isLoading: decksLoading } = useDecks();
   const { versionInfo, openStoreUpdate, dismissUpdate } =
     useAppStoreVersionCheck();
+  const updateUserCosmeticsMutation = useUpdateUserCosmetics();
+
+  // State for code redemption modal
+  const [showCodeModal, setShowCodeModal] = useState(false);
+
+  // Track tap count for the special feature
+  const tapCount = useRef(0);
+  const tapTimer = useRef<NodeJS.Timeout | null>(null);
 
   if (isLoading) return <LoadingScreen />;
   if (decksLoading) return <LoadingScreen message="Loading decks..." />;
+
+  const handleIconTap = () => {
+    tapCount.current += 1;
+
+    // Clear existing timer
+    if (tapTimer.current) {
+      clearTimeout(tapTimer.current);
+    }
+
+    // Check if user tapped 7 times
+    if (tapCount.current >= 7) {
+      tapCount.current = 0;
+      setShowCodeModal(true);
+      return;
+    }
+
+    // Reset tap count after 1 second of no taps
+    tapTimer.current = setTimeout(() => {
+      tapCount.current = 0;
+    }, 1000);
+  };
+
+  const handleCodeRedeemed = (coins: number) => {
+    const currentCoins = userData?.coins ?? 0;
+    const ownedCosmetics = userData?.ownedCosmetics ?? [];
+
+    updateUserCosmeticsMutation.mutate({
+      coins: currentCoins + coins,
+      ownedCosmetics,
+    });
+
+    setShowCodeModal(false);
+  };
 
   const renderDeckItem = ({ item }: { item: DeckItem }) => (
     <DeckCard
@@ -51,7 +94,7 @@ export default function Index() {
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.headerRow}>
-        <View style={styles.appBranding}>
+        <Pressable style={styles.appBranding} onPress={handleIconTap}>
           <Image
             source={require("@/assets/images/icon.png")}
             style={styles.appIcon}
@@ -60,7 +103,7 @@ export default function Index() {
             <Text style={styles.appTitle}>Study Leveling</Text>
             <Text style={styles.appSubtitle}>Learn • Level Up • Succeed</Text>
           </View>
-        </View>
+        </Pressable>
         <Pressable onPress={() => router.push("/(flashcard)/Account")}>
           <Ionicons name="person" size={34} color={COLORS.primary} />
         </Pressable>
@@ -77,6 +120,13 @@ export default function Index() {
           onNotNow={dismissUpdate}
         />
       )}
+
+      {/* Code Redemption Modal */}
+      <CodeRedemptionModal
+        visible={showCodeModal}
+        onClose={() => setShowCodeModal(false)}
+        onCodeRedeemed={handleCodeRedeemed}
+      />
 
       <DashboardHeader
         level={userData?.level ?? 1}
