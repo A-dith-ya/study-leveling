@@ -27,6 +27,8 @@ const ACHIEVEMENT_TIERS: readonly AchievementTier[] = [
   { id: "challenge-champ", threshold: 1, type: "challenges" },
   // Night owl achievement
   { id: "night-owl", threshold: 1, type: "night-owl" },
+  // Customizer achievement
+  { id: "customizer", threshold: 0, type: "customizer" },
 ] as const;
 
 /**
@@ -37,6 +39,7 @@ const ACHIEVEMENT_TIERS: readonly AchievementTier[] = [
  * @param totalSessions Total number of completed sessions (optional)
  * @param timeSpent Total time spent studying in seconds (optional)
  * @param dailyChallenges Array of daily challenges for challenge achievements (optional)
+ * @param decorationsCount Number of decorations applied to flashcards (optional)
  */
 export async function evaluateAchievements(
   userId: string,
@@ -44,7 +47,8 @@ export async function evaluateAchievements(
   currentStreak?: number,
   totalSessions?: number,
   timeSpent?: number,
-  dailyChallenges?: Array<{ isCompleted: boolean; isClaimed: boolean }>
+  dailyChallenges?: Array<{ isCompleted: boolean; isClaimed: boolean }>,
+  decorationsCount?: number
 ): Promise<string[]> {
   try {
     if (!userId) {
@@ -86,6 +90,11 @@ export async function evaluateAchievements(
         return (
           currentHour >= 0 &&
           currentHour < 5 &&
+          !achievementStore.isUnlocked(tier.id)
+        );
+      } else if (tier.type === "customizer" && decorationsCount !== undefined) {
+        return (
+          decorationsCount > tier.threshold &&
           !achievementStore.isUnlocked(tier.id)
         );
       }

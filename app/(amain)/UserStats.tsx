@@ -62,7 +62,8 @@ export default function UserStats() {
         userData.streak || 0,
         userData.totalSessionsCompleted || 0,
         userData.timeSpent || 0,
-        dailyChallenges
+        dailyChallenges,
+        userData.decorations?.length || 0
       ).catch((error: Error) =>
         logger.error("Failed to evaluate achievements", error)
       );

@@ -14,7 +14,8 @@ export interface AchievementTier {
     | "sessions"
     | "time"
     | "challenges"
-    | "night-owl";
+    | "night-owl"
+    | "customizer";
 }
 
 // UserStats component
