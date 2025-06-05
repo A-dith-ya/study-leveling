@@ -24,6 +24,7 @@ import AchievementModal from "@/app/components/gamification/AchievementModal";
 import LoadingScreen from "@/app/components/common/LoadingScreen";
 import useAchievementStore from "@/app/stores/achievementStore";
 import useUserStore from "@/app/stores/userStore";
+import useChallengeStore from "@/app/stores/challengeStore";
 import { useUserData } from "@/app/hooks/useUser";
 import { calculateXPToNextLevel } from "@/app/utils/xpUtils";
 import { formatDurationToHoursAndMinutes } from "@/app/utils/dayUtils";
@@ -38,6 +39,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export default function UserStats() {
   const { data: userData, isLoading } = useUserData();
   const user = useUserStore((state) => state.user);
+  const { dailyChallenges } = useChallengeStore();
 
   // Animation values
   const statsScale = useSharedValue(0.8);
@@ -59,7 +61,8 @@ export default function UserStats() {
         userData.totalCardsReviewed || 0,
         userData.streak || 0,
         userData.totalSessionsCompleted || 0,
-        userData.timeSpent || 0
+        userData.timeSpent || 0,
+        dailyChallenges
       ).catch((error: Error) =>
         logger.error("Failed to evaluate achievements", error)
       );
@@ -112,7 +115,7 @@ export default function UserStats() {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.header}>Your Progress</Text>
+        <Text style={styles.sectionTitle}>Your Progress</Text>
         {/* Level and XP Progress */}
         <LevelDisplay
           level={userData?.level || 1}
@@ -222,12 +225,6 @@ const styles = StyleSheet.create({
   },
   achievementsSection: {
     marginBottom: 24,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: COLORS.text,
-    marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 20,

@@ -22,6 +22,8 @@ const ACHIEVEMENT_TIERS: readonly AchievementTier[] = [
   { id: "study-time-1", threshold: 3600, type: "time" }, // 1 hour = 3600 seconds
   { id: "study-time-5", threshold: 18000, type: "time" }, // 5 hours = 18000 seconds
   { id: "study-time-10", threshold: 36000, type: "time" }, // 10 hours = 36000 seconds
+  // Challenge achievement
+  { id: "challenge-champ", threshold: 1, type: "challenges" },
 ] as const;
 
 /**
@@ -31,13 +33,15 @@ const ACHIEVEMENT_TIERS: readonly AchievementTier[] = [
  * @param currentStreak Current streak count (optional)
  * @param totalSessions Total number of completed sessions (optional)
  * @param timeSpent Total time spent studying in seconds (optional)
+ * @param dailyChallenges Array of daily challenges for challenge achievements (optional)
  */
 export async function evaluateAchievements(
   userId: string,
   totalCards: number,
   currentStreak?: number,
   totalSessions?: number,
-  timeSpent?: number
+  timeSpent?: number,
+  dailyChallenges?: Array<{ isCompleted: boolean; isClaimed: boolean }>
 ): Promise<string[]> {
   try {
     if (!userId) {
@@ -66,6 +70,14 @@ export async function evaluateAchievements(
         return (
           timeSpent >= tier.threshold && !achievementStore.isUnlocked(tier.id)
         );
+      } else if (tier.type === "challenges" && dailyChallenges !== undefined) {
+        // Check if all daily challenges are completed and claimed
+        const allChallengesClaimed =
+          dailyChallenges.length > 0 &&
+          dailyChallenges.every(
+            (challenge) => challenge.isCompleted && challenge.isClaimed
+          );
+        return allChallengesClaimed && !achievementStore.isUnlocked(tier.id);
       }
       return false;
     }).map((tier) => tier.id);
@@ -75,7 +87,12 @@ export async function evaluateAchievements(
     }
 
     // Update achievements in database
-    await updateUserAchievements(userId, achievementsToUnlock);
+    await updateUserAchievements(userId, [
+      ...new Set([
+        ...achievementStore.getUnlockedAchievements(),
+        ...achievementsToUnlock,
+      ]),
+    ]);
 
     // Update local store
     achievementsToUnlock.forEach((id) => achievementStore.unlock(id));

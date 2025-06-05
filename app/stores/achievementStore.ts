@@ -10,6 +10,7 @@ interface AchievementStore {
   fetchAchievements: (userId: string) => Promise<void>;
   unlock: (achievementId: string) => void;
   isUnlocked: (achievementId: string) => boolean;
+  getUnlockedAchievements: () => string[];
   reset: () => void;
 }
 
@@ -36,6 +37,8 @@ const useAchievementStore = create<AchievementStore>()(
           },
         })),
       isUnlocked: (id: string) => get().unlocked[id] || false,
+      getUnlockedAchievements: () =>
+        Object.keys(get().unlocked).filter((id) => get().unlocked[id]),
       reset: () => set({ unlocked: {} }),
     }),
     {
