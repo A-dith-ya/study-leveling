@@ -8,7 +8,13 @@ export interface Achievement {
 export interface AchievementTier {
   readonly id: string;
   readonly threshold: number;
-  readonly type: "flashcards" | "streak" | "sessions" | "time" | "challenges";
+  readonly type:
+    | "flashcards"
+    | "streak"
+    | "sessions"
+    | "time"
+    | "challenges"
+    | "night-owl";
 }
 
 // UserStats component

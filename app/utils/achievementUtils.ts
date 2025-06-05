@@ -2,6 +2,7 @@ import { logger } from "./logger";
 import useAchievementStore from "@/app/stores/achievementStore";
 import { updateUserAchievements } from "@/app/services/userService";
 import { AchievementTier } from "@/app/types/achievementTypes";
+import dayjs from "dayjs";
 
 const ACHIEVEMENT_TIERS: readonly AchievementTier[] = [
   // Deck builder (awarded after reviewing first card)
@@ -24,6 +25,8 @@ const ACHIEVEMENT_TIERS: readonly AchievementTier[] = [
   { id: "study-time-10", threshold: 36000, type: "time" }, // 10 hours = 36000 seconds
   // Challenge achievement
   { id: "challenge-champ", threshold: 1, type: "challenges" },
+  // Night owl achievement
+  { id: "night-owl", threshold: 1, type: "night-owl" },
 ] as const;
 
 /**
@@ -78,6 +81,13 @@ export async function evaluateAchievements(
             (challenge) => challenge.isCompleted && challenge.isClaimed
           );
         return allChallengesClaimed && !achievementStore.isUnlocked(tier.id);
+      } else if (tier.type === "night-owl") {
+        const currentHour = dayjs().hour();
+        return (
+          currentHour >= 0 &&
+          currentHour < 5 &&
+          !achievementStore.isUnlocked(tier.id)
+        );
       }
       return false;
     }).map((tier) => tier.id);
