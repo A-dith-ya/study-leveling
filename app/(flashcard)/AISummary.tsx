@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Pressable, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Pressable, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FlashList } from "@shopify/flash-list";
 import { Ionicons } from "@expo/vector-icons";
@@ -152,14 +152,14 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     backgroundColor: COLORS.primary,
-    borderBottomWidth: 2,
+    borderBottomWidth: Platform.OS === "ios" ? 2 : 0,
     borderBottomColor: COLORS.primaryDark,
   },
   secondaryButton: {
     backgroundColor: COLORS.white,
     borderWidth: 1,
     borderColor: COLORS.primary,
-    borderBottomWidth: 2,
+    borderBottomWidth: Platform.OS === "ios" ? 2 : 0,
     borderBottomColor: COLORS.primaryDark,
   },
   primaryButtonText: {

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import COLORS from "@/app/constants/colors";
@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    borderBottomWidth: 2,
-    borderBottomColor: COLORS.primaryLight,
+    borderBottomWidth: Platform.OS === "ios" ? 2 : 0,
+    borderBottomColor: COLORS.primaryDark,
   },
   markButtonText: {
     color: COLORS.white,

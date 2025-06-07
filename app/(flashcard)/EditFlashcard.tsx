@@ -7,6 +7,7 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -249,7 +250,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 8,
     marginBottom: 16,
-    borderBottomWidth: 2,
+    borderBottomWidth: Platform.OS === "ios" ? 0 : 2,
     borderBottomColor: COLORS.primaryDark,
   },
   buttonText: {

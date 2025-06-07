@@ -6,6 +6,7 @@ import {
   Dimensions,
   TouchableOpacity,
   SafeAreaView,
+  Platform,
 } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -282,7 +283,7 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     backgroundColor: COLORS.primary,
-    borderBottomWidth: 2,
+    borderBottomWidth: Platform.OS === "ios" ? 2 : 0,
     borderBottomColor: COLORS.primaryDark,
   },
   secondaryButton: {

@@ -1,4 +1,11 @@
-import { View, Pressable, Text, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Pressable,
+  Text,
+  StyleSheet,
+  Image,
+  Platform,
+} from "react-native";
 import { router } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
 import { Ionicons } from "@expo/vector-icons";
@@ -227,7 +234,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
-    borderBottomWidth: 2,
+    borderBottomWidth: Platform.OS === "ios" ? 2 : 0,
     borderBottomColor: COLORS.secondaryDark,
   },
   createDeckButtonWrapper: {
@@ -242,7 +249,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
-    borderBottomWidth: 2,
+    borderBottomWidth: Platform.OS === "ios" ? 2 : 0,
     borderBottomColor: COLORS.primaryDark,
   },
   createDeckButtonText: {

@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Keyboard,
   TouchableWithoutFeedback,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, {
@@ -380,7 +381,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    borderBottomWidth: 2,
+    borderBottomWidth: Platform.OS === "ios" ? 2 : 0,
     borderBottomColor: COLORS.primaryLight,
   },
   submitButtonText: {
