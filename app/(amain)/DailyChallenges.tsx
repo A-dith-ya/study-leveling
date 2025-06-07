@@ -38,8 +38,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   header: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+    padding: 16,
     alignItems: "center",
   },
   title: {
