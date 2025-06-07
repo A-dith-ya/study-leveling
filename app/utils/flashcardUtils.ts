@@ -257,7 +257,7 @@ export const getTotalCharacters = (files: UploadedFile[]) => {
   return files.reduce((sum, file) => sum + (file.content?.length || 0), 0);
 };
 
-export const handleExit = () => {
+export const handleExit = (reset?: () => void) => {
   Alert.alert(
     "Exit Review",
     "Your progress will not be saved.",
@@ -269,7 +269,12 @@ export const handleExit = () => {
       {
         text: "Go to Dashboard",
         style: "destructive",
-        onPress: () => router.replace("/(amain)"),
+        onPress: () => {
+          if (reset) {
+            reset();
+          }
+          router.replace("/(amain)");
+        },
       },
     ],
     { cancelable: true }

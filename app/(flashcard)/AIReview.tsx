@@ -54,6 +54,7 @@ export default function AIReview() {
     hasEvaluation,
     goToNextCard,
     goToPreviousCard,
+    reset,
   } = useReviewStore();
 
   const { data: deckData, isLoading } = useDeck(deckId as string);
@@ -163,7 +164,7 @@ export default function AIReview() {
           {/* Question Section */}
           <View style={styles.questionContainer}>
             <View style={styles.questionHeader}>
-              <Pressable onPress={handleExit}>
+              <Pressable onPress={() => handleExit(reset)}>
                 <Ionicons name="close" size={24} color={COLORS.darkGray} />
               </Pressable>
               <Text style={styles.questionLabel}>
