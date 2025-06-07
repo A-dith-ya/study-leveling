@@ -270,7 +270,7 @@ export const handleExit = (reset?: () => void) => {
         text: "Go to Dashboard",
         style: "destructive",
         onPress: () => {
-          if (reset) {
+          if (typeof reset === "function") {
             reset();
           }
           router.replace("/(amain)");
