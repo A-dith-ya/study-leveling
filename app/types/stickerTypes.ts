@@ -25,6 +25,8 @@ export interface EditHeaderProps {
   onRightButtonPress: () => void;
   showBackButton?: boolean;
   backButtonDestination?: Href;
+  isLoading?: boolean;
+  disabled?: boolean;
 }
 
 export interface DraggableStickerProps {

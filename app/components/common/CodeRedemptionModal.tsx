@@ -20,6 +20,7 @@ interface CodeRedemptionModalProps {
 // Predefined codes and their coin rewards
 const REDEMPTION_CODES: Record<string, number> = {
   FAMILY: 1000,
+  DEV: 5000,
 };
 
 export default function CodeRedemptionModal({

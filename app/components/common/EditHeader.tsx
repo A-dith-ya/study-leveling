@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import COLORS from "@/app/constants/colors";
@@ -12,6 +18,8 @@ export default function EditHeader({
   onRightButtonPress,
   showBackButton = true,
   backButtonDestination = "/(amain)",
+  isLoading = false,
+  disabled = false,
 }: EditHeaderProps) {
   return (
     <View style={styles.header}>
@@ -30,10 +38,18 @@ export default function EditHeader({
       </View>
       <Pressable
         onPress={onRightButtonPress}
-        style={styles.rightButton}
+        style={[
+          styles.rightButton,
+          (disabled || isLoading) && styles.rightButtonDisabled,
+        ]}
         accessibilityRole="button"
+        disabled={disabled || isLoading}
       >
-        <Ionicons name={rightButtonIcon} size={24} color={COLORS.primary} />
+        {isLoading ? (
+          <ActivityIndicator size="small" color={COLORS.primary} />
+        ) : (
+          <Ionicons name={rightButtonIcon} size={24} color={COLORS.primary} />
+        )}
         <Text style={styles.rightButtonText}>{rightButtonText}</Text>
       </Pressable>
     </View>
@@ -73,5 +89,8 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     fontSize: 16,
     fontWeight: "500",
+  },
+  rightButtonDisabled: {
+    opacity: 0.6,
   },
 });

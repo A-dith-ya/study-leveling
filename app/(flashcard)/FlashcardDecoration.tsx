@@ -79,9 +79,9 @@ export default function FlashcardDecoration() {
   };
 
   const handleUpdateSticker = (id: string, updates: Partial<PlacedSticker>) => {
-    setPlacedStickers(
-      placedStickers.map((s) => (s.id === id ? { ...s, ...updates } : s))
-    );
+    setPlacedStickers((prev) => {
+      return prev.map((s) => (s.id === id ? { ...s, ...updates } : s));
+    });
   };
 
   const handleDeleteSticker = (id: string) => {
@@ -137,6 +137,8 @@ export default function FlashcardDecoration() {
           rightButtonText="Save"
           rightButtonIcon="save"
           onRightButtonPress={handleSave}
+          isLoading={updateUserDecorations.isPending}
+          disabled={updateUserDecorations.isPending}
         />
 
         {/* Canvas Area */}
