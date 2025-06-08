@@ -47,6 +47,22 @@ I18n.putVocabularies({
   en: {
     "Sign in": "Login",
     "Create Account": "Sign Up",
+    "Forgot your password?": "Forgot Password?",
+    "Reset your password": "Reset Password",
+    "Enter your email": "Enter your email address",
+    "Send code": "Send Reset Code",
+    Code: "Verification Code",
+    "New Password": "New Password",
+    "Confirm Password": "Confirm New Password",
+    Submit: "Reset Password",
+    "Back to Sign In": "← Back to Login",
+    "We Emailed You": "Check Your Email!",
+    "Your code is on the way. To log in, enter the code we emailed to":
+      "We've sent a verification code to your email address. Please check your inbox and enter the code below:",
+    "It may take a minute to arrive.":
+      "If you don't see the email, please check your spam folder or wait a minute for it to arrive.",
+    "Lost your code?": "Didn't receive the code?",
+    "Resend Code": "Resend Code",
   },
 });
 
@@ -85,8 +101,8 @@ export default function RootLayout() {
                     {
                       name: "username",
                       labelHidden: true,
-                      placeholder: "Email",
-                      type: "default",
+                      placeholder: "Email address",
+                      type: "email",
                       style: {
                         marginBottom: 16,
                       },
@@ -106,6 +122,32 @@ export default function RootLayout() {
                   Header={SignUpHeader}
                   Footer={SignUpFooter}
                   hideSignIn={true}
+                  fields={[
+                    {
+                      name: "email",
+                      labelHidden: true,
+                      placeholder: "Email address",
+                      type: "email",
+                      style: {
+                        marginBottom: 16,
+                      },
+                    },
+                    {
+                      name: "password",
+                      labelHidden: true,
+                      placeholder: "Create password (min 6 characters)",
+                      type: "password",
+                      style: {
+                        marginBottom: 16,
+                      },
+                    },
+                    {
+                      name: "confirm_password",
+                      labelHidden: true,
+                      placeholder: "Confirm password",
+                      type: "password",
+                    },
+                  ]}
                 />
               ),
             }}

@@ -1,45 +1,75 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 import COLORS from "../../constants/colors";
+
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   SignInHeader: {
     alignItems: "center",
-    gap: 10,
+    paddingVertical: 32,
+    paddingHorizontal: 24,
     marginBottom: 20,
   },
   logoContainer: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    gap: 5,
+    marginBottom: 16,
+    shadowColor: COLORS.shadowColor,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
   logo: {
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 32,
+    fontWeight: "bold",
+    color: COLORS.text,
+    textAlign: "center",
   },
   headerSubtitle: {
-    fontSize: 16,
+    fontSize: 18,
     textAlign: "center",
     color: COLORS.darkGray,
+    marginTop: 8,
+    lineHeight: 24,
+    maxWidth: width * 0.8,
   },
   footer: {
-    padding: 16,
+    padding: 20,
     alignItems: "center",
+    marginTop: 24,
   },
   footerText: {
     fontSize: 16,
     textAlign: "center",
+    color: COLORS.darkGray,
+    lineHeight: 22,
   },
   signupLink: {
-    color: COLORS.secondary,
-    fontWeight: "bold",
+    color: COLORS.primary,
+    fontWeight: "600",
+    textDecorationLine: "underline",
   },
-  signInFooter: {
+  divider: {
+    flexDirection: "row",
     alignItems: "center",
-    marginTop: 20,
+    marginVertical: 24,
+    paddingHorizontal: 16,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: COLORS.lightGray,
+  },
+  dividerText: {
+    marginHorizontal: 16,
+    fontSize: 14,
+    color: COLORS.darkGray,
+    fontWeight: "500",
   },
 });
 
