@@ -15,7 +15,10 @@ import {
 } from "expo-speech-recognition";
 import { MicButtonProps } from "@/app/types/reviewTypes";
 
-export default function MicButton({ onTranscriptChange }: MicButtonProps) {
+export default function MicButton({
+  onTranscriptChange,
+  currentText = "",
+}: MicButtonProps) {
   const [isRecording, setIsRecording] = useState(false);
   const micScale = useSharedValue(1);
   const micGlow = useSharedValue(0);
@@ -35,7 +38,9 @@ export default function MicButton({ onTranscriptChange }: MicButtonProps) {
   useSpeechRecognitionEvent("result", (event) => {
     const transcript = event.results[0]?.transcript;
     if (transcript) {
-      onTranscriptChange(transcript);
+      // Append transcript to current text with a space if there's existing text
+      const newText = currentText ? `${currentText} ${transcript}` : transcript;
+      onTranscriptChange(newText);
       console.log("Transcript received:", transcript);
     }
   });

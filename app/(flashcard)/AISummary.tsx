@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderWidth: 1,
     borderColor: COLORS.primary,
-    borderBottomWidth: Platform.OS === "ios" ? 2 : 0,
+    borderBottomWidth: 2,
     borderBottomColor: COLORS.primaryDark,
   },
   primaryButtonText: {

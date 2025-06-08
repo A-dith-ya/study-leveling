@@ -54,6 +54,7 @@ export interface AIFeedbackProps {
 
 export interface MicButtonProps {
   onTranscriptChange: (transcript: string) => void;
+  currentText?: string;
 }
 
 // AISummary components
