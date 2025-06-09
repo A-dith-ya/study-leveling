@@ -223,7 +223,7 @@ describe("FlashcardDecoration", () => {
 
       // Check flashcard content
       expect(
-        screen.getByText("What is the powerhouse of the cell?")
+        screen.getByText("Add stickers to your flashcard")
       ).toBeOnTheScreen();
 
       // Check add sticker button

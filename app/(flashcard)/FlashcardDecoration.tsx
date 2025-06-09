@@ -144,9 +144,7 @@ export default function FlashcardDecoration() {
         {/* Canvas Area */}
         <View style={styles.canvas}>
           <View style={styles.flashcard}>
-            <Text style={styles.cardText}>
-              What is the powerhouse of the cell?
-            </Text>
+            <Text style={styles.cardText}>Add stickers to your flashcard</Text>
             {placedStickers.map((sticker) => (
               <DraggableSticker
                 key={sticker.id}
@@ -186,31 +184,45 @@ export default function FlashcardDecoration() {
             <Text style={styles.paletteTitle}>Choose a Sticker</Text>
           </BottomSheetView>
           <BottomSheetScrollView contentContainerStyle={styles.stickerGrid}>
-            {availableStickers.map((sticker) => (
-              <Pressable
-                key={sticker.cosmeticId}
-                style={[
-                  styles.stickerItem,
-                  getUsedStickerCount(sticker.cosmeticId) >= sticker.count &&
-                    styles.disabledStickerItem,
-                ]}
-                onPress={() => handleAddSticker(sticker)}
-                disabled={
-                  getUsedStickerCount(sticker.cosmeticId) >= sticker.count
-                }
-              >
-                <Image
-                  source={getImageFromId(sticker.cosmeticId)}
-                  style={styles.stickerPreview}
+            {availableStickers.length > 0 ? (
+              availableStickers.map((sticker) => (
+                <Pressable
+                  key={sticker.cosmeticId}
+                  style={[
+                    styles.stickerItem,
+                    getUsedStickerCount(sticker.cosmeticId) >= sticker.count &&
+                      styles.disabledStickerItem,
+                  ]}
+                  onPress={() => handleAddSticker(sticker)}
+                  disabled={
+                    getUsedStickerCount(sticker.cosmeticId) >= sticker.count
+                  }
+                >
+                  <Image
+                    source={getImageFromId(sticker.cosmeticId)}
+                    style={styles.stickerPreview}
+                  />
+                  <Text style={styles.stickerName}>
+                    {formatTitle(sticker.cosmeticId)}
+                  </Text>
+                  <Text style={styles.stickerCount}>
+                    {getUsedStickerCount(sticker.cosmeticId)}/{sticker.count}
+                  </Text>
+                </Pressable>
+              ))
+            ) : (
+              <View style={styles.noStickersContainer}>
+                <Ionicons
+                  name="storefront-outline"
+                  size={48}
+                  color={COLORS.secondary}
                 />
-                <Text style={styles.stickerName}>
-                  {formatTitle(sticker.cosmeticId)}
+                <Text style={styles.noStickersTitle}>No Stickers Owned</Text>
+                <Text style={styles.noStickersMessage}>
+                  Visit the store to buy stickers and decorate your flashcards!
                 </Text>
-                <Text style={styles.stickerCount}>
-                  {getUsedStickerCount(sticker.cosmeticId)}/{sticker.count}
-                </Text>
-              </Pressable>
-            ))}
+              </View>
+            )}
           </BottomSheetScrollView>
         </BottomSheet>
       </SafeAreaView>
@@ -320,5 +332,24 @@ const styles = StyleSheet.create({
   },
   disabledStickerItem: {
     opacity: 0.5,
+  },
+  noStickersContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 32,
+  },
+  noStickersTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: COLORS.text,
+    marginTop: 12,
+  },
+  noStickersMessage: {
+    fontSize: 14,
+    color: COLORS.secondary,
+    textAlign: "center",
+    marginTop: 8,
+    lineHeight: 20,
   },
 });
