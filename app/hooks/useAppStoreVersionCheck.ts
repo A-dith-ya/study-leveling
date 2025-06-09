@@ -100,19 +100,162 @@ export const useAppStoreVersionCheck = () => {
           throw new Error("App not found in App Store");
         }
       } else if (Platform.OS === "android") {
-        // Implement Google Play API
         const packageName = Constants.expoConfig?.android?.package;
 
         if (!packageName) {
           throw new Error("Android package name not found");
         }
 
-        return {
-          needsUpdate: false,
-          currentVersion,
-          storeVersion: currentVersion,
-          storeUrl: `https://play.google.com/store/apps/details?id=${packageName}`,
-        };
+        try {
+          // Fetch Google Play Store page
+          const playStoreUrl = `https://play.google.com/store/apps/details?id=${packageName}`;
+          const response = await fetch(playStoreUrl, {
+            method: "GET",
+            headers: {
+              "User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+              Accept:
+                "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+              "Accept-Language": "en-US,en;q=0.5",
+              "Accept-Encoding": "gzip, deflate, br",
+              "Cache-Control": "no-cache",
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(
+              `Google Play Store request failed: ${response.status}`
+            );
+          }
+
+          const html = await response.text();
+
+          // Extract version using regex patterns
+          let storeVersion = currentVersion; // fallback
+          let releaseNotes = ""; // Extract release notes for Android
+
+          // Try multiple patterns to find version information
+          const versionPatterns = [
+            // Pattern 1: Version in app info section
+            /\["([0-9]+\.[0-9]+(?:\.[0-9]+)?(?:\.[0-9]+)?)"\]/g,
+            // Pattern 2: Version in metadata
+            /"versionName":"([0-9]+\.[0-9]+(?:\.[0-9]+)?(?:\.[0-9]+)?)"/g,
+            // Pattern 3: Version in structured data
+            /Current Version.*?([0-9]+\.[0-9]+(?:\.[0-9]+)?(?:\.[0-9]+)?)/gi,
+            // Pattern 4: Version in app details
+            /Version.*?([0-9]+\.[0-9]+(?:\.[0-9]+)?(?:\.[0-9]+)?)/gi,
+            // Pattern 5: More specific Google Play patterns
+            /\[null,\[.*?"([0-9]+\.[0-9]+(?:\.[0-9]+)?(?:\.[0-9]+)?)"/g,
+            // Pattern 6: Alternative JSON structure
+            /,"([0-9]+\.[0-9]+(?:\.[0-9]+)?(?:\.[0-9]+)?)",null,/g,
+          ];
+
+          // Try multiple patterns to find release notes
+          const releaseNotesPatterns = [
+            // Pattern 1: What's new section with itemprop="description"
+            /<div[^>]*itemprop="description"[^>]*>([^<]+(?:<br[^>]*>[^<]*)*)<\/div>/gi,
+            // Pattern 2: What's new section content
+            /<h2[^>]*>What's new<\/h2>.*?<div[^>]*>([^<]+(?:<br[^>]*>[^<]*)*)<\/div>/gis,
+            // Pattern 3: Release notes in structured data
+            /"What's new"[^<]*<[^>]*>([^<]+)</gi,
+            // Pattern 4: Release notes in app description
+            /\["What's new"\]\],[^,]*,"([^"]+)"/gi,
+            // Pattern 5: Updates section
+            /"recentChanges":"([^"]+)"/gi,
+            // Pattern 6: What's new in JSON structure
+            /whatsnew[^:]*:\s*"([^"]+)"/gi,
+            // Pattern 7: Release notes in meta data
+            /"releaseNotes":"([^"]+)"/gi,
+            // Pattern 8: Description content after What's new header
+            /What's new.*?<div[^>]*>([^<]+(?:<br[^>]*>[^<]*)*)/gis,
+          ];
+
+          let foundVersion = null;
+          let foundReleaseNotes = "";
+
+          for (let i = 0; i < versionPatterns.length; i++) {
+            const pattern = versionPatterns[i];
+            const matches = [...html.matchAll(pattern)];
+
+            for (const match of matches) {
+              const version = match[1];
+
+              // Validate version format and ensure it's reasonable
+              if (
+                version &&
+                /^[0-9]+\.[0-9]+(?:\.[0-9]+)?(?:\.[0-9]+)?$/.test(version)
+              ) {
+                // Skip obviously invalid versions (like build numbers)
+                const parts = version.split(".").map(Number);
+                if (parts[0] <= 100 && parts[1] <= 100) {
+                  // Reasonable version bounds
+                  foundVersion = version;
+                  break;
+                }
+              }
+            }
+            if (foundVersion) break;
+          }
+
+          // Extract release notes
+          for (let i = 0; i < releaseNotesPatterns.length; i++) {
+            const pattern = releaseNotesPatterns[i];
+            const matches = [...html.matchAll(pattern)];
+
+            for (const match of matches) {
+              let notes = match[1];
+              if (notes && notes.length > 10) {
+                // Ensure it's substantial content
+                // Clean up HTML entities and formatting
+                notes = notes
+                  .replace(/<br\s*\/?>/gi, "\n") // Convert <br> tags to newlines first
+                  .replace(/\\n/g, "\n")
+                  .replace(/\\t/g, " ")
+                  .replace(/\\"/g, '"')
+                  .replace(/&quot;/g, '"')
+                  .replace(/&amp;/g, "&")
+                  .replace(/&lt;/g, "<")
+                  .replace(/&gt;/g, ">")
+                  .replace(/<[^>]*>/g, "") // Remove remaining HTML tags
+                  .replace(/\n\s*\n/g, "\n\n") // Clean up multiple newlines
+                  .trim();
+
+                if (notes.length > 20) {
+                  // Ensure meaningful content
+                  foundReleaseNotes = notes;
+                  break;
+                }
+              }
+            }
+            if (foundReleaseNotes) break;
+          }
+
+          if (foundVersion) {
+            storeVersion = foundVersion;
+          }
+
+          if (foundReleaseNotes) {
+            releaseNotes = foundReleaseNotes;
+          }
+
+          const result = {
+            needsUpdate: compareVersions(currentVersion, storeVersion) < 0,
+            currentVersion,
+            storeVersion,
+            storeUrl: playStoreUrl,
+            releaseNotes,
+          };
+
+          return result;
+        } catch (fetchError) {
+          // Fallback to static response if web scraping fails
+          return {
+            needsUpdate: false,
+            currentVersion,
+            storeVersion: currentVersion,
+            storeUrl: `https://play.google.com/store/apps/details?id=${packageName}`,
+          };
+        }
       }
     } catch (err) {
       const errorMessage =
