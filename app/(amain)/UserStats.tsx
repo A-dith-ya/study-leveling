@@ -196,13 +196,13 @@ export default function UserStats() {
             })}
           </View>
         </Animated.View>
-
-        <AchievementModal
-          achievement={selectedAchievement}
-          visible={modalVisible}
-          onClose={() => setModalVisible(false)}
-        />
       </ScrollView>
+
+      <AchievementModal
+        achievement={selectedAchievement}
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
     </SafeAreaView>
   );
 }
