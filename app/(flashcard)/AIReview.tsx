@@ -185,14 +185,24 @@ export default function AIReview() {
           {!isEvaluated && (
             <View style={styles.answerContainer}>
               <Text style={styles.sectionLabel}>Your Answer</Text>
-              <TextInput
-                style={styles.answerInput}
-                value={userInput}
-                onChangeText={setUserInput}
-                multiline
-                placeholder="Type your answer here..."
-                placeholderTextColor={COLORS.darkGray}
-              />
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.answerInput}
+                  value={userInput}
+                  onChangeText={setUserInput}
+                  multiline
+                  placeholder="Type your answer here..."
+                  placeholderTextColor={COLORS.darkGray}
+                />
+                {userInput.length > 0 && (
+                  <Pressable
+                    style={styles.clearButton}
+                    onPress={() => setUserInput("")}
+                  >
+                    <Ionicons name="trash" size={20} color={COLORS.darkGray} />
+                  </Pressable>
+                )}
+              </View>
             </View>
           )}
 
@@ -314,12 +324,25 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  inputContainer: {
+    flex: 1,
+  },
   answerInput: {
     flex: 1,
     fontSize: 16,
     lineHeight: 24,
     color: COLORS.text,
     textAlignVertical: "top",
+    borderWidth: 1,
+    borderColor: COLORS.lightGray,
+    borderRadius: 8,
+    padding: 12,
+  },
+  clearButton: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    padding: 4,
   },
   sectionLabel: {
     fontSize: 16,
