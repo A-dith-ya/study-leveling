@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
   footer: {
     padding: 20,
     alignItems: "center",
-    marginTop: 24,
   },
   footerText: {
     fontSize: 16,
@@ -57,7 +56,7 @@ const styles = StyleSheet.create({
   divider: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 24,
+    marginBottom: 24,
     paddingHorizontal: 16,
   },
   dividerLine: {
