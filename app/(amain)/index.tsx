@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
-    borderBottomWidth: Platform.OS === "ios" ? 2 : 0,
+    borderBottomWidth: 2,
     borderBottomColor: COLORS.primaryDark,
   },
   createDeckButtonText: {

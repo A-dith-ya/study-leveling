@@ -92,23 +92,23 @@ export default function AppInitializer() {
 
   useEffect(() => {
     if (Platform.OS === "web") return;
+    // Development mode, set log level to verbose for better debugging
     Purchases.setLogLevel(
       process.env.NODE_ENV === "development"
         ? LOG_LEVEL.VERBOSE
         : LOG_LEVEL.ERROR
     );
 
-    const apiKey = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY;
-    if (apiKey) {
-      if (Platform.OS === "ios") {
-        Purchases.configure({
-          apiKey,
-        });
-      } else if (Platform.OS === "android") {
-        Purchases.configure({
-          apiKey,
-        });
-      }
+    const iosApiKey = process.env.EXPO_PUBLIC_REVENUECAT_API_KEY;
+    const androidApiKey = process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY;
+    if (Platform.OS === "ios" && iosApiKey) {
+      Purchases.configure({
+        apiKey: iosApiKey,
+      });
+    } else if (Platform.OS === "android" && androidApiKey) {
+      Purchases.configure({
+        apiKey: androidApiKey,
+      });
     }
   }, []);
 
