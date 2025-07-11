@@ -1,8 +1,42 @@
-# Welcome to your Expo app 👋
+# Study Leveling
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+An AI-powered, gamified flashcard learning platform designed to help users retain knowledge, stay motivated, and level up their learning journey. Study Leveling blends the proven effectiveness of flashcards with AI-driven learning assistance and engaging gamification. Users can create and study flashcards, while earning XP, maintaining streaks, and unlocking achievements.
 
-## Get started
+## Features
+
+- **Flashcard Management:** Create, edit, and delete flashcards.
+- **AI-Powered Learning:** Automatically generate flashcards from uploaded notes; receive AI-evaluated personalized explanations for answers.
+- **Interactive Study Modes:** Answer via text or voice; get instant AI feedback highlighting correct, incorrect, and missing points.
+- **Gamification & Rewards:** Earn XP for study sessions, maintain streaks, unlock achievements, and complete daily challenges for coin rewards.
+- **Personalized Progress Tracking:** View your level, XP progress, streak history, study time, and unlocked achievements in an engaging profile dashboard.
+- **Customizable Learning Experience:** Decorate flashcards with stickers purchased from the in-app store.
+
+## Tech Stack
+
+- **Frontend:** React Native (TypeScript)
+- **State Management:** Zustand + MMKV (local persistence)
+- **Backend:** AWS Amplify
+- **Auth:** Amazon Cognito
+- **Database:** Amazon DynamoDB
+- **Serverless Logic:** AWS Lambda + API Gateway
+
+## Screens
+
+| Screen                   | Description                           |
+| ------------------------ | ------------------------------------- |
+| **Login / Sign Up**      | Secure account creation & access      |
+| **Dashboard**            | Shows level, XP, streak, decks        |
+| **Flashcard Editor**     | Create or edit cards                  |
+| **Flashcard Review**     | Study mode with progress tracker      |
+| **AI Feedback**          | Highlight correct/incorrect answers   |
+| **Reward Screen**        | Celebrate earned XP and progress      |
+| **Profile Stats**        | Achievements, streaks, time studied   |
+| **Daily Challenges**     | XP & coin rewards for tasks           |
+| **Store**                | Buy stickers                          |
+| **Flashcard Decoration** | Personalize flashcards with cosmetics |
+| **Account Management**   | Change password, delete account       |
+
+## Installation
 
 1. Install dependencies
 
@@ -10,41 +44,14 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npm install
    ```
 
-2. Start the app
+2. Start the Amplify sandbox
+
+   ```bash
+    npx ampx sandbox --profile <profile-name>
+   ```
+
+3. Run the app
 
    ```bash
     npx expo start
    ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
